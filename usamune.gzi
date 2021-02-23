@@ -1,0 +1,14 @@
+0000 00000000 00000001
+0304 00005AD4 60000000
+# GCN Controller Z -> N64 L, Comment these lines if
+# you wish to use GCN Controller L -> N64 L 
+0302 001685E0 00000020
+0302 00168630 00000020
+0302 00168680 00000020
+
+# GCN Controller L -> N64 L, unomment these lines if
+# you wish to use GCN Controller L -> N64 L
+# and comment the 3 previous lines
+#0302 001685D8 00000020
+#0302 00168628 00000020
+#0302 00168678 00000020
