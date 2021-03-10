@@ -4,9 +4,17 @@ extern "C"
     #include "game/level_update.h"
     #include "game/print.h"
 }
+#include "action.h"
 #include "cfg.h"
 #include "checkpoint.h"
 #include "sm64.h"
+
+bool sGrabTimerSet = false;
+
+void Timer::reset()
+{
+    sGrabTimerSet = false;
+}
 
 void Timer::onFrame()
 {
@@ -21,6 +29,9 @@ void Timer::onFrame()
     {
         gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_TIMER;
     }
+
+    //if (!Action::changed())
+    //    return;
 
     bool grabCondition = gMarioStates->action == ACT_FALL_AFTER_STAR_GRAB;
     bool xcamCondition = gMarioStates->action == ACT_STAR_DANCE_WATER || gMarioStates->action == ACT_STAR_DANCE_EXIT;
@@ -37,13 +48,16 @@ void Timer::onFrame()
         if (xcamCondition)
             sTimerRunning = false;
         
-        if (grabCondition)
+        if (grabCondition && !sGrabTimerSet)
+        {
+            sGrabTimerSet = true;
             Checkpoint::registerEvent();
+        }
     }
 
-    if (Config::timerStopOnCoinStar())
-        if (gMarioStates->action == ACT_STAR_DANCE_NO_EXIT)
+    if (gMarioStates->action == ACT_STAR_DANCE_NO_EXIT)
+        if (!Config::timerStopOnCoinStar())
+        {
             sTimerRunning = true;
-        else
-            Checkpoint::registerEvent();
+        }
 }

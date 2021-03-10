@@ -17,6 +17,8 @@ extern "C"
 #include "wallkick_frame.h"
 #include "checkpoint.h"
 #include "action.h"
+#include "interaction.h"
+#include "music.h"
 
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
@@ -32,6 +34,7 @@ void onFrame()
         SaveState::onNormal();
         Speed::onNormal();
         WallkickFrame::onNormal();
+        Interaction::onNormal();
 
         Checkpoint::onNormal();
         
@@ -51,4 +54,5 @@ void onPause()
 uintptr_t _start[] = {
     (uintptr_t) onFrame,
     (uintptr_t) onPause,
+    (uintptr_t) Music::setVolumeHook,
 };

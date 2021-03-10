@@ -8,6 +8,7 @@ extern "C"
     #include "game/envfx_snow.h"
 }
 #include "cfg.h"
+#include "timer.h"
 
 static bool sTimerRunningDeferred = false;
 
@@ -19,6 +20,7 @@ static void resetCamera()
      || CAMERA_MODE_INSIDE_CANNON == gCamera->mode
      || CAMERA_MODE_CLOSE         == gCamera->mode)
      set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+     m->area->camera->cutscene = 0;
 }
 
 static void resetCommon()
@@ -30,6 +32,7 @@ static void resetCommon()
     gHudDisplay.timer = 0;
     sTimerRunning = true;
     sTimerRunningDeferred = true;
+    Timer::reset();
     sWarpDest.type = 2;
     resetCamera();
 }
@@ -40,6 +43,7 @@ void LevelReset::onNormal()
     {
         sTimerRunningDeferred = false;
         sTimerRunning = true;
+        Timer::reset();
         resetCamera();
     }
 
@@ -82,6 +86,7 @@ void LevelReset::onNormal()
         gHudDisplay.timer = 0;
         sTimerRunning = true;
         sTimerRunningDeferred = true;
+        Timer::reset();
         resetCamera();
     }
 }

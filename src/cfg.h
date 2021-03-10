@@ -51,6 +51,8 @@ namespace Config
         PAUSE,
     };
     StateSaveStyle saveStateStyle();
+
+    bool muteMusic();
     
     bool checkpointWallkick();
     bool checkpointDoor();
@@ -59,4 +61,6 @@ namespace Config
     bool checkpointGroundpound();
     bool checkpointBurning();
     bool checkpointCannon();
+    bool checkpointWarp();
+    bool checkpointRed();
 };

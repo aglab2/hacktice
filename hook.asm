@@ -99,6 +99,16 @@
 	b 0x96AD8
 	nop
 
+.orga 0xd8068
+	addiu sp, sp, -0x18
+	sw ra, 0x14(sp)
+	lw at, 0x8004e008
+	jalr at
+	nop
+	lw ra, 0x14(sp)
+	jr ra
+	addiu sp, sp, 0x18
+
 .headersize 0x80245000
 
 ; notes about the spaces to put code in

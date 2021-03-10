@@ -22,33 +22,40 @@ static int sPage = Pages::GENERAL;
 constexpr int sMaxAllowedPage = (int) Pages::PagesCount - 1;
 static u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
 
-static char sSpeed = 0;
-static char sStickStyle = 0;
-static char sShowButtons = 0;
-static char sLAction = 0;
-static char sLRAction = 0;
-static char sXAction = 0;
-static char sXRAction = 0;
-static char sYAction = 0;
-static char sYRAction = 0;
-static char sCButtonsAction = 0;
-static char sDpadDownAction = 0;
-static char sWarp = 0;
-static char sWallkickFrame = 0;
-static char sDistanceFromClosestRed = 0;
-static char sDistanceFromClosestSecret = 0;
-static char sTimerShow = true;
-static char sTimerStyle = (char) Config::TimerStyle::GRAB;
-static char sTimerStopOnCoinStar = false;
-static char sStateSaveStyle = 0;
+static struct
+{
+    char speed;
+    char stickStyle;
+    char showButtons;
+    char lAction;
+    char lRAction;
+    char cButtonsAction;
+    char dpadDownAction;
+    char warp;
+    char wallkickFrame;
+    char distanceFromClosestRed;
+    char distanceFromClosestSecret;
+    char timerShow;
+    char timerStyle;
+    char timerStopOnCoinStar;
+    char stateSaveStyle;
+    char muteMusic;
 
-static char sCheckpointWallkick = false;
-static char sCheckpointDoor = false;
-static char sCheckpointPole = false;
-static char sCheckpointLava = false;
-static char sCheckpointGroundpound = false;
-static char sCheckpointBurning = false;
-static char sCheckpointCannon = false;
+    char checkpointWallkick;
+    char checkpointDoor;
+    char checkpointPole;
+    char checkpointLava;
+    char checkpointGroundpound;
+    char checkpointBurning;
+    char checkpointCannon;
+    char checkpointWarp;
+    char checkpointRed;
+}
+sConfig
+{
+    .timerShow = true,
+    .timerStyle = (char) Config::TimerStyle::GRAB,
+};
 
 struct ConfigDescriptor
 {
@@ -71,48 +78,45 @@ static u8* lActionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_W
 // Checkpoints
 static ConfigDescriptor sCheckpointsDescriptors[] =
 {
-    { sCheckpointBurning,     uBURNING,     VALUE_NAMES(onOffValueNames) },
-    { sCheckpointCannon,      uCANNON,      VALUE_NAMES(onOffValueNames) },
-    { sCheckpointDoor,        uDOOR,        VALUE_NAMES(onOffValueNames) },
-    { sCheckpointGroundpound, uGROUNDPOUND, VALUE_NAMES(onOffValueNames) },
-    { sCheckpointLava,        uLAVA,        VALUE_NAMES(onOffValueNames) },
-    { sCheckpointPole,        uPOLE,        VALUE_NAMES(onOffValueNames) },
-    { sCheckpointWallkick,    uWALLKICK,    VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointBurning,     uBURNING,     VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointCannon,      uCANNON,      VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointDoor,        uDOOR,        VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointGroundpound, uGROUNDPOUND, VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointLava,        uLAVA,        VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointPole,        uPOLE,        VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointRed,         uRED,         VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointWallkick,    uWALLKICK,    VALUE_NAMES(onOffValueNames) },
+    { sConfig.checkpointWarp,        uWARP,        VALUE_NAMES(onOffValueNames) },
 };
 constexpr int sCheckpointsMaxAllowedOption = sizeof(sCheckpointsDescriptors) / sizeof(*sCheckpointsDescriptors) - 1;
 
 // General
 static ConfigDescriptor sGeneralDescriptors[] = 
 {
-    { sDistanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
-    { sDistanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },
+    { sConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
+    { sConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },
     
-    { sShowButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
-    { sStickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
+    { sConfig.showButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
+    { sConfig.stickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
 
-    { sLAction,       uLACTION,           VALUE_NAMES(lActionNames) },
-    { sLRAction,      uLRACTION,          VALUE_NAMES(lActionNames) },
-    { sCButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(lActionNames) },
-    { sDpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(lActionNames) },
-    /*
-    { sXAction,     uXACTION,  VALUE_NAMES(lActionNames) },
-    { sXRAction,    uXRACTION, VALUE_NAMES(lActionNames) },
-    { sYAction,     uYACTION,  VALUE_NAMES(lActionNames) },
-    { sYRAction,    uYRACTION, VALUE_NAMES(lActionNames) },
-    */
+    { sConfig.lAction,       uLACTION,           VALUE_NAMES(lActionNames) },
+    { sConfig.lRAction,      uLRACTION,          VALUE_NAMES(lActionNames) },
+    { sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(lActionNames) },
+    { sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(lActionNames) },
 
-    { sStateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
-    { sSpeed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
-    { sTimerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
-    { sTimerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
-    { sTimerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
-    { sWallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
+    { sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
+    { sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
+    { sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
+    { sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
+    { sConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
+    { sConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
+    { sConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
 };
 constexpr int sGeneralMaxAllowedOption = sizeof(sGeneralDescriptors) / sizeof(*sGeneralDescriptors) - 1;
 
 // Warp
 static ConfigDescriptor sWarpDescriptors[] = {
-    { sWarp, uSELECT_WARP_TARGET, nullptr, 25 },
+    { sConfig.warp, uSELECT_WARP_TARGET, nullptr, 25 },
 };
 constexpr int sWarpMaxAllowedOption = 0;
 
@@ -177,7 +181,7 @@ static void render()
     constexpr int height = 190;
     if (pickedOption >= 2)
     {
-        renderOptionAt(descriptors[pickedOption - 2], 20, height);
+        renderOptionAt(descriptors[pickedOption - 2], 0, height);
     }
     
     if (pickedOption >= 1)
@@ -194,7 +198,7 @@ static void render()
 
     if (pickedOption <= maxAllowedOption - 2)
     {
-        renderOptionAt(descriptors[pickedOption + 2], 300, height);
+        renderOptionAt(descriptors[pickedOption + 2], 320, height);
     }
 }
 
@@ -273,23 +277,23 @@ void Config::onPause()
 
 Config::StickStyle Config::showStick()
 {
-    return (Config::StickStyle) sStickStyle;
+    return (Config::StickStyle) sConfig.stickStyle;
 }
 
 bool Config::showButtons()
 {
-    return sShowButtons;
+    return sConfig.showButtons;
 }
 
 LevelConv::PlainLevels Config::warpId()
 {
-    return (LevelConv::PlainLevels) sWarp;
+    return (LevelConv::PlainLevels) sConfig.warp;
 }
 
 LevelConv::PlainLevels Config::warpIdAndReset()
 {
     auto w = warpId();
-    sWarp = 0;
+    sConfig.warp = 0;
     return w;
 }   
 
@@ -297,29 +301,21 @@ LevelConv::PlainLevels Config::warpIdAndReset()
 
 Config::ButtonAction Config::action()
 {
-    if (sLRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
+    if (sConfig.lRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
     {
-        return (Config::ButtonAction) sLRAction;
+        return (Config::ButtonAction) sConfig.lRAction;
     }
-    else if (sLAction && BUTTONS_PRESSED(L_TRIG))
+    else if (sConfig.lAction && BUTTONS_PRESSED(L_TRIG))
     {
-        return (Config::ButtonAction) sLAction;
+        return (Config::ButtonAction) sConfig.lAction;
     }
-    else if (sCButtonsAction && BUTTONS_PRESSED(U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS))
+    else if (sConfig.cButtonsAction && BUTTONS_PRESSED(U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS))
     {
-        return (Config::ButtonAction) sCButtonsAction;
+        return (Config::ButtonAction) sConfig.cButtonsAction;
     }
-    else if (sDpadDownAction && BUTTONS_PRESSED(D_JPAD))
+    else if (sConfig.dpadDownAction && BUTTONS_PRESSED(D_JPAD))
     {
-        return (Config::ButtonAction) sDpadDownAction;
-    }
-    else if (sXAction && (gControllers->buttonDown & 0x40))
-    {
-        return (Config::ButtonAction) sXAction;
-    }
-    else if (sYAction  && (gControllers->buttonDown & 0x80))
-    {
-        return (Config::ButtonAction) sYAction;
+        return (Config::ButtonAction) sConfig.dpadDownAction;
     }
 
     return ButtonAction::OFF;
@@ -327,75 +323,90 @@ Config::ButtonAction Config::action()
 
 bool Config::showWallkickFrame()
 {
-    return sWallkickFrame;
+    return sConfig.wallkickFrame;
 }
 
 bool Config::showDistanceFromClosestRed()
 {
-    return sDistanceFromClosestRed;
+    return sConfig.distanceFromClosestRed;
 }
 
 bool Config::showDistanceFromClosestSecret()
 {
-    return sDistanceFromClosestSecret;
+    return sConfig.distanceFromClosestSecret;
 }
 
 bool Config::showSpeed()
 {
-    return sSpeed;
+    return sConfig.speed;
 }
 
 bool Config::timerShow()
 {
-    return sTimerShow;
+    return sConfig.timerShow;
 }
 
 Config::TimerStyle Config::timerStyle()
 {
-    return (Config::TimerStyle) sTimerStyle;
+    return (Config::TimerStyle) sConfig.timerStyle;
 }
 
 bool Config::timerStopOnCoinStar()
 {
-    return sTimerStopOnCoinStar;
+    return sConfig.timerStopOnCoinStar;
 }
 
 Config::StateSaveStyle Config::saveStateStyle()
 {
-    return (Config::StateSaveStyle) sStateSaveStyle;
+    return (Config::StateSaveStyle) sConfig.stateSaveStyle;
+}
+
+bool Config::muteMusic()
+{
+    return sConfig.muteMusic;
 }
 
 bool Config::checkpointWallkick()
 {
-    return sCheckpointWallkick;
+    return sConfig.checkpointWallkick;
 }
 
 bool Config::checkpointDoor()
 {
-    return sCheckpointDoor;
+    return sConfig.checkpointDoor;
 }
 
 bool Config::checkpointPole()
 {
-    return sCheckpointPole;
+    return sConfig.checkpointPole;
 }
 
 bool Config::checkpointLava()
 {
-    return sCheckpointLava;
+    return sConfig.checkpointLava;
 }
 
 bool Config::checkpointGroundpound()
 {
-    return sCheckpointGroundpound;
+    return sConfig.checkpointGroundpound;
 }
 
 bool Config::checkpointBurning()
 {
-    return sCheckpointBurning;
+    return sConfig.checkpointBurning;
 }
 
 bool Config::checkpointCannon()
 {
-    return sCheckpointCannon;
+    return sConfig.checkpointCannon;
+}
+
+bool Config::checkpointWarp()
+{
+    return sConfig.checkpointWarp;
+}
+
+bool Config::checkpointRed()
+{
+    return sConfig.checkpointRed;
 }
