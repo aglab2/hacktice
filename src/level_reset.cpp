@@ -19,8 +19,11 @@ static void resetCamera()
      || CAMERA_MODE_WATER_SURFACE == gCamera->mode
      || CAMERA_MODE_INSIDE_CANNON == gCamera->mode
      || CAMERA_MODE_CLOSE         == gCamera->mode)
-     set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
-     m->area->camera->cutscene = 0;
+    {
+        set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
+    }
+    
+    m->area->camera->cutscene = 0;
 }
 
 static void resetCommon()

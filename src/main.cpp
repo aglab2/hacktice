@@ -7,6 +7,7 @@ extern "C"
 
 #include "cfg.h"
 #include "distance.h"
+#include "death.h"
 #include "input_viewer.h"
 #include "level_reset.h"
 #include "levitate.h"
@@ -27,6 +28,7 @@ void onFrame()
 {
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
     {
+        Death::onNormal();
         Distance::onNormal();
         InputViewer::onNormal();
         LevelReset::onNormal();
@@ -35,6 +37,7 @@ void onFrame()
         Speed::onNormal();
         WallkickFrame::onNormal();
         Interaction::onNormal();
+        Music::onFrame();
 
         Checkpoint::onNormal();
         

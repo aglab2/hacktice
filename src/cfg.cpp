@@ -1,4 +1,8 @@
 #include "cfg.h"
+#include "array_size.h"
+#include "string_conv.h"
+#include "strings.h"
+
 extern "C"
 {
     #include "types.h"
@@ -6,9 +10,6 @@ extern "C"
     #include "game/ingame_menu.h"
     #include "engine/math_util.h"
 }
-#include "array_size.h"
-#include "string_conv.h"
-#include "strings.h"
 
 enum Pages
 {
@@ -40,6 +41,8 @@ static struct
     char timerStopOnCoinStar;
     char stateSaveStyle;
     char muteMusic;
+    char musicNumber;
+    char deathAction;
 
     char checkpointWallkick;
     char checkpointDoor;
@@ -70,10 +73,18 @@ static u8* inputValueNames[] = { uOFF, uTEXT, uGRAPHICS };
 static u8* onOffValueNames[] = { uOFF, uON };
 static u8* timerValueNames[] = { uGRAB, uXCAM };
 static u8* stateSaveNames[]  = { uBUTTON, uPAUSE };
+static u8* deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
 
 // Config::ButtonAction
 static u8* lActionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
+
+static u8 lMusicNumber[] = { 0x00, 0x00, 0xff };
+static u8* lMusicNumbers[] = { lMusicNumber, nullptr };
+
+static u8 sOnDeathAction = 0;
+
 #define VALUE_NAMES(x) x, ARRAY_SIZE(x)
+#define INT_NAMES(x, cnt) x, cnt
 
 // Checkpoints
 static ConfigDescriptor sCheckpointsDescriptors[] =
@@ -103,8 +114,12 @@ static ConfigDescriptor sGeneralDescriptors[] =
     { sConfig.lRAction,      uLRACTION,          VALUE_NAMES(lActionNames) },
     { sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(lActionNames) },
     { sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(lActionNames) },
+    { sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
+    
+    { sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
 
     { sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
+    { sConfig.musicNumber,   uMUSIC_NUMBER,  lMusicNumbers, 64 },
     { sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
     { sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
     { sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
@@ -166,7 +181,15 @@ static void renderOptionAt(ConfigDescriptor& desc, int x, int y)
     }
     else
     {
-        print_generic_string_centered(x, y - 20, desc.valueNames[(int) value]);
+        if (nullptr != desc.valueNames[1])
+        {
+            print_generic_string_centered(x, y - 20, desc.valueNames[(int) value]);
+        }
+        else
+        {
+            String::convert(value, desc.valueNames[0]);
+            print_generic_string_centered(x, y - 20, desc.valueNames[0]);
+        }
     }
 }
 
@@ -294,6 +317,7 @@ LevelConv::PlainLevels Config::warpIdAndReset()
 {
     auto w = warpId();
     sConfig.warp = 0;
+    sPage = Pages::GENERAL;
     return w;
 }   
 
@@ -301,6 +325,11 @@ LevelConv::PlainLevels Config::warpIdAndReset()
 
 Config::ButtonAction Config::action()
 {
+    if (sOnDeathAction)
+    {
+        return (Config::ButtonAction) sOnDeathAction;
+    }
+
     if (sConfig.lRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
     {
         return (Config::ButtonAction) sConfig.lRAction;
@@ -364,6 +393,21 @@ Config::StateSaveStyle Config::saveStateStyle()
 bool Config::muteMusic()
 {
     return sConfig.muteMusic;
+}
+
+char Config::musicNumber()
+{
+    return sConfig.musicNumber;
+}
+
+Config::DeathAction Config::deathAction()
+{
+    return (Config::DeathAction) sConfig.deathAction;
+}
+
+void Config::setOnDeathAction(ButtonAction act)
+{
+    sOnDeathAction = (u8) act;
 }
 
 bool Config::checkpointWallkick()

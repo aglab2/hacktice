@@ -8,4 +8,5 @@ extern "C"
 namespace Music
 {
     void setVolumeHook(struct SequenceChannel *seqChannel, u8 volume);
+    void onFrame();
 }

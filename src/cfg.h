@@ -53,6 +53,18 @@ namespace Config
     StateSaveStyle saveStateStyle();
 
     bool muteMusic();
+    char musicNumber();
+
+    enum class DeathAction
+    {
+        OFF,
+        ACT_RESET,
+        LEVEL_RESET,
+        LOAD_STATE,
+    };
+    DeathAction deathAction();
+
+    void setOnDeathAction(ButtonAction);
     
     bool checkpointWallkick();
     bool checkpointDoor();

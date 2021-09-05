@@ -69,5 +69,4 @@ namespace LevelConv
     };
 
     SM64Levels toSM64Level(PlainLevels);
-    PlainLevels toPlainLevel(SM64Levels);
 } // namespace LevelConv

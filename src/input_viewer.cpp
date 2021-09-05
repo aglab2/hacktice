@@ -53,12 +53,12 @@ void InputViewer::onNormal()
     }
     if (Config::StickStyle::GRAPHICS == stickStyle)
     {
-        print_text(30, 30, "0");
+        print_text(280, 30, "0");
 
-        x = x * 20 / 80;
-        y = y * 20 / 80;
+        x = x * 20 / 120;
+        y = y * 20 / 120;
 
-        print_text(30 + x, 30 + y, "0");
+        print_text(280 + x, 30 + y, "0");
     }
 
     auto showButtons = Config::showButtons();
@@ -71,7 +71,7 @@ void InputViewer::onNormal()
             auto& desc = sButtonDescriptors[i];
             if (activeButtons & desc.mask)
             {
-                print_text(80 + off, 20, desc.name);
+                print_text(240 - off, 20, desc.name);
                 off += 15 * strlen(desc.name);
             }
         }
