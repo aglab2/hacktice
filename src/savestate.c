@@ -33,7 +33,10 @@ static void resetCamera()
         set_camera_mode(gMarioStates->area->camera, gMarioStates->area->camera->defMode, 1);
     }
 
-    gMarioStates->area->camera->cutscene = 0;
+    if (CUTSCENE_ENTER_BOWSER_ARENA != gMarioStates->area->camera->cutscene)
+    {
+        gMarioStates->area->camera->cutscene = 0;
+    }
 }
 
 void SaveState_onNormal()

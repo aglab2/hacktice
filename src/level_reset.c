@@ -25,7 +25,7 @@ static void resetCamera()
     m->area->camera->cutscene = 0;
 }
 
-static void resetCommon()
+static void miniResetCommon()
 {
     gMarioStates->health = 0x880;
     gHudDisplay.coins = 0;
@@ -33,10 +33,15 @@ static void resetCommon()
     gSnowParticleCount = 5;
     gHudDisplay.timer = 0;
     sTimerRunning = true;
-    sTimerRunningDeferred = true;
     Timer_reset();
     sWarpDest.type = 2;
     resetCamera();
+}
+
+static void resetCommon()
+{
+    miniResetCommon();
+    sTimerRunningDeferred = true;
 }
 
 void LevelReset_onNormal()
@@ -44,9 +49,7 @@ void LevelReset_onNormal()
     if (sTimerRunningDeferred)
     {
         sTimerRunningDeferred = false;
-        sTimerRunning = true;
-        Timer_reset();
-        resetCamera();
+        miniResetCommon();
     }
 
     Config_ButtonAction action = Config_action();
