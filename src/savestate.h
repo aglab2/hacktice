@@ -1,7 +1,4 @@
 #pragma once
 
-namespace SaveState
-{
-    void onPause();
-    void onNormal();
-}
+void SaveState_onPause();
+void SaveState_onNormal();

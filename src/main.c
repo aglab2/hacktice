@@ -1,9 +1,6 @@
 #include "types.h"
 
-extern "C"
-{
-    #include "game/level_update.h"
-}
+#include "game/level_update.h"
 
 #include "cfg.h"
 #include "distance.h"
@@ -28,34 +25,34 @@ void onFrame()
 {
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
     {
-        Death::onNormal();
-        Distance::onNormal();
-        InputViewer::onNormal();
-        LevelReset::onNormal();
-        Levitate::onNormal();
-        SaveState::onNormal();
-        Speed::onNormal();
-        WallkickFrame::onNormal();
-        Interaction::onNormal();
-        Music::onFrame();
+        Death_onNormal();
+        Distance_onNormal();
+        InputViewer_onNormal();
+        LevelReset_onNormal();
+        Levitate_onNormal();
+        SaveState_onNormal();
+        Speed_onNormal();
+        WallkickFrame_onNormal();
+        Interaction_onNormal();
+        Music_onFrame();
 
-        Checkpoint::onNormal();
+        Checkpoint_onNormal();
         
-        Action::onNormal();
+        Action_onNormal();
     }
 
-    Timer::onFrame();
-    TextManager::onFrame();
+    Timer_onFrame();
+    TextManager_onFrame();
 }
 
 void onPause()
 {
-    SaveState::onPause();
-    Config::onPause();
+    SaveState_onPause();
+    Config_onPause();
 }
 
 uintptr_t _start[] = {
     (uintptr_t) onFrame,
     (uintptr_t) onPause,
-    (uintptr_t) Music::setVolumeHook,
+    (uintptr_t) Music_setVolumeHook,
 };

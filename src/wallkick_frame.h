@@ -1,6 +1,3 @@
 #pragma once
 
-namespace WallkickFrame
-{
-    void onNormal();
-}
+void WallkickFrame_onNormal();

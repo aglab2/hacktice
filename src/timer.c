@@ -1,9 +1,8 @@
 #include "timer.h"
-extern "C"
-{
-    #include "game/level_update.h"
-    #include "game/print.h"
-}
+
+#include "game/level_update.h"
+#include "game/print.h"
+
 #include "action.h"
 #include "cfg.h"
 #include "checkpoint.h"
@@ -11,14 +10,14 @@ extern "C"
 
 bool sGrabTimerSet = false;
 
-void Timer::reset()
+void Timer_reset()
 {
     sGrabTimerSet = false;
 }
 
-void Timer::onFrame()
+void Timer_onFrame()
 {
-    if (Config::timerShow())
+    if (Config_timerShow())
     {
         if (gHudDisplay.flags & HUD_DISPLAY_FLAG_COIN_COUNT)
             gHudDisplay.flags |= HUD_DISPLAY_FLAG_TIMER;
@@ -30,20 +29,20 @@ void Timer::onFrame()
         gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_TIMER;
     }
 
-    //if (!Action::changed())
+    //if (!Action_changed())
     //    return;
 
     bool grabCondition = gMarioStates->action == ACT_FALL_AFTER_STAR_GRAB;
     bool xcamCondition = gMarioStates->action == ACT_STAR_DANCE_WATER || gMarioStates->action == ACT_STAR_DANCE_EXIT;
     bool timerCondition = grabCondition || xcamCondition;
 
-    if (Config::timerStyle() == Config::TimerStyle::GRAB)
+    if (Config_timerStyle() == Config_TimerStyle_GRAB)
     {
         if (timerCondition)
             sTimerRunning = false;
     }
 
-    if (Config::timerStyle() == Config::TimerStyle::XCAM)
+    if (Config_timerStyle() == Config_TimerStyle_XCAM)
     {
         if (xcamCondition)
             sTimerRunning = false;
@@ -51,12 +50,12 @@ void Timer::onFrame()
         if (grabCondition && !sGrabTimerSet)
         {
             sGrabTimerSet = true;
-            Checkpoint::registerEvent();
+            Checkpoint_registerEvent();
         }
     }
 
     if (gMarioStates->action == ACT_STAR_DANCE_NO_EXIT)
-        if (!Config::timerStopOnCoinStar())
+        if (!Config_timerStopOnCoinStar())
         {
             sTimerRunning = true;
         }

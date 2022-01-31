@@ -1,6 +1,3 @@
 #pragma once
 
-namespace Death
-{
-    void onNormal();
-} // namespace Death
+void Death_onNormal();

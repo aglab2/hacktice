@@ -1,9 +1,6 @@
 #pragma once
 
-namespace TextManager
-{
-    void onFrame();
-    void onVi();
+void TextManager_onFrame();
+void TextManager_onVi();
 
-    void addLine(const char* str, int timeout);
-}
+void TextManager_addLine(const char* str, int timeout);

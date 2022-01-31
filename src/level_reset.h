@@ -1,6 +1,3 @@
 #pragma once
 
-namespace LevelReset
-{
-    void onNormal();
-};
+void LevelReset_onNormal();

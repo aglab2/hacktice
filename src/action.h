@@ -1,9 +1,6 @@
 #pragma once
+#include "bool.h"
 
-namespace Action
-{
-    void onNormal();
-
-    int last();
-    bool changed();
-} // namespace Action
+void Action_onNormal();
+int  Action_last();
+bool Action_changed();

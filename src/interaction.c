@@ -1,20 +1,18 @@
 #include "interaction.h"
 
-extern "C"
-{
-    #include "game/interaction.h"
-    #include "game/memory.h"
-}
+#include "game/interaction.h"
+#include "game/memory.h"
+
 #include "checkpoint.h"
 #include "cfg.h"
 
 typedef u32 (*InteractionHandlerFn)(struct MarioState *, u32, struct Object *);
-struct InteractionHandler {
+typedef struct InteractionHandler {
     u32 interactType;
     InteractionHandlerFn handler;
-};
+} InteractionHandler;
 
-static InteractionHandlerFn gOrigHandlers[32] {};
+static InteractionHandlerFn gOrigHandlers[32];
 
 // TODO: drop hardcode
 static InteractionHandler* sInteractionHandlers = (InteractionHandler*) 0x8032d950;
@@ -22,7 +20,7 @@ static InteractionHandler* sInteractionHandlers = (InteractionHandler*) 0x8032d9
 #define HOOK(name) \
 static u32 hook_##name(struct MarioState* m, u32 v, struct Object* o) \
 { \
-    Checkpoint::registerEvent(); \
+    Checkpoint_registerEvent(); \
     return gOrigHandlers[HOOK_INTERACT_##name](m, v, o); \
 }
 
@@ -63,26 +61,26 @@ HOOK(WARP)
 
 static u32 hook_COIN(struct MarioState* m, u32 v, struct Object* o) 
 {
-    auto behaviorAddr = (uintptr_t*) segmented_to_virtual((void*) 0x13003EAC);
+    uintptr_t* behaviorAddr = (uintptr_t*) segmented_to_virtual((void*) 0x13003EAC);
     if (o && o->behavior == behaviorAddr)
-        Checkpoint::registerEvent(); 
+        Checkpoint_registerEvent(); 
     
     return gOrigHandlers[HOOK_INTERACT_COIN](m, v, o); 
 }
 
 static void hookInteraction(int off, InteractionHandlerFn hook)
 {
-    auto type = 1 << off;
+    int type = 1 << off;
     for (int i = 0; i < 31; i++)
     {
-        auto& interactionDesc = sInteractionHandlers[i];
-        if (interactionDesc.interactType != type)
+        InteractionHandler* interactionDesc = &sInteractionHandlers[i];
+        if (interactionDesc->interactType != type)
             continue;
 
-        if (gOrigHandlers[off] == nullptr)
+        if (gOrigHandlers[off] == NULL)
         {
-            gOrigHandlers[off] = interactionDesc.handler;
-            interactionDesc.handler = hook;
+            gOrigHandlers[off] = interactionDesc->handler;
+            interactionDesc->handler = hook;
         }
         break;
     }
@@ -90,17 +88,17 @@ static void hookInteraction(int off, InteractionHandlerFn hook)
 
 static void unhookInteraction(int off)
 {
-    auto type = 1 << off;
+    int type = 1 << off;
     for (int i = 0; i < 31; i++)
     {
-        auto& interactionDesc = sInteractionHandlers[i];
-        if (interactionDesc.interactType != type)
+        InteractionHandler* interactionDesc = &sInteractionHandlers[i];
+        if (interactionDesc->interactType != type)
             continue;
 
-        if (gOrigHandlers[off] != nullptr)
+        if (gOrigHandlers[off] != NULL)
         {
-            interactionDesc.handler = gOrigHandlers[off];
-            gOrigHandlers[off] = nullptr;
+            interactionDesc->handler = gOrigHandlers[off];
+            gOrigHandlers[off] = NULL;
         }
 
         break;
@@ -109,22 +107,22 @@ static void unhookInteraction(int off)
 
 static inline bool isHooked(int off)
 {
-    return nullptr != gOrigHandlers[off];
+    return NULL != gOrigHandlers[off];
 }
 
-void Interaction::onNormal()
+void Interaction_onNormal()
 {
-    if (Config::checkpointWarp() ^ isHooked(HOOK_INTERACT_WARP))
+    if (Config_checkpointWarp() ^ isHooked(HOOK_INTERACT_WARP))
     {
-        if (Config::checkpointWarp())
+        if (Config_checkpointWarp())
             hookInteraction(HOOK_INTERACT_WARP, hook_WARP);
         else
             unhookInteraction(HOOK_INTERACT_WARP);
     }
     
-    if (Config::checkpointRed() ^ isHooked(HOOK_INTERACT_COIN))
+    if (Config_checkpointRed() ^ isHooked(HOOK_INTERACT_COIN))
     {
-        if (Config::checkpointRed())
+        if (Config_checkpointRed())
             hookInteraction(HOOK_INTERACT_COIN, hook_COIN);
         else
             unhookInteraction(HOOK_INTERACT_COIN);

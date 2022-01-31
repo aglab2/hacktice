@@ -1,12 +1,6 @@
 #include "types.h"
 
-extern "C"
-{
-    #include "audio/internal.h"
-}
+#include "audio/internal.h"
 
-namespace Music
-{
-    void setVolumeHook(struct SequenceChannel *seqChannel, u8 volume);
-    void onFrame();
-}
+void Music_setVolumeHook(struct SequenceChannel *seqChannel, u8 volume);
+void Music_onFrame();

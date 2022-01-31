@@ -1,12 +1,11 @@
 #include "level_reset.h"
-extern "C"
-{
-    #include "types.h"
-    #include "game/camera.h"
-    #include "game/game.h"
-    #include "game/level_update.h"
-    #include "game/envfx_snow.h"
-}
+
+#include "types.h"
+#include "game/camera.h"
+#include "game/game.h"
+#include "game/level_update.h"
+#include "game/envfx_snow.h"
+
 #include "cfg.h"
 #include "timer.h"
 
@@ -14,7 +13,7 @@ static bool sTimerRunningDeferred = false;
 
 static void resetCamera()
 {
-    auto m = gMarioStates;
+    struct MarioState* m = gMarioStates;
     if (CAMERA_MODE_BEHIND_MARIO  == gCamera->mode
      || CAMERA_MODE_WATER_SURFACE == gCamera->mode
      || CAMERA_MODE_INSIDE_CANNON == gCamera->mode
@@ -35,35 +34,35 @@ static void resetCommon()
     gHudDisplay.timer = 0;
     sTimerRunning = true;
     sTimerRunningDeferred = true;
-    Timer::reset();
+    Timer_reset();
     sWarpDest.type = 2;
     resetCamera();
 }
 
-void LevelReset::onNormal()
+void LevelReset_onNormal()
 {
     if (sTimerRunningDeferred)
     {
         sTimerRunningDeferred = false;
         sTimerRunning = true;
-        Timer::reset();
+        Timer_reset();
         resetCamera();
     }
 
-    auto action = Config::action();
-    if (Config::ButtonAction::LEVEL_RESET == action)
+    Config_ButtonAction action = Config_action();
+    if (Config_ButtonAction_LEVEL_RESET == action)
     {
         resetCommon();
     }
     
-    if (Config::ButtonAction::LEVEL_RESET_WARP == action)
+    if (Config_ButtonAction_LEVEL_RESET_WARP == action)
     {
         sWarpDest.areaIdx = 1;
         sWarpDest.nodeId = 0xa;
         resetCommon();
     }
 
-    if (Config::ButtonAction::ACT_SELECT == action)
+    if (Config_ButtonAction_ACT_SELECT == action)
     {
         sWarpDest.type = 2;
         sWarpDest.areaIdx = 1;
@@ -75,10 +74,10 @@ void LevelReset::onNormal()
         sTimerRunningDeferred = true;
     }
 
-    auto warp = Config::warpIdAndReset();
-    if (warp != LevelConv::PlainLevels::OFF)
+    LevelConv_PlainLevels warp = Config_warpIdAndReset();
+    if (warp != LevelConv_PlainLevels_OFF)
     {
-        auto sm64lvl = LevelConv::toSM64Level(warp);
+        LevelConv_SM64Levels sm64lvl = LevelConv_toSM64Level(warp);
         
         sWarpDest.levelNum = (u8) sm64lvl;
         sWarpDest.type = 2;
@@ -89,7 +88,7 @@ void LevelReset::onNormal()
         gHudDisplay.timer = 0;
         sTimerRunning = true;
         sTimerRunningDeferred = true;
-        Timer::reset();
+        Timer_reset();
         resetCamera();
     }
 }

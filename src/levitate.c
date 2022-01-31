@@ -2,14 +2,12 @@
 
 #include "cfg.h"
 #include "sm64.h"
-extern "C"
-{
-    #include "game/level_update.h"
-}
 
-void Levitate::onNormal()
+#include "game/level_update.h"
+
+void Levitate_onNormal()
 {
-    if (Config::ButtonAction::LEVITATE == Config::action())
+    if (Config_ButtonAction_LEVITATE == Config_action())
     {
         gMarioStates->vel[1] = 30.f;
         gMarioStates->action = ACT_JUMP;

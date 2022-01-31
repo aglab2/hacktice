@@ -1,18 +1,20 @@
 #include "distance.h"
 #include "types.h"
-extern "C"
-{
-    #include "game/memory.h"
-    #include "game/object_helpers.h"
-    #include "game/object_list_processor.h"
-    #include "game/print.h"
-}
+
+#include "game/memory.h"
+#include "game/object_helpers.h"
+#include "game/object_list_processor.h"
+#include "game/print.h"
+#include "PR/ultratypes.h"
+
 #include "cfg.h"
 
-static struct Object *obj_find_nearest_object_with_behavior(Object* me, const BehaviorScript *behavior, f32* dist)
+typedef struct Object Object;
+
+static struct Object *_obj_find_nearest_object_with_behavior(Object* me, const BehaviorScript *behavior, f32* dist)
 {
-    uintptr_t *behaviorAddr = (uintptr_t*) segmented_to_virtual(behavior);
-    struct Object *closestObj = nullptr;
+    uintptr_t* behaviorAddr = (uintptr_t*) segmented_to_virtual(behavior);
+    struct Object *closestObj = NULL;
     struct Object *obj;
     struct ObjectNode *listHead;
     f32 minDist = 0x20000;
@@ -37,21 +39,21 @@ static struct Object *obj_find_nearest_object_with_behavior(Object* me, const Be
     return closestObj;
 }
 
-void Distance::onNormal()
+void Distance_onNormal()
 {
     if (!gMarioObject)
         return;
 
     f32 dist;
-    if (Config::showDistanceFromClosestRed())
+    if (Config_showDistanceFromClosestRed())
     {
-        auto obj = obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003eac, &dist);
+        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003eac, &dist);
         if (obj)
             print_text_fmt_int(20, 20, "R %d", dist / 50);
     }
-    if (Config::showDistanceFromClosestSecret())
+    if (Config_showDistanceFromClosestSecret())
     {
-        auto obj = obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003f1c, &dist);
+        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003f1c, &dist);
         if (obj)
             print_text_fmt_int(20, 40, "S %d", dist / 50);
     }

@@ -1,6 +1,3 @@
 #pragma once
 
-namespace Levitate
-{
-    void onNormal();
-};
+void Levitate_onNormal();

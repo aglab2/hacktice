@@ -1,6 +1,3 @@
 #pragma once
 
-namespace Interaction
-{
-    void onNormal();
-} // namespace Interaction
+void Interaction_onNormal();

@@ -1,23 +1,22 @@
 #include "input_viewer.h"
-extern "C"
-{
-    #include "types.h"
-    #include "game/game.h"
-    #include "game/ingame_menu.h"
-    #include "game/print.h"
-    #include "libc/string.h"
-}
+
+#include "types.h"
+#include "game/game.h"
+#include "game/ingame_menu.h"
+#include "game/print.h"
+#include "libc/string.h"
+
 #include "array_size.h"
 #include "cfg.h"
 
 #define ABS(x) (x > 0 ? x : -x)
 #define POSITIVE(x) (x > 0)
 
-struct ButtonDescriptor
+typedef struct ButtonDescriptor
 {
     const char* name;
     u16 mask; 
-};
+} ButtonDescriptor;
 
 static ButtonDescriptor sButtonDescriptors[] = {
     { "A", A_BUTTON },
@@ -34,14 +33,14 @@ static ButtonDescriptor sButtonDescriptors[] = {
     { "D", D_CBUTTONS },
 };
 
-void InputViewer::onNormal()
+void InputViewer_onNormal()
 {
-    auto stickStyle = Config::showStick();
+    Config_StickStyle stickStyle = Config_showStick();
 
-    auto x = gControllers->rawStickX;
-    auto y = gControllers->rawStickY;
+    int x = gControllers->rawStickX;
+    int y = gControllers->rawStickY;
     
-    if (Config::StickStyle::VALUE == stickStyle)
+    if (Config_StickStyle_VALUE == stickStyle)
     {
         print_text_fmt_int(30, 40, "%d", ABS(x));
         print_text_fmt_int(30, 20, "%d", ABS(y));
@@ -51,7 +50,7 @@ void InputViewer::onNormal()
         if (y)
             print_text(10, 20, POSITIVE(y) ? "U" : "D");
     }
-    if (Config::StickStyle::GRAPHICS == stickStyle)
+    if (Config_StickStyle_GRAPHICS == stickStyle)
     {
         print_text(280, 30, "0");
 
@@ -61,18 +60,18 @@ void InputViewer::onNormal()
         print_text(280 + x, 30 + y, "0");
     }
 
-    auto showButtons = Config::showButtons();
+    bool showButtons = Config_showButtons();
     if (showButtons)
     {
-        auto activeButtons = gControllers->buttonPressed | gControllers->buttonDown;
+        int activeButtons = gControllers->buttonPressed | gControllers->buttonDown;
         int off = 0;
         for (int i = 0; i < ARRAY_SIZE(sButtonDescriptors); i++)
         {
-            auto& desc = sButtonDescriptors[i];
-            if (activeButtons & desc.mask)
+            ButtonDescriptor* desc = &sButtonDescriptors[i];
+            if (activeButtons & desc->mask)
             {
-                print_text(240 - off, 20, desc.name);
-                off += 15 * strlen(desc.name);
+                print_text(240 - off, 20, desc->name);
+                off += 15 * strlen(desc->name);
             }
         }
     }

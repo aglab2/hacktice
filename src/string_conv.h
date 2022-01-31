@@ -1,6 +1,3 @@
 #include "types.h"
 
-namespace String
-{
-    void convert(int, u8*);
-}
+void String_convert(int, u8*);

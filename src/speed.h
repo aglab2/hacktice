@@ -1,6 +1,3 @@
 #pragma once
 
-namespace Speed
-{
-    void onNormal();
-}
+void Speed_onNormal();

@@ -1,21 +1,18 @@
 #include "action.h"
-extern "C"
-{
-    #include "game/level_update.h"
-}
+#include "game/level_update.h"
 
 int sLastAction = 0;
-void Action::onNormal()
+void Action_onNormal()
 {
     sLastAction = gMarioStates->action;
 }
 
-int Action::last()
+int Action_last()
 {
     return sLastAction;
 }
 
-bool Action::changed()
+bool Action_changed()
 {
     return sLastAction != gMarioStates->action;
 }

@@ -1,9 +1,8 @@
 #include "wallkick_frame.h"
-extern "C"
-{
-    #include "game/level_update.h"
-    #include "libc/string.h"
-}
+
+#include "game/level_update.h"
+#include "libc/string.h"
+
 #include "action.h"
 #include "checkpoint.h"
 #include "text_manager.h"
@@ -21,12 +20,12 @@ static const char* sWallkickLines[] =
 };
 static char sPrintedLine[4];
 
-auto sLastWallkickTimer = 0;
-void WallkickFrame::onNormal()
+int sLastWallkickTimer = 0;
+void WallkickFrame_onNormal()
 {
-    if (Action::changed())
+    if (Action_changed())
     {
-        if (gMarioStates->action == ACT_WALL_KICK_AIR && Action::last() != ACT_CLIMBING_POLE && Action::last() != ACT_HOLDING_POLE)
+        if (gMarioStates->action == ACT_WALL_KICK_AIR && Action_last() != ACT_CLIMBING_POLE && Action_last() != ACT_HOLDING_POLE)
         {
             if (sLastWallkickTimer)
             {
@@ -36,11 +35,11 @@ void WallkickFrame::onNormal()
             {
                 memcpy(sPrintedLine, *sWallkickLines, 4);
             }        
-            if (Config::showWallkickFrame())
-                TextManager::addLine(sPrintedLine, 30);
+            if (Config_showWallkickFrame())
+                TextManager_addLine(sPrintedLine, 30);
 
-            if (Config::checkpointWallkick())
-                Checkpoint::registerEvent();
+            if (Config_checkpointWallkick())
+                Checkpoint_registerEvent();
         }
     }
     sLastWallkickTimer = gMarioStates->wallKickTimer;

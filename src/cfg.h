@@ -1,78 +1,76 @@
 #pragma once
 
+#include "bool.h"
 #include "level_conv.h"
 
-namespace Config
+void Config_onPause();
+
+typedef enum Config_StickStyle
 {
-    void onPause();
+    Config_StickStyle_OFF,
+    Config_StickStyle_VALUE,
+    Config_StickStyle_GRAPHICS,  
+} Config_StickStyle;
+Config_StickStyle Config_showStick();
 
-    enum class StickStyle
-    {
-        OFF,
-        VALUE,
-        GRAPHICS,  
-    };
-    StickStyle showStick();
+bool Config_showButtons();
 
-    bool showButtons();
+typedef enum Config_ButtonAction
+{
+    Config_ButtonAction_OFF,
+    Config_ButtonAction_ACT_SELECT,
+    Config_ButtonAction_LEVEL_RESET,
+    Config_ButtonAction_LEVEL_RESET_WARP,
+    Config_ButtonAction_LEVITATE,
+    Config_ButtonAction_LOAD_STATE,
+} Config_ButtonAction;
+Config_ButtonAction Config_action();
 
-    enum class ButtonAction
-    {
-        OFF,
-        ACT_SELECT,
-        LEVEL_RESET,
-        LEVEL_RESET_WARP,
-        LEVITATE,
-        LOAD_STATE,
-    };
-    ButtonAction action();
+LevelConv_PlainLevels Config_warpId();
+LevelConv_PlainLevels Config_warpIdAndReset();
 
-    LevelConv::PlainLevels warpId();
-    LevelConv::PlainLevels warpIdAndReset();
+bool Config_showWallkickFrame();
+bool Config_showDistanceFromClosestRed();
+bool Config_showDistanceFromClosestSecret();
 
-    bool showWallkickFrame();
-    bool showDistanceFromClosestRed();
-    bool showDistanceFromClosestSecret();
+bool Config_showSpeed();
 
-    bool showSpeed();
+bool Config_timerShow();
+typedef enum Config_TimerStyle
+{
+    Config_TimerStyle_GRAB,
+    Config_TimerStyle_XCAM,
+} Config_TimerStyle;
+Config_TimerStyle Config_timerStyle();
+bool Config_timerStopOnCoinStar();
 
-    bool timerShow();
-    enum class TimerStyle
-    {
-        GRAB,
-        XCAM,
-    };
-    TimerStyle timerStyle();
-    bool timerStopOnCoinStar();
+typedef enum Config_StateSaveStyle
+{
+    Config_StateSaveStyle_BUTTON,
+    Config_StateSaveStyle_PAUSE,
+} Config_StateSaveStyle;
+Config_StateSaveStyle Config_saveStateStyle();
 
-    enum class StateSaveStyle
-    {
-        BUTTON,
-        PAUSE,
-    };
-    StateSaveStyle saveStateStyle();
+bool Config_muteMusic();
+char Config_musicNumber();
 
-    bool muteMusic();
-    char musicNumber();
+typedef enum Config_DeathAction
+{
+    Config_DeathAction_OFF,
+    Config_DeathAction_ACT_RESET,
+    Config_DeathAction_LEVEL_RESET,
+    Config_DeathAction_LOAD_STATE,
+} Config_DeathAction;
+Config_DeathAction Config_deathAction();
 
-    enum class DeathAction
-    {
-        OFF,
-        ACT_RESET,
-        LEVEL_RESET,
-        LOAD_STATE,
-    };
-    DeathAction deathAction();
+void Config_setOnDeathAction(Config_ButtonAction);
 
-    void setOnDeathAction(ButtonAction);
-    
-    bool checkpointWallkick();
-    bool checkpointDoor();
-    bool checkpointPole();
-    bool checkpointLava();
-    bool checkpointGroundpound();
-    bool checkpointBurning();
-    bool checkpointCannon();
-    bool checkpointWarp();
-    bool checkpointRed();
-};
+bool Config_checkpointWallkick();
+bool Config_checkpointDoor();
+bool Config_checkpointPole();
+bool Config_checkpointLava();
+bool Config_checkpointGroundpound();
+bool Config_checkpointBurning();
+bool Config_checkpointCannon();
+bool Config_checkpointWarp();
+bool Config_checkpointRed();

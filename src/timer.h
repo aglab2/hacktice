@@ -1,7 +1,4 @@
 #pragma once
 
-namespace Timer
-{
-    void reset();
-    void onFrame();
-}
+void Timer_reset();
+void Timer_onFrame();

@@ -1,6 +1,3 @@
 #pragma once
 
-namespace InputViewer
-{
-    void onNormal();
-}
+void InputViewer_onNormal();
