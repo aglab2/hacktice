@@ -24,9 +24,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< -c -o $@ $(CFLAGS)
 	
 inject: $(OBJ_FILES)
-	$(LD) -o tmp -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^
-	dd bs=1 seek=$(ROM_OFFSET) if=tmp of=$(ROM) conv=notrunc
-	rm tmp
+	$(LD) -o Hacktice/data -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^
+	dd bs=1 seek=$(ROM_OFFSET) if=Hacktice/data of=$(ROM) conv=notrunc
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)

@@ -18,28 +18,36 @@ static const char* sWallkickLines[] =
     "4TH",
     "5TH",
 };
-static char sPrintedLine[4];
+static char sPrintedLine[6];
+static int sLastWallkickTimer = 0;
 
-int sLastWallkickTimer = 0;
 void WallkickFrame_onNormal()
 {
     if (Action_changed())
     {
         if (gMarioStates->action == ACT_WALL_KICK_AIR && Action_last() != ACT_CLIMBING_POLE && Action_last() != ACT_HOLDING_POLE)
         {
-            if (sLastWallkickTimer)
-            {
-                memcpy(sPrintedLine, sWallkickLines[6 - sLastWallkickTimer], 4);
-            }
-            else
-            {
-                memcpy(sPrintedLine, *sWallkickLines, 4);
-            }        
             if (Config_showWallkickFrame())
+            {
+                if (sLastWallkickTimer)
+                {
+                    if (1 < sLastWallkickTimer && sLastWallkickTimer <= 6)
+                        memcpy(sPrintedLine, sWallkickLines[6 - sLastWallkickTimer], 4);
+                    else
+                        // this is educated guess
+                        sprintf(sPrintedLine, "W %d", 6 - sLastWallkickTimer);
+                }
+                else
+                {
+                    memcpy(sPrintedLine, *sWallkickLines, 4);
+                }        
                 TextManager_addLine(sPrintedLine, 30);
+            }
 
             if (Config_checkpointWallkick())
+            {
                 Checkpoint_registerEvent();
+            }
         }
     }
     sLastWallkickTimer = gMarioStates->wallKickTimer;
