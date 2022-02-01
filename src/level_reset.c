@@ -17,7 +17,8 @@ static void resetCamera()
     if (CAMERA_MODE_BEHIND_MARIO  == gCamera->mode
      || CAMERA_MODE_WATER_SURFACE == gCamera->mode
      || CAMERA_MODE_INSIDE_CANNON == gCamera->mode
-     || CAMERA_MODE_CLOSE         == gCamera->mode)
+     || CAMERA_MODE_CLOSE         == gCamera->mode
+     || CAMERA_MODE_C_UP          == gCamera->mode)
     {
         set_camera_mode(m->area->camera, m->area->camera->defMode, 1);
     }
