@@ -1,6 +1,7 @@
 #include "checkpoint.h"
 
 #include "game/level_update.h"
+#include "game/mario.h"
 #include "game/print.h"
 #include "libc/stdio.h"
 
@@ -10,6 +11,8 @@
 #include "sm64.h"
 
 static bool sShow = false;
+static int wasLastNumCollidedObjects = 0;
+static bool wasLastPlatform = false;
 
 static void addTimeLine()
 {
@@ -30,6 +33,24 @@ void Checkpoint_onNormal()
     {
         sShow = false;
         return addTimeLine();
+    }
+
+    if (Config_checkpointObject())
+    {
+        int lastNumCollidedObjects = wasLastNumCollidedObjects;
+        int numCollidingObjs = gMarioObject ? gMarioObject->numCollidedObjs : 0;
+        wasLastNumCollidedObjects = numCollidingObjs;
+        if (numCollidingObjs > lastNumCollidedObjects)
+            return addTimeLine();
+    }
+
+    if (Config_checkpointPlatform())
+    {
+        bool wasPlatform = wasLastPlatform;
+        bool isPlatform = gMarioObject && !!gMarioObject->platform;
+        wasLastPlatform = isPlatform;
+        if (!wasPlatform && isPlatform)
+            return addTimeLine();
     }
 
     if (!Action_changed())

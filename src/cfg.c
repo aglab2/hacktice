@@ -52,6 +52,8 @@ static struct
     char checkpointWarp;
     char checkpointRed;
     char checkpointCoin;
+    char checkpointObject;
+    char checkpointPlatform;
 }
 sConfig = {
     .timerShow = true,
@@ -94,6 +96,8 @@ static ConfigDescriptor sCheckpointsDescriptors[] =
     { &sConfig.checkpointDoor,        uDOOR,        VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointGroundpound, uGROUNDPOUND, VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointLava,        uLAVA,        VALUE_NAMES(onOffValueNames) },
+    { &sConfig.checkpointObject,      uOBJECT,      VALUE_NAMES(onOffValueNames) },
+    { &sConfig.checkpointPlatform,    uPLATFORM,    VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointPole,        uPOLE,        VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointRed,         uRED,         VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointWallkick,    uWALLKICK,    VALUE_NAMES(onOffValueNames) },
@@ -455,4 +459,14 @@ bool Config_checkpointRed()
 bool Config_checkpointCoin()
 {
     return sConfig.checkpointCoin;
+}
+
+bool Config_checkpointObject()
+{
+    return sConfig.checkpointObject;
+}
+
+bool Config_checkpointPlatform()
+{
+    return sConfig.checkpointPlatform;
 }
