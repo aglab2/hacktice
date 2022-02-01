@@ -10,6 +10,8 @@
 #include "timer.h"
 
 static bool sTimerRunningDeferred = false;
+extern u8 sTransitionColorFadeCount[4];
+extern u16 sTransitionTextureFadeCount[2];
 
 static void resetCamera()
 {
@@ -26,6 +28,12 @@ static void resetCamera()
     m->area->camera->cutscene = 0;
 }
 
+static void resetTransition()
+{
+    for (int i = 0; i < 4; i++)
+        sTransitionColorFadeCount[i] = 0;
+}
+
 static void miniResetCommon()
 {
     gMarioStates->health = 0x880;
@@ -37,6 +45,7 @@ static void miniResetCommon()
     Timer_reset();
     sWarpDest.type = 2;
     resetCamera();
+    resetTransition();
 }
 
 static void resetCommon()
