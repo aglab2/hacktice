@@ -6,6 +6,7 @@ extern u8 uBURNING[];
 extern u8 uBUTTON[];
 extern u8 uBUTTONS[];
 extern u8 uCANNON[];
+extern u8 uCOIN[];
 extern u8 uCHECKPOINTS[];
 extern u8 uDEATH_ACTION[];
 extern u8 uDISTANCE_TO_RED[];

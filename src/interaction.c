@@ -61,9 +61,16 @@ HOOK(WARP)
 
 static u32 hook_COIN(struct MarioState* m, u32 v, struct Object* o) 
 {
-    uintptr_t* behaviorAddr = (uintptr_t*) segmented_to_virtual((void*) 0x13003EAC);
-    if (o && o->behavior == behaviorAddr)
-        Checkpoint_registerEvent(); 
+    bool redOnly = Config_checkpointRed() && !Config_checkpointCoin();
+    bool notify = !redOnly;
+    if (!notify)
+    {
+        // TODO: Remove hardcode
+        notify = o && o->behavior == segmented_to_virtual((void*) 0x13003EAC);
+    }
+
+    if (notify)
+        Checkpoint_registerEvent();
     
     return gOrigHandlers[HOOK_INTERACT_COIN](m, v, o); 
 }
@@ -120,9 +127,10 @@ void Interaction_onNormal()
             unhookInteraction(HOOK_INTERACT_WARP);
     }
     
-    if (Config_checkpointRed() ^ isHooked(HOOK_INTERACT_COIN))
+    bool coinOn = Config_checkpointRed() | Config_checkpointCoin();
+    if (coinOn ^ isHooked(HOOK_INTERACT_COIN))
     {
-        if (Config_checkpointRed())
+        if (coinOn)
             hookInteraction(HOOK_INTERACT_COIN, hook_COIN);
         else
             unhookInteraction(HOOK_INTERACT_COIN);

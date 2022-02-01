@@ -74,3 +74,4 @@ bool Config_checkpointBurning();
 bool Config_checkpointCannon();
 bool Config_checkpointWarp();
 bool Config_checkpointRed();
+bool Config_checkpointCoin();
