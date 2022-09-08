@@ -5,6 +5,7 @@
 
 #include "action.h"
 #include "checkpoint.h"
+#include "libc/stdio.h"
 #include "text_manager.h"
 #include "sm64.h"
 

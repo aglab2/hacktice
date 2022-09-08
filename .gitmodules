@@ -1,0 +1,3 @@
+[submodule "sm64-api"]
+	path = sm64-api
+	url = git@github.com:aglab2/sm64-api.git

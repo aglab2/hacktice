@@ -1,11 +1,14 @@
+THIS_MAKEFILE_PATH:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
+
 SRC_DIR = src
 OBJ_DIR = obj
 
 # Alter these 4 variables according to your need
 CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death
 ROM = sr8.z64
-INCLUDE_PATH = C:\sm64-api\sm64
-LIBRARY_PATH = C:\sm64-api\ld
+INCLUDE_PATH = ./sm64-api/sm64
+LIBRARY_PATH = ./sm64-api/ld
 
 # 0x7f2000
 ROM_OFFSET = 8331264
@@ -16,12 +19,12 @@ OBJ_FILES = $(patsubst %, $(OBJ_DIR)/%.o, $(CPP_FILES))
 CC = clang
 AR = llvm-ar
 LD = ld.lld
-CFLAGS = -flto -Wall -Wdouble-promotion -Os -mtune=vr4300 -march=mips2 --target=mips-img-elf -fomit-frame-pointer -G0 -I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc -mno-check-zero-division -fno-exceptions -fno-builtin -fno-rtti -fno-common -mno-abicalls -DTARGET_N64 -mfpxx
+CFLAGS = -flto -Wall -Wdouble-promotion -Os -mfix4300 -march=mips2 --target=mips-img-elf -fomit-frame-pointer -G0 -I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc -mno-check-zero-division -fno-exceptions -fno-builtin -fno-rtti -fno-common -mno-abicalls -DTARGET_N64 -mfpxx
 
 all: $(OBJ_DIR) inject
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $< -c -o $@ $(CFLAGS)
+	$(CC) $(CFLAGS) $< -c -o $@
 	
 inject: $(OBJ_FILES)
 	$(LD) -o Hacktice/data -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^

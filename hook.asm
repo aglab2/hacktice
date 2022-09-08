@@ -1,11 +1,4 @@
-
-; Level Reset
-.orga 0x57E9C
-	.dh 0x2400
-.orga 0x57Ec0
-	.dh 0x2400
-	
-; Timer
+; +++ Prepare common codes
 .orga 0x57E9C
 	NOP
 .orga 0x57EC0
@@ -16,7 +9,8 @@
 ;	B 0xAD56C
 ;.orga 0x65FC4
 ;	B 0x65Fd4
-	
+
+; Timer
 ; Centiseconds
 .orga 0x9EA63
 	.db 0xB4
@@ -73,6 +67,8 @@
 .orga 0x9EA24
 	nop
 	
+; +++Pause menu hooks
+
 ; 02011cc8 - 02011d50
 .orga 0x978FC
 	lw at, 0x8004e004
@@ -99,6 +95,8 @@
 	b 0x96AD8
 	nop
 
+; +++ Music hook
+
 .orga 0xd8068
 	addiu sp, sp, -0x18
 	sw ra, 0x14(sp)
@@ -108,6 +106,8 @@
 	lw ra, 0x14(sp)
 	jr ra
 	addiu sp, sp, 0x18
+
+; ++ Main hook to load data in
 
 .headersize 0x80245000
 
@@ -195,21 +195,21 @@ lw ra, 0x14(sp)
 jr ra
 addiu sp, sp, 0x18
 
-execviframes:
-addiu sp, sp, 0xffe8
-sw ra, 0x18(sp)
-sw s5, 0x14(sp)
+;execviframes:
+;addiu sp, sp, 0xffe8
+;sw ra, 0x18(sp)
+;sw s5, 0x14(sp)
 
-lw at, 0x8004e004
-jalr at
-nop
+;lw at, 0x8004e004
+;jalr at
+;nop
 
 ; -------------------------------------------------------------------------------------- every vi frame here
 
-lw ra, 0x18(sp)
-addiu sp, sp, 0x18
-jr ra
-lw ra, 0x14(sp)
+;lw ra, 0x18(sp)
+;addiu sp, sp, 0x18
+;jr ra
+;lw ra, 0x14(sp)
 
 nop
 nop
