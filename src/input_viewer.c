@@ -42,13 +42,13 @@ void InputViewer_onNormal()
     
     if (Config_StickStyle_VALUE == stickStyle)
     {
-        print_text_fmt_int(30, 40, "%d", ABS(x));
-        print_text_fmt_int(30, 20, "%d", ABS(y));
+        print_text_fmt_int(270, 40, "%d", ABS(x));
+        print_text_fmt_int(270, 20, "%d", ABS(y));
         if (x)
-            print_text(10, 40, POSITIVE(x) ? "L" : "R");
+            print_text(250, 40, POSITIVE(x) ? "L" : "R");
 
         if (y)
-            print_text(10, 20, POSITIVE(y) ? "U" : "D");
+            print_text(250, 20, POSITIVE(y) ? "U" : "D");
     }
     if (Config_StickStyle_GRAPHICS == stickStyle)
     {
@@ -70,7 +70,7 @@ void InputViewer_onNormal()
             ButtonDescriptor* desc = &sButtonDescriptors[i];
             if (activeButtons & desc->mask)
             {
-                print_text(240 - off, 20, desc->name);
+                print_text(230 - off, 20, desc->name);
                 off += 15 * strlen(desc->name);
             }
         }
