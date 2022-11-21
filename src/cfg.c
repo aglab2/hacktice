@@ -19,7 +19,7 @@ typedef enum Pages
 static int sPage = Pages_GENERAL;
 // poor man constexpr
 #define sMaxAllowedPage (Pages_PagesCount - 1)
-static u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
+static const u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
 
 Config sConfig = {
     .selfSize = sizeof(Config),
@@ -30,23 +30,23 @@ Config sConfig = {
 typedef struct ConfigDescriptor
 {
     char* value;
-    u8* name;
-    u8** valueNames;
+    const u8* name;
+    const u8* const* valueNames;
     char maxValueCount;
 } ConfigDescriptor;
 
 // Config_StickStyle
-static u8* inputValueNames[] = { uOFF, uTEXT, uGRAPHICS };
-static u8* onOffValueNames[] = { uOFF, uON };
-static u8* timerValueNames[] = { uGRAB, uXCAM };
-static u8* stateSaveNames[]  = { uBUTTON, uPAUSE };
-static u8* deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
+static const u8* const inputValueNames[] = { uOFF, uTEXT, uGRAPHICS };
+static const u8* const onOffValueNames[] = { uOFF, uON };
+static const u8* const timerValueNames[] = { uGRAB, uXCAM };
+static const u8* const stateSaveNames[]  = { uBUTTON, uPAUSE };
+static const u8* const deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
 
 // Config_ButtonAction
-static u8* lActionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
+static const u8* const lActionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
 
 static u8 lMusicNumber[] = { 0x00, 0x00, 0xff };
-static u8* lMusicNumbers[] = { lMusicNumber, NULL };
+static const u8* const lMusicNumbers[] = { lMusicNumber, NULL };
 
 static u8 sOnDeathAction = 0;
 
@@ -54,7 +54,7 @@ static u8 sOnDeathAction = 0;
 #define INT_NAMES(x, cnt) x, cnt
 
 // Checkpoints
-static ConfigDescriptor sCheckpointsDescriptors[] =
+static const ConfigDescriptor sCheckpointsDescriptors[] =
 {
     { &sConfig.checkpointBurning,     uBURNING,     VALUE_NAMES(onOffValueNames) },
     { &sConfig.checkpointCannon,      uCANNON,      VALUE_NAMES(onOffValueNames) },
@@ -72,7 +72,7 @@ static ConfigDescriptor sCheckpointsDescriptors[] =
 #define sCheckpointsMaxAllowedOption (sizeof(sCheckpointsDescriptors) / sizeof(*sCheckpointsDescriptors) - 1)
 
 // General
-static ConfigDescriptor sGeneralDescriptors[] = 
+static const ConfigDescriptor sGeneralDescriptors[] =
 {
     { &sConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
     { &sConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },
@@ -99,13 +99,13 @@ static ConfigDescriptor sGeneralDescriptors[] =
 #define sGeneralMaxAllowedOption (sizeof(sGeneralDescriptors) / sizeof(*sGeneralDescriptors) - 1)
 
 // Warp
-static ConfigDescriptor sWarpDescriptors[] = {
+static const ConfigDescriptor sWarpDescriptors[] = {
     { &sConfig.warp, uSELECT_WARP_TARGET, NULL, 25 },
 };
 #define sWarpMaxAllowedOption 0
 
 // Common
-static ConfigDescriptor* sDescriptors[] = 
+static const ConfigDescriptor* const sDescriptors[] = 
 {
     sCheckpointsDescriptors,
     sGeneralDescriptors,
@@ -116,7 +116,7 @@ static int sPickedOptions[3] = {
     sGeneralMaxAllowedOption     / 2,
     sWarpMaxAllowedOption        / 2,
 };
-static int sMaxAllowedOptions[3] = {
+static const int sMaxAllowedOptions[3] = {
     sCheckpointsMaxAllowedOption,
     sGeneralMaxAllowedOption,
     sWarpMaxAllowedOption,
@@ -130,14 +130,14 @@ static void print_generic_string_centered(s16 x, s16 y, const u8 *str)
     print_generic_string(newX, y, str);
 }
 
-static void renderOptionAt(ConfigDescriptor* desc, int x, int y)
+static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
 {
     int value = *desc->value;
     
     print_generic_string_centered(x, y,      desc->name);
     if (desc->name == uSELECT_WARP_TARGET)
     {
-        u8* courseName = uOFF;
+        const u8* courseName = uOFF;
         if (0 != value)
         {
             u8** courseNameTbl = (u8**) segmented_to_virtual((void*) 0x02010f68);
@@ -154,7 +154,8 @@ static void renderOptionAt(ConfigDescriptor* desc, int x, int y)
         }
         else
         {
-            String_convert(value, desc->valueNames[0]);
+            // TODO: const HACK
+            String_convert(value, (u8*) desc->valueNames[0]);
             print_generic_string_centered(x, y - 20, desc->valueNames[0]);
         }
     }
@@ -164,7 +165,7 @@ static void render()
 {
     int pickedOption = sPickedOptions[sPage];
     int maxAllowedOption = sMaxAllowedOptions[sPage]; 
-    ConfigDescriptor* descriptors = sDescriptors[sPage];
+    const ConfigDescriptor* descriptors = sDescriptors[sPage];
 
     print_generic_string_centered(160, 210, lPageNames[(int) sPage]);
 
@@ -195,7 +196,7 @@ static void render()
 static void processInputs()
 {
     int* pickedOption = &sPickedOptions[sPage];
-    ConfigDescriptor* desc = &sDescriptors[sPage][*pickedOption];
+    const ConfigDescriptor* desc = &sDescriptors[sPage][*pickedOption];
     int maxAllowedOption = sMaxAllowedOptions[sPage]; 
 
     if (gControllers->buttonPressed & L_JPAD)

@@ -13,6 +13,6 @@ void Speed_onNormal()
     if (!Config_showSpeed())
         return;
 
-    sprintf(speedLine, "S %.1f", gMarioStates->forwardVel);
+    sprintf(speedLine, "S %.1f", (f64) gMarioStates->forwardVel);
     TextManager_addLine(speedLine, 1);
 }

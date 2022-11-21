@@ -2,7 +2,7 @@
 
 LevelConv_SM64Levels LevelConv_toSM64Level(LevelConv_PlainLevels pl)
 {
-    static LevelConv_SM64Levels levels[] = 
+    static char levels[] = 
     {
         LevelConv_SM64Levels_OFF,
         LevelConv_SM64Levels_C1,
@@ -36,5 +36,5 @@ LevelConv_SM64Levels LevelConv_toSM64Level(LevelConv_PlainLevels pl)
         LevelConv_SM64Levels_S3,
     };
 
-    return levels[(int) pl];
+    return (LevelConv_SM64Levels) levels[(int) pl];
 }
