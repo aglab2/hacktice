@@ -4,6 +4,9 @@
         "model_ids.h": "c",
         "checkpoint.h": "c",
         "stdio.h": "c",
-        "level_update.h": "c"
+        "level_update.h": "c",
+        "types.h": "c",
+        "distance.h": "c",
+        "wallkick_frame.h": "c"
     }
 }

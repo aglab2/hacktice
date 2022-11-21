@@ -2,6 +2,45 @@
 
 #include "bool.h"
 #include "level_conv.h"
+#include "types.h"
+
+typedef struct
+{
+    u32 selfSize;
+    char speed;
+    char stickStyle;
+    char showButtons;
+    char lAction;
+    char lRAction;
+    char cButtonsAction;
+    char dpadDownAction;
+    char warp;
+    char wallkickFrame;
+    char distanceFromClosestRed;
+    char distanceFromClosestSecret;
+    char timerShow;
+    char timerStyle;
+    char timerStopOnCoinStar;
+    char stateSaveStyle;
+    char muteMusic;
+    char musicNumber;
+    char deathAction;
+
+    char checkpointWallkick;
+    char checkpointDoor;
+    char checkpointPole;
+    char checkpointLava;
+    char checkpointGroundpound;
+    char checkpointBurning;
+    char checkpointCannon;
+    char checkpointWarp;
+    char checkpointRed;
+    char checkpointCoin;
+    char checkpointObject;
+    char checkpointPlatform;
+} Config;
+
+extern Config sConfig;
 
 void Config_onPause();
 

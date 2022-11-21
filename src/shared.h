@@ -1,0 +1,6 @@
+#pragma once
+
+#define HACKTICE_CANARY 'HKTC'
+
+#define HACKTICE_STATUS_INIT 'INIT'
+#define HACKTICE_STATUS_ACTIVE 'ACTV'

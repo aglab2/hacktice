@@ -10,16 +10,9 @@
 #include "game/level_update.h"
 #include "libc/string.h"
 
-void set_play_mode(s16 playMode);
-
 #define StateSize 0x26B28
 
-typedef struct State
-{
-    s8 level;
-    s8 area;
-    char memory[StateSize];
-} State;
+void set_play_mode(s16 playMode);
 
 static bool mustSaveState = true;
 
@@ -48,6 +41,7 @@ void SaveState_onNormal()
         mustSaveState = false;
         state->area  = gCurrAreaIndex;
         state->level = gCurrCourseNum;
+        state->size = sizeof(State);
         memcpy(state->memory, &gMarioStates, StateSize);
     }
     else

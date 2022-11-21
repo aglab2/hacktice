@@ -21,45 +21,11 @@ static int sPage = Pages_GENERAL;
 #define sMaxAllowedPage (Pages_PagesCount - 1)
 static u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
 
-static struct
-{
-    char speed;
-    char stickStyle;
-    char showButtons;
-    char lAction;
-    char lRAction;
-    char cButtonsAction;
-    char dpadDownAction;
-    char warp;
-    char wallkickFrame;
-    char distanceFromClosestRed;
-    char distanceFromClosestSecret;
-    char timerShow;
-    char timerStyle;
-    char timerStopOnCoinStar;
-    char stateSaveStyle;
-    char muteMusic;
-    char musicNumber;
-    char deathAction;
-
-    char checkpointWallkick;
-    char checkpointDoor;
-    char checkpointPole;
-    char checkpointLava;
-    char checkpointGroundpound;
-    char checkpointBurning;
-    char checkpointCannon;
-    char checkpointWarp;
-    char checkpointRed;
-    char checkpointCoin;
-    char checkpointObject;
-    char checkpointPlatform;
-}
-sConfig = {
+Config sConfig = {
+    .selfSize = sizeof(Config),
     .timerShow = true,
     .timerStyle = Config_TimerStyle_GRAB,
-}
-;
+};
 
 typedef struct ConfigDescriptor
 {

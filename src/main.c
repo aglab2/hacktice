@@ -2,27 +2,31 @@
 
 #include "game/level_update.h"
 
+#include "action.h"
+#include "checkpoint.h"
 #include "cfg.h"
-#include "distance.h"
 #include "death.h"
+#include "death_floor.h"
+#include "distance.h"
 #include "input_viewer.h"
+#include "interaction.h"
 #include "level_reset.h"
 #include "levitate.h"
+#include "music.h"
 #include "savestate.h"
+#include "shared.h"
 #include "speed.h"
+#include "status.h"
 #include "text_manager.h"
 #include "timer.h"
 #include "wallkick_frame.h"
-#include "checkpoint.h"
-#include "action.h"
-#include "interaction.h"
-#include "music.h"
 
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
 
 void onFrame()
 {
+    HackticeSetStatus(HACKTICE_STATUS_ACTIVE);
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
     {
         Death_onNormal();
@@ -55,4 +59,9 @@ uintptr_t _start[] = {
     (uintptr_t) onFrame,
     (uintptr_t) onPause,
     (uintptr_t) Music_setVolumeHook,
+    (uintptr_t) DeathFloor_checkDeathBarrierHook,
+    HACKTICE_CANARY,
+    HACKTICE_STATUS_INIT,
+    (uintptr_t) &sConfig,
+    (uintptr_t) 0x80026000,
 };
