@@ -34,6 +34,7 @@
             this.buttonInjectInEmulator = new System.Windows.Forms.Button();
             this.checkBoxShowSpeed = new System.Windows.Forms.CheckBox();
             this.groupBoxInject = new System.Windows.Forms.GroupBox();
+            this.labelDescInject = new System.Windows.Forms.Label();
             this.groupBoxConfig = new System.Windows.Forms.GroupBox();
             this.buttonLoadConfig = new System.Windows.Forms.Button();
             this.buttonSaveConfig = new System.Windows.Forms.Button();
@@ -72,7 +73,6 @@
             this.checkBoxButtons = new System.Windows.Forms.CheckBox();
             this.comboBoxStick = new System.Windows.Forms.ComboBox();
             this.groupBoxROM = new System.Windows.Forms.GroupBox();
-            this.labelDescInject = new System.Windows.Forms.Label();
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
@@ -144,6 +144,15 @@
             this.groupBoxInject.TabIndex = 7;
             this.groupBoxInject.TabStop = false;
             this.groupBoxInject.Text = "Emulator";
+            // 
+            // labelDescInject
+            // 
+            this.labelDescInject.AutoSize = true;
+            this.labelDescInject.Location = new System.Drawing.Point(118, 24);
+            this.labelDescInject.Name = "labelDescInject";
+            this.labelDescInject.Size = new System.Drawing.Size(185, 13);
+            this.labelDescInject.TabIndex = 6;
+            this.labelDescInject.Text = "Run clean ROM for Emulator injection";
             // 
             // groupBoxConfig
             // 
@@ -450,9 +459,9 @@
             this.checkBoxDistanceToSecret.AutoSize = true;
             this.checkBoxDistanceToSecret.Location = new System.Drawing.Point(6, 287);
             this.checkBoxDistanceToSecret.Name = "checkBoxDistanceToSecret";
-            this.checkBoxDistanceToSecret.Size = new System.Drawing.Size(176, 17);
+            this.checkBoxDistanceToSecret.Size = new System.Drawing.Size(194, 17);
             this.checkBoxDistanceToSecret.TabIndex = 19;
-            this.checkBoxDistanceToSecret.Text = "Show distance to closest secret";
+            this.checkBoxDistanceToSecret.Text = "Show distance to the closest secret";
             this.checkBoxDistanceToSecret.UseVisualStyleBackColor = true;
             this.checkBoxDistanceToSecret.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -461,9 +470,9 @@
             this.checkBoxDistanceToRedCoin.AutoSize = true;
             this.checkBoxDistanceToRedCoin.Location = new System.Drawing.Point(6, 264);
             this.checkBoxDistanceToRedCoin.Name = "checkBoxDistanceToRedCoin";
-            this.checkBoxDistanceToRedCoin.Size = new System.Drawing.Size(185, 17);
+            this.checkBoxDistanceToRedCoin.Size = new System.Drawing.Size(203, 17);
             this.checkBoxDistanceToRedCoin.TabIndex = 18;
-            this.checkBoxDistanceToRedCoin.Text = "Show distance to closest red coin";
+            this.checkBoxDistanceToRedCoin.Text = "Show distance to the closest red coin";
             this.checkBoxDistanceToRedCoin.UseVisualStyleBackColor = true;
             this.checkBoxDistanceToRedCoin.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -617,15 +626,6 @@
             this.groupBoxROM.TabIndex = 9;
             this.groupBoxROM.TabStop = false;
             this.groupBoxROM.Text = "ROM";
-            // 
-            // labelDescInject
-            // 
-            this.labelDescInject.AutoSize = true;
-            this.labelDescInject.Location = new System.Drawing.Point(118, 24);
-            this.labelDescInject.Name = "labelDescInject";
-            this.labelDescInject.Size = new System.Drawing.Size(185, 13);
-            this.labelDescInject.TabIndex = 6;
-            this.labelDescInject.Text = "Run clean ROM for Emulator injection";
             // 
             // labelROM
             // 
