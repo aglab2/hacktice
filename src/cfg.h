@@ -6,6 +6,7 @@
 
 typedef struct
 {
+    u32 magic;
     u32 selfSize;
     char speed;
     char stickStyle;

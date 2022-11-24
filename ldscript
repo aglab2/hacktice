@@ -10,10 +10,10 @@ SECTIONS
     *(.text*)
 	
 	. = . + 0x40;
-	
+
+    *(.rodata*)
     *(.data*)
     *(.bss*)
-    *(.rodata*)
   } =0x0
   
   .crap : { *(.shstrtab*) }

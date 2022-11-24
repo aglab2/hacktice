@@ -1,5 +1,6 @@
 #include "cfg.h"
 #include "array_size.h"
+#include "shared.h"
 #include "string_conv.h"
 #include "strings.h"
 
@@ -7,6 +8,13 @@
 #include "game/game.h"
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
+
+Config sConfig = {
+    .magic = HACKTICE_CONFIG_CANARY,
+    .selfSize = sizeof(Config),
+    .timerShow = true,
+    .timerStyle = Config_TimerStyle_GRAB,
+};
 
 typedef enum Pages
 {
@@ -20,12 +28,6 @@ static int sPage = Pages_GENERAL;
 // poor man constexpr
 #define sMaxAllowedPage (Pages_PagesCount - 1)
 static const u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
-
-Config sConfig = {
-    .selfSize = sizeof(Config),
-    .timerShow = true,
-    .timerStyle = Config_TimerStyle_GRAB,
-};
 
 typedef struct ConfigDescriptor
 {
