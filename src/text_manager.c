@@ -9,7 +9,7 @@ typedef struct Line
 } Line;
 
 #define LineCount 9
-static Line sLines[LineCount] = {};
+static Line sLines[LineCount] = { 0 };
 
 void TextManager_onFrame()
 {

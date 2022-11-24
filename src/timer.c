@@ -8,7 +8,7 @@
 #include "checkpoint.h"
 #include "sm64.h"
 
-bool sGrabTimerSet = false;
+static bool sGrabTimerSet = false;
 
 void Timer_reset()
 {

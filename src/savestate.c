@@ -14,7 +14,7 @@
 
 void set_play_mode(s16 playMode);
 
-static bool mustSaveState = true;
+static bool sMustSaveState = true;
 
 static void resetCamera()
 {
@@ -36,9 +36,9 @@ void SaveState_onNormal()
 {
     // TODO: Remove hardcode
     State* state = (State*) (0x80026000);
-    if (mustSaveState)
+    if (sMustSaveState)
     {
-        mustSaveState = false;
+        sMustSaveState = false;
         state->area  = gCurrAreaIndex;
         state->level = gCurrCourseNum;
         state->size = sizeof(State);
@@ -59,10 +59,10 @@ void SaveState_onNormal()
 
 void SaveState_onPause()
 {
-    if ((Config_saveStateStyle() == Config_StateSaveStyle_PAUSE  && !mustSaveState)
+    if ((Config_saveStateStyle() == Config_StateSaveStyle_PAUSE  && !sMustSaveState)
      || (Config_saveStateStyle() == Config_StateSaveStyle_BUTTON && Config_action() == Config_ButtonAction_LOAD_STATE))
     {
-        mustSaveState = true;
+        sMustSaveState = true;
         TextManager_addLine("STATE SET", 30);
     }
 }

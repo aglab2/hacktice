@@ -1,7 +1,8 @@
 #include "action.h"
 #include "game/level_update.h"
 
-int sLastAction = 0;
+static int sLastAction = 0;
+
 void Action_onNormal()
 {
     sLastAction = gMarioStates->action;
