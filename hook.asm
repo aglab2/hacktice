@@ -221,9 +221,9 @@ nop
 ;jr ra
 ;lw ra, 0x14(sp)
 
-nop
-nop
-nop
-nop
+;nop
+;nop
+;nop
+;nop
 
 code_end:
