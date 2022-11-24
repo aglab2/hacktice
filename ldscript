@@ -12,6 +12,8 @@ SECTIONS
 	. = . + 0x40;
 
     *(.rodata*)
+
+    *(.data.sConfig)
     *(.data*)
     *(.bss*)
   } =0x0

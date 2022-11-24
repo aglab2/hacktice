@@ -8,11 +8,11 @@ namespace Hacktice
 {
     internal class Patcher
     {
-        private readonly string RomPath;
+        readonly string _romPath;
 
         public Patcher(string path)
         {
-            RomPath = path;
+            _romPath = path;
         }
 
         static string AppendToFileName(string source, string appendValue)
@@ -22,29 +22,13 @@ namespace Hacktice
 
         public void Apply()
         {
-            var rom = File.ReadAllBytes(RomPath);
-            var hackticePath = AppendToFileName(RomPath, ".hacktice");
+            var rom = File.ReadAllBytes(_romPath);
+            var hackticePath = AppendToFileName(_romPath, ".hacktice");
 
-            var hookDoc = new XmlDocument();
-            hookDoc.LoadXml(Resource.hook);
-
-            var elem = hookDoc.DocumentElement;
-            foreach (XmlNode patch in elem)
+            XmlPatches patches = new XmlPatches();
+            foreach (var patch in patches)
             {
-                var addressNode = patch.SelectSingleNode("address");
-                var dataNode = patch.SelectSingleNode("bytes");
-
-                if (addressNode is null || dataNode is null)
-                    continue;
-
-                var addressStr = addressNode.InnerText;
-                var dataStr = dataNode.InnerText;
-
-                var address = Convert.ToInt32(addressStr, 16);
-                var dataSplit = dataStr.Split(',');
-                var data = Array.ConvertAll(dataSplit, i => Convert.ToByte(i, 16));
-
-                Array.Copy(data, 0, rom, address, data.Length);
+                Array.Copy(patch.Data, 0, rom, patch.Offset, patch.Data.Length);
             }
 
             Array.Copy(Resource.data, 0, rom, 0x7f2000, Resource.data.Length);
