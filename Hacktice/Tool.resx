@@ -117,4 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="labelExpl.ToolTip" xml:space="preserve">
+    <value>Act Select - resets to the act select.
+Level Reset - resets the level to the last taken warp
+Start Reset - resets the level to the start warp. May crash for non-standard warps
+Load State - loads the state when not paused. The same button combo is used to set the state on
+pause screen if an appropriate option is selected for "State is set when button is pressed on pause"
+Levitate - switches Mario animation to single jump and sets constant vertical upwards speed.</value>
+  </data>
 </root>

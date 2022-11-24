@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Tool));
             this.buttonPatch = new System.Windows.Forms.Button();
             this.labelEmulatorState = new System.Windows.Forms.Label();
             this.pictureBoxState = new System.Windows.Forms.PictureBox();
@@ -36,6 +38,10 @@
             this.groupBoxInject = new System.Windows.Forms.GroupBox();
             this.labelDescInject = new System.Windows.Forms.Label();
             this.groupBoxConfig = new System.Windows.Forms.GroupBox();
+            this.buttonReset = new System.Windows.Forms.Button();
+            this.buttonSetDefault = new System.Windows.Forms.Button();
+            this.labelExpl = new System.Windows.Forms.Label();
+            this.labelTimerStopOn = new System.Windows.Forms.Label();
             this.buttonLoadConfig = new System.Windows.Forms.Button();
             this.buttonSaveConfig = new System.Windows.Forms.Button();
             this.groupBoxMiscTimer = new System.Windows.Forms.GroupBox();
@@ -75,6 +81,8 @@
             this.groupBoxROM = new System.Windows.Forms.GroupBox();
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxAutoInject = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -97,14 +105,14 @@
             this.labelEmulatorState.AutoSize = true;
             this.labelEmulatorState.Location = new System.Drawing.Point(22, 48);
             this.labelEmulatorState.Name = "labelEmulatorState";
-            this.labelEmulatorState.Size = new System.Drawing.Size(157, 13);
+            this.labelEmulatorState.Size = new System.Drawing.Size(165, 13);
             this.labelEmulatorState.TabIndex = 3;
-            this.labelEmulatorState.Text = "No supported emulator is found.";
+            this.labelEmulatorState.Text = "No supported emulator is running.";
             // 
             // pictureBoxState
             // 
             this.pictureBoxState.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.pictureBoxState.Location = new System.Drawing.Point(6, 48);
+            this.pictureBoxState.Location = new System.Drawing.Point(9, 48);
             this.pictureBoxState.Name = "pictureBoxState";
             this.pictureBoxState.Size = new System.Drawing.Size(10, 13);
             this.pictureBoxState.TabIndex = 4;
@@ -129,11 +137,13 @@
             this.checkBoxShowSpeed.Size = new System.Drawing.Size(85, 17);
             this.checkBoxShowSpeed.TabIndex = 6;
             this.checkBoxShowSpeed.Text = "Show speed";
+            this.toolTip.SetToolTip(this.checkBoxShowSpeed, "Displays Mario speed. SPEED option in game.");
             this.checkBoxShowSpeed.UseVisualStyleBackColor = true;
             this.checkBoxShowSpeed.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // groupBoxInject
             // 
+            this.groupBoxInject.Controls.Add(this.checkBoxAutoInject);
             this.groupBoxInject.Controls.Add(this.labelDescInject);
             this.groupBoxInject.Controls.Add(this.buttonInjectInEmulator);
             this.groupBoxInject.Controls.Add(this.labelEmulatorState);
@@ -156,6 +166,10 @@
             // 
             // groupBoxConfig
             // 
+            this.groupBoxConfig.Controls.Add(this.buttonReset);
+            this.groupBoxConfig.Controls.Add(this.buttonSetDefault);
+            this.groupBoxConfig.Controls.Add(this.labelExpl);
+            this.groupBoxConfig.Controls.Add(this.labelTimerStopOn);
             this.groupBoxConfig.Controls.Add(this.buttonLoadConfig);
             this.groupBoxConfig.Controls.Add(this.buttonSaveConfig);
             this.groupBoxConfig.Controls.Add(this.groupBoxMiscTimer);
@@ -188,6 +202,45 @@
             this.groupBoxConfig.TabIndex = 8;
             this.groupBoxConfig.TabStop = false;
             this.groupBoxConfig.Text = "Config";
+            // 
+            // buttonReset
+            // 
+            this.buttonReset.Location = new System.Drawing.Point(264, 325);
+            this.buttonReset.Name = "buttonReset";
+            this.buttonReset.Size = new System.Drawing.Size(80, 23);
+            this.buttonReset.TabIndex = 32;
+            this.buttonReset.Text = "Reset config";
+            this.buttonReset.UseVisualStyleBackColor = true;
+            this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+            // 
+            // buttonSetDefault
+            // 
+            this.buttonSetDefault.Location = new System.Drawing.Point(178, 325);
+            this.buttonSetDefault.Name = "buttonSetDefault";
+            this.buttonSetDefault.Size = new System.Drawing.Size(80, 23);
+            this.buttonSetDefault.TabIndex = 31;
+            this.buttonSetDefault.Text = "Set default";
+            this.buttonSetDefault.UseVisualStyleBackColor = true;
+            this.buttonSetDefault.Click += new System.EventHandler(this.buttonSetDefault_Click);
+            // 
+            // labelExpl
+            // 
+            this.labelExpl.AutoSize = true;
+            this.labelExpl.Location = new System.Drawing.Point(307, 23);
+            this.labelExpl.Name = "labelExpl";
+            this.labelExpl.Size = new System.Drawing.Size(13, 13);
+            this.labelExpl.TabIndex = 30;
+            this.labelExpl.Text = "?";
+            this.toolTip.SetToolTip(this.labelExpl, resources.GetString("labelExpl.ToolTip"));
+            // 
+            // labelTimerStopOn
+            // 
+            this.labelTimerStopOn.AutoSize = true;
+            this.labelTimerStopOn.Location = new System.Drawing.Point(6, 141);
+            this.labelTimerStopOn.Name = "labelTimerStopOn";
+            this.labelTimerStopOn.Size = new System.Drawing.Size(71, 13);
+            this.labelTimerStopOn.TabIndex = 7;
+            this.labelTimerStopOn.Text = "Timer stop on";
             // 
             // buttonLoadConfig
             // 
@@ -229,6 +282,7 @@
             this.groupBoxMiscTimer.TabIndex = 28;
             this.groupBoxMiscTimer.TabStop = false;
             this.groupBoxMiscTimer.Text = "Miscellaneous Timer";
+            this.toolTip.SetToolTip(this.groupBoxMiscTimer, "Timers that trigger on a particular event happening in game.");
             // 
             // checkBoxMTPlatform
             // 
@@ -384,6 +438,7 @@
             this.comboBoxDeathAction.Name = "comboBoxDeathAction";
             this.comboBoxDeathAction.Size = new System.Drawing.Size(220, 21);
             this.comboBoxDeathAction.TabIndex = 26;
+            this.toolTip.SetToolTip(this.comboBoxDeathAction, "Triggers a special action when mario dies. DEATH ACTION in game.");
             this.comboBoxDeathAction.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // checkBoxMuteMusic
@@ -394,6 +449,7 @@
             this.checkBoxMuteMusic.Size = new System.Drawing.Size(80, 17);
             this.checkBoxMuteMusic.TabIndex = 25;
             this.checkBoxMuteMusic.Text = "Mute music";
+            this.toolTip.SetToolTip(this.checkBoxMuteMusic, "Mutes the music. MUTE MUSIC in game.");
             this.checkBoxMuteMusic.UseVisualStyleBackColor = true;
             this.checkBoxMuteMusic.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -417,6 +473,7 @@
             this.comboBoxStateStyle.Name = "comboBoxStateStyle";
             this.comboBoxStateStyle.Size = new System.Drawing.Size(220, 21);
             this.comboBoxStateStyle.TabIndex = 23;
+            this.toolTip.SetToolTip(this.comboBoxStateStyle, "Changes condition to set in game state. SSAVE STYLE in game.");
             this.comboBoxStateStyle.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // checkBoxStopTimer100s
@@ -427,6 +484,8 @@
             this.checkBoxStopTimer100s.Size = new System.Drawing.Size(152, 17);
             this.checkBoxStopTimer100s.TabIndex = 22;
             this.checkBoxStopTimer100s.Text = "Stop timer on 100 coin star";
+            this.toolTip.SetToolTip(this.checkBoxStopTimer100s, "Considers 100 coin stars interaction as a condition to stop the timer.\r\nTIMER 100" +
+        " in game.");
             this.checkBoxStopTimer100s.UseVisualStyleBackColor = true;
             this.checkBoxStopTimer100s.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -435,22 +494,27 @@
             this.comboBoxTimerStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimerStyle.FormattingEnabled = true;
             this.comboBoxTimerStyle.Items.AddRange(new object[] {
-            "Star Grab Timer",
-            "XCam Timer"});
-            this.comboBoxTimerStyle.Location = new System.Drawing.Point(6, 138);
+            "Star Grab",
+            "XCam"});
+            this.comboBoxTimerStyle.Location = new System.Drawing.Point(81, 138);
             this.comboBoxTimerStyle.Name = "comboBoxTimerStyle";
-            this.comboBoxTimerStyle.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxTimerStyle.Size = new System.Drawing.Size(93, 21);
             this.comboBoxTimerStyle.TabIndex = 21;
+            this.toolTip.SetToolTip(this.comboBoxTimerStyle, "Star grab stops the timer when star is touched, XCam stops the timer when\r\nMario " +
+        "reaches the floor - when camera icon is X. TIMER STYLE option in game.");
             this.comboBoxTimerStyle.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // checkBoxShowTimer
             // 
             this.checkBoxShowTimer.AutoSize = true;
+            this.checkBoxShowTimer.Checked = true;
+            this.checkBoxShowTimer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxShowTimer.Location = new System.Drawing.Point(6, 115);
             this.checkBoxShowTimer.Name = "checkBoxShowTimer";
             this.checkBoxShowTimer.Size = new System.Drawing.Size(78, 17);
             this.checkBoxShowTimer.TabIndex = 20;
             this.checkBoxShowTimer.Text = "Show timer";
+            this.toolTip.SetToolTip(this.checkBoxShowTimer, "Displays the general timer. Makes the slide timer work. TIMER option in game.");
             this.checkBoxShowTimer.UseVisualStyleBackColor = true;
             this.checkBoxShowTimer.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -462,6 +526,7 @@
             this.checkBoxDistanceToSecret.Size = new System.Drawing.Size(194, 17);
             this.checkBoxDistanceToSecret.TabIndex = 19;
             this.checkBoxDistanceToSecret.Text = "Show distance to the closest secret";
+            this.toolTip.SetToolTip(this.checkBoxDistanceToSecret, "Displays distance to secrets. D TO SECRET in game.");
             this.checkBoxDistanceToSecret.UseVisualStyleBackColor = true;
             this.checkBoxDistanceToSecret.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -473,6 +538,7 @@
             this.checkBoxDistanceToRedCoin.Size = new System.Drawing.Size(203, 17);
             this.checkBoxDistanceToRedCoin.TabIndex = 18;
             this.checkBoxDistanceToRedCoin.Text = "Show distance to the closest red coin";
+            this.toolTip.SetToolTip(this.checkBoxDistanceToRedCoin, "Displays distance to reds. D TO RED in game.");
             this.checkBoxDistanceToRedCoin.UseVisualStyleBackColor = true;
             this.checkBoxDistanceToRedCoin.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -484,6 +550,7 @@
             this.checkBoxWKFrame.Size = new System.Drawing.Size(123, 17);
             this.checkBoxWKFrame.TabIndex = 17;
             this.checkBoxWKFrame.Text = "Show wallkick frame";
+            this.toolTip.SetToolTip(this.checkBoxWKFrame, "Displays the wallkick frame on the wallkick. WALLKICK FRAME option in game.");
             this.checkBoxWKFrame.UseVisualStyleBackColor = true;
             this.checkBoxWKFrame.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -498,16 +565,17 @@
             "Start Reset",
             "Levitate",
             "Load State"});
-            this.comboBoxDpadDown.Location = new System.Drawing.Point(199, 155);
+            this.comboBoxDpadDown.Location = new System.Drawing.Point(199, 170);
             this.comboBoxDpadDown.Name = "comboBoxDpadDown";
             this.comboBoxDpadDown.Size = new System.Drawing.Size(121, 21);
             this.comboBoxDpadDown.TabIndex = 16;
+            this.toolTip.SetToolTip(this.comboBoxDpadDown, "Changes action on pressing DPad Down buttons. D DOWN ACTION in game.");
             this.comboBoxDpadDown.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // labelDPadDown
             // 
             this.labelDPadDown.AutoSize = true;
-            this.labelDPadDown.Location = new System.Drawing.Point(196, 139);
+            this.labelDPadDown.Location = new System.Drawing.Point(196, 154);
             this.labelDPadDown.Name = "labelDPadDown";
             this.labelDPadDown.Size = new System.Drawing.Size(137, 13);
             this.labelDPadDown.TabIndex = 15;
@@ -524,16 +592,17 @@
             "Start Reset",
             "Levitate",
             "Load State"});
-            this.comboBoxFC.Location = new System.Drawing.Point(199, 115);
+            this.comboBoxFC.Location = new System.Drawing.Point(199, 130);
             this.comboBoxFC.Name = "comboBoxFC";
             this.comboBoxFC.Size = new System.Drawing.Size(121, 21);
             this.comboBoxFC.TabIndex = 14;
+            this.toolTip.SetToolTip(this.comboBoxFC, "Changes action on pressing all 4 C Buttons. 4C ACTION in game.");
             this.comboBoxFC.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // label4C
             // 
             this.label4C.AutoSize = true;
-            this.label4C.Location = new System.Drawing.Point(196, 99);
+            this.label4C.Location = new System.Drawing.Point(196, 114);
             this.label4C.Name = "label4C";
             this.label4C.Size = new System.Drawing.Size(95, 13);
             this.label4C.TabIndex = 13;
@@ -550,16 +619,17 @@
             "Start Reset",
             "Levitate",
             "Load State"});
-            this.comboBoxLR.Location = new System.Drawing.Point(199, 75);
+            this.comboBoxLR.Location = new System.Drawing.Point(199, 90);
             this.comboBoxLR.Name = "comboBoxLR";
             this.comboBoxLR.Size = new System.Drawing.Size(121, 21);
             this.comboBoxLR.TabIndex = 12;
+            this.toolTip.SetToolTip(this.comboBoxLR, "Changes action on pressing L and R buttons. L+R ACTION in game.");
             this.comboBoxLR.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // labelLR
             // 
             this.labelLR.AutoSize = true;
-            this.labelLR.Location = new System.Drawing.Point(196, 59);
+            this.labelLR.Location = new System.Drawing.Point(196, 74);
             this.labelLR.Name = "labelLR";
             this.labelLR.Size = new System.Drawing.Size(99, 13);
             this.labelLR.TabIndex = 11;
@@ -576,16 +646,17 @@
             "Start Reset",
             "Levitate",
             "Load State"});
-            this.comboBoxL.Location = new System.Drawing.Point(199, 35);
+            this.comboBoxL.Location = new System.Drawing.Point(199, 50);
             this.comboBoxL.Name = "comboBoxL";
             this.comboBoxL.Size = new System.Drawing.Size(121, 21);
             this.comboBoxL.TabIndex = 10;
+            this.toolTip.SetToolTip(this.comboBoxL, "Changes action on pressing L button. L ACTION in game.");
             this.comboBoxL.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // labelLButtonAction
             // 
             this.labelLButtonAction.AutoSize = true;
-            this.labelLButtonAction.Location = new System.Drawing.Point(196, 19);
+            this.labelLButtonAction.Location = new System.Drawing.Point(196, 34);
             this.labelLButtonAction.Name = "labelLButtonAction";
             this.labelLButtonAction.Size = new System.Drawing.Size(80, 13);
             this.labelLButtonAction.TabIndex = 9;
@@ -599,6 +670,7 @@
             this.checkBoxButtons.Size = new System.Drawing.Size(91, 17);
             this.checkBoxButtons.TabIndex = 8;
             this.checkBoxButtons.Text = "Show buttons";
+            this.toolTip.SetToolTip(this.checkBoxButtons, "Displays buttons that are being pressed. BUTTONS option in game.");
             this.checkBoxButtons.UseVisualStyleBackColor = true;
             this.checkBoxButtons.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
             // 
@@ -614,6 +686,9 @@
             this.comboBoxStick.Name = "comboBoxStick";
             this.comboBoxStick.Size = new System.Drawing.Size(121, 21);
             this.comboBoxStick.TabIndex = 7;
+            this.toolTip.SetToolTip(this.comboBoxStick, "Displays the stick direction being held. Graphics option draws 2 circles marking " +
+        "the center and stick position,\r\ntext option shows raw values. STICK option in ga" +
+        "me.");
             this.comboBoxStick.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // groupBoxROM
@@ -646,6 +721,17 @@
             this.labelInfo.Text = "Welcome to hacktice control! In order to use the tool, either a payload\r\nneeds to" +
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBoxAutoInject
+            // 
+            this.checkBoxAutoInject.AutoSize = true;
+            this.checkBoxAutoInject.Location = new System.Drawing.Point(255, 67);
+            this.checkBoxAutoInject.Name = "checkBoxAutoInject";
+            this.checkBoxAutoInject.Size = new System.Drawing.Size(77, 17);
+            this.checkBoxAutoInject.TabIndex = 41;
+            this.checkBoxAutoInject.Text = "Auto Inject";
+            this.checkBoxAutoInject.UseVisualStyleBackColor = true;
+            this.checkBoxAutoInject.CheckedChanged += new System.EventHandler(this.checkBoxAutoInject_CheckedChanged);
             // 
             // Tool
             // 
@@ -724,5 +810,11 @@
         private System.Windows.Forms.Label labelDescInject;
         private System.Windows.Forms.Label labelROM;
         private System.Windows.Forms.Label labelInfo;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label labelTimerStopOn;
+        private System.Windows.Forms.Label labelExpl;
+        private System.Windows.Forms.Button buttonSetDefault;
+        private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.CheckBox checkBoxAutoInject;
     }
 }

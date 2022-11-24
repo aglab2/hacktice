@@ -16,7 +16,6 @@ Config sConfig = {
     .magic = HACKTICE_CONFIG_CANARY,
     .selfSize = sizeof(Config),
     .timerShow = true,
-    .timerStyle = Config_TimerStyle_GRAB,
 };
 
 typedef enum Pages

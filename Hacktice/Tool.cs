@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -24,13 +25,16 @@ namespace Hacktice
         private Config _lastConfig = new Config();
 
         // Whenever user wants to do anything with emulator, these vars are set
-        // This is incredibly ugly but I do not know other way to do it in C# as dispatch queues can do\
-        // Must use 'Interlocked' access because of multithreading, be careful
+        // This is incredibly ugly but I do not know other way to do it in C# as dispatch queues can do
+        // Might want to use 'Interlocked' access because of multithreading, be careful
         private int _wantToInjectHacktice = 0;
         private Config _wantToUpdateConfig;
+        private Config _config;
 
         // Used from UI thread to avoid event loops
         private bool _muteConfigEvents = false;
+
+        const string DefaultConfigName = "hacktice_config.xml";
 
         class MuteScope : IDisposable
         {
@@ -77,6 +81,20 @@ namespace Hacktice
                 comboBoxStateStyle.SelectedIndex = 0;
                 comboBoxDeathAction.SelectedIndex = 0;
             }
+
+            try
+            {
+                var path = Path.Combine(Application.LocalUserAppDataPath, DefaultConfigName);
+                var ser = new XmlSerializer(typeof(Config));
+                using (var reader = new FileStream(path, FileMode.Open))
+                {
+                    UpdateUIFromConfig((Config)ser.Deserialize(reader));
+                }
+            }
+            catch (Exception)
+            { }
+
+            _config = MakeConfig();
         }
 
         ~Tool()
@@ -131,7 +149,7 @@ namespace Hacktice
             switch (_stateValue)
             {
                 case State.INVALIDATED:
-                    return "No supported emulator is found.";
+                    return "No supported emulator is running.";
                 case State.EMULATOR:
                     return "Emulator is running but no running ROM found";
                 case State.ROM:
@@ -175,6 +193,10 @@ namespace Hacktice
             var color = GetStateColor();
             bool canUseConfig = _stateValue == State.HACKTICE_RUNNING;
             bool canInjectInEmu = _stateValue >= State.ROM;
+            if (!canUseConfig)
+            {
+                _lastConfig = null;
+            }
 
             SafeInvoke(delegate {
                 pictureBoxState.BackColor = color;
@@ -258,7 +280,6 @@ namespace Hacktice
             try
             {
                 bool injectHacktice = NeedToInjectHacktice;
-                var config = NeedToUpdateConfig;
                 if (!IsEmulatorReady())
                 {
                     var res = _emulator.Prepare();
@@ -286,19 +307,29 @@ namespace Hacktice
 
                 if (EmulatorState == State.HACKTICE_RUNNING)
                 {
-                    if (config is object)
+                    var userUpdatedConfig = NeedToUpdateConfig;
+
+                    // TODO: This logic gets complicated, separate this away
+                    // the first time emulator is good
+                    if (!(_lastConfig is object))
                     {
-                        _lastConfig = config;
-                        _emulator.Write(config);
+                        // we are replacing emu configs, so use stuff we have even if user did not change anything
+                        userUpdatedConfig = _config;
                     }
 
-                    var newConfig = _emulator.ReadConfig();
-                    if (!_lastConfig.Equals(newConfig))
+                    if (userUpdatedConfig is object)
+                    {
+                        _lastConfig = userUpdatedConfig;
+                        _emulator.Write(userUpdatedConfig);
+                    }
+
+                    var currentEmuConfig = _emulator.ReadConfig();
+                    if (!_lastConfig.Equals(currentEmuConfig))
                     {
                         SafeInvoke(delegate {
-                            UpdateUIFromConfig(newConfig);
+                            UpdateUIFromConfig(currentEmuConfig);
                         });
-                        _lastConfig = newConfig;
+                        _lastConfig = currentEmuConfig;
                     }
                 }
             }
@@ -375,7 +406,7 @@ namespace Hacktice
 
         private void buttonInjectInEmulator_Click(object sender, EventArgs e)
         {
-            Interlocked.Exchange(ref _wantToInjectHacktice, 1);
+            _wantToInjectHacktice = 1;
             _timer.Change(0 /*now*/, Timeout.Infinite);
         }
 
@@ -453,6 +484,14 @@ namespace Hacktice
             }
         }
 
+        private void UpdateConfig(Config config)
+        {
+            UpdateUIFromConfig(config);
+            _wantToUpdateConfig = config;
+            _config = config;
+            _timer.Change(0 /*now*/, Timeout.Infinite);
+        }
+
         private void buttonSaveConfig_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog
@@ -460,7 +499,7 @@ namespace Hacktice
                 Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
-                FileName = "hacktice_config.xml"
+                FileName = DefaultConfigName
             };
 
             if (sfd.ShowDialog() == DialogResult.OK)
@@ -498,10 +537,7 @@ namespace Hacktice
                     XmlSerializer ser = new XmlSerializer(typeof(Config));
                     using (var reader = ofd.OpenFile())
                     {
-                        var config = (Config) ser.Deserialize(reader);
-                        UpdateUIFromConfig(config);
-                        Interlocked.Exchange(ref _wantToUpdateConfig, MakeConfig());
-                        _timer.Change(0 /*now*/, Timeout.Infinite);
+                        Update((Config)ser.Deserialize(reader));
                     }
 
                     MessageBox.Show("Config was loaded successfully!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -518,8 +554,44 @@ namespace Hacktice
             if (_muteConfigEvents)
                 return;
 
-            Interlocked.Exchange(ref _wantToUpdateConfig, MakeConfig());
+            var config = MakeConfig();
+            _wantToUpdateConfig = config;
+            _config = config;
             _timer.Change(0 /*now*/, Timeout.Infinite);
+        }
+
+        private void buttonSetDefault_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var path = Path.Combine(Application.LocalUserAppDataPath, DefaultConfigName);
+                var ser = new XmlSerializer(typeof(Config));
+                using (var writer = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    ser.Serialize(writer, MakeConfig());
+                }
+
+                MessageBox.Show("Config was saved successfully!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Failed to save config file!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private Config GetDefaultConfig()
+        {
+            return new Config{ timerShow = 1 };
+        }
+
+        private void buttonReset_Click(object sender, EventArgs e)
+        {
+            Update(GetDefaultConfig());
+        }
+
+        private void checkBoxAutoInject_CheckedChanged(object sender, EventArgs e)
+        {
+            // TODO
         }
     }
 }
