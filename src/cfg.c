@@ -172,6 +172,19 @@ static void render()
     int maxAllowedOption = sMaxAllowedOptions[sPage]; 
     const ConfigDescriptor* descriptors = sDescriptors[sPage];
 
+    if (0 != sPage)
+        print_generic_string(20, 210, uLEFT_Z);
+
+    if (sPage != sMaxAllowedPage)
+        print_generic_string(280, 210, uRIGHT_R);
+
+    print_generic_string(80, 125, uRIGHT_DPAD);
+    print_generic_string(9, 125, uLEFT_DPAD);
+    print_generic_string_centered(72, 145, uC_UP);
+    print_generic_string(70, 135, uUP);
+    print_generic_string(70, 115, uDOWN);
+    print_generic_string_centered(72, 105, uC_DOWN);
+
     print_generic_string_centered(160, 210, lPageNames[(int) sPage]);
 
     const int height = 190;
