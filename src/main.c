@@ -61,7 +61,7 @@ uintptr_t _start[] = {
     (uintptr_t) Music_setVolumeHook,
     (uintptr_t) DeathFloor_checkDeathBarrierHook,
     HACKTICE_CANARY,
-    HACKTICE_MAKE_VERSION(1, 3, 0),
+    HACKTICE_MAKE_VERSION(1, 3, 1),
     HACKTICE_STATUS_INIT,
     (uintptr_t) &sConfig,
     (uintptr_t) 0x80026000,
