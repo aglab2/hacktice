@@ -156,16 +156,8 @@ nop
 
 .orga code_rom
 execonce:
-addiu sp, sp, 0xffec; don't get rid of those extra things. they are needed
-sw a0, 0x4(sp)
-sw a1, 0x8(sp)
-sw ra, 0xc(sp)
-
-NOP
-; executes once here at start up
-
-lw a0, 0x4(sp); don't get rid of those extra things. they are needed
-lw a1, 0x8(sp)
+addiu sp, sp, -0x18; don't get rid of those extra things. they are needed
+sw ra, 0x14(sp)
 or a0, r0, r0
 jal 0x80277ee0
 lui a1, 0x8000
@@ -175,10 +167,19 @@ addiu a1, a1, 0xb044
 addiu a0, a0, 0xb028
 jal 0x803225a0
 addiu a2, r0, 0x1
-lw ra, 0xc(sp)
+lw ra, 0x14(sp)
 jr ra
-addiu sp, sp, 0x14
+addiu sp, sp, 0x18
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
 
+.orga code_rom+0x100
 execeveryframe:
 addiu sp, sp, 0xffe8; don't get rid of those extra things. they are needed
 sw ra, 0x14(sp)
@@ -194,6 +195,15 @@ lui at, 0x8039
 lw ra, 0x14(sp)
 jr ra
 addiu sp, sp, 0x18
+
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
 
 ;execviframes:
 ;addiu sp, sp, 0xffe8
