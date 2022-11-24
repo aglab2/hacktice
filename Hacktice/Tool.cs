@@ -131,7 +131,7 @@ namespace Hacktice
             switch (_stateValue)
             {
                 case State.INVALIDATED:
-                    return "Inject in emulator requires running ROM.\nAlternatively, patch the ROM.";
+                    return "No supported emulator is found.";
                 case State.EMULATOR:
                     return "Emulator is running but no running ROM found";
                 case State.ROM:
@@ -157,9 +157,9 @@ namespace Hacktice
                 case State.EMULATOR:
                     return Color.MediumPurple;
                 case State.ROM:
-                    return Color.IndianRed;
-                case State.HACKTICE_CORRUPTED:
                     return Color.DarkKhaki;
+                case State.HACKTICE_CORRUPTED:
+                    return Color.IndianRed;
                 case State.HACKTICE_INJECTED:
                     return Color.Yellow;
                 case State.HACKTICE_RUNNING:
@@ -181,6 +181,14 @@ namespace Hacktice
                 labelEmulatorState.Text = state;
                 groupBoxConfig.Enabled = canUseConfig;
                 buttonInjectInEmulator.Enabled = canInjectInEmu;
+                if (canUseConfig)
+                {
+                    labelInfo.Text = "Config files can be saved and loaded as necessary.\nShown config is synchronized with a running emulator.";
+                }
+                else
+                {
+                    labelInfo.Text = "Welcome to hacktice control!In order to use the tool, either a payload\nneeds to be injected in the emulator or patched ROM needs to be created.";
+                }
             });
         }
 

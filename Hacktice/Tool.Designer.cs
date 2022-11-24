@@ -72,6 +72,9 @@
             this.checkBoxButtons = new System.Windows.Forms.CheckBox();
             this.comboBoxStick = new System.Windows.Forms.ComboBox();
             this.groupBoxROM = new System.Windows.Forms.GroupBox();
+            this.labelDescInject = new System.Windows.Forms.Label();
+            this.labelROM = new System.Windows.Forms.Label();
+            this.labelInfo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -81,7 +84,7 @@
             // 
             // buttonPatch
             // 
-            this.buttonPatch.Location = new System.Drawing.Point(13, 39);
+            this.buttonPatch.Location = new System.Drawing.Point(16, 51);
             this.buttonPatch.Name = "buttonPatch";
             this.buttonPatch.Size = new System.Drawing.Size(110, 23);
             this.buttonPatch.TabIndex = 0;
@@ -94,9 +97,9 @@
             this.labelEmulatorState.AutoSize = true;
             this.labelEmulatorState.Location = new System.Drawing.Point(22, 48);
             this.labelEmulatorState.Name = "labelEmulatorState";
-            this.labelEmulatorState.Size = new System.Drawing.Size(196, 26);
+            this.labelEmulatorState.Size = new System.Drawing.Size(157, 13);
             this.labelEmulatorState.TabIndex = 3;
-            this.labelEmulatorState.Text = "Emulator is not found\r\nInject in emulator requires running ROM.";
+            this.labelEmulatorState.Text = "No supported emulator is found.";
             // 
             // pictureBoxState
             // 
@@ -131,10 +134,11 @@
             // 
             // groupBoxInject
             // 
+            this.groupBoxInject.Controls.Add(this.labelDescInject);
             this.groupBoxInject.Controls.Add(this.buttonInjectInEmulator);
             this.groupBoxInject.Controls.Add(this.labelEmulatorState);
             this.groupBoxInject.Controls.Add(this.pictureBoxState);
-            this.groupBoxInject.Location = new System.Drawing.Point(12, 12);
+            this.groupBoxInject.Location = new System.Drawing.Point(13, 42);
             this.groupBoxInject.Name = "groupBoxInject";
             this.groupBoxInject.Size = new System.Drawing.Size(338, 90);
             this.groupBoxInject.TabIndex = 7;
@@ -169,7 +173,7 @@
             this.groupBoxConfig.Controls.Add(this.comboBoxStick);
             this.groupBoxConfig.Controls.Add(this.checkBoxShowSpeed);
             this.groupBoxConfig.Enabled = false;
-            this.groupBoxConfig.Location = new System.Drawing.Point(12, 108);
+            this.groupBoxConfig.Location = new System.Drawing.Point(13, 138);
             this.groupBoxConfig.Name = "groupBoxConfig";
             this.groupBoxConfig.Size = new System.Drawing.Size(483, 354);
             this.groupBoxConfig.TabIndex = 8;
@@ -605,19 +609,50 @@
             // 
             // groupBoxROM
             // 
+            this.groupBoxROM.Controls.Add(this.labelROM);
             this.groupBoxROM.Controls.Add(this.buttonPatch);
-            this.groupBoxROM.Location = new System.Drawing.Point(356, 12);
+            this.groupBoxROM.Location = new System.Drawing.Point(357, 42);
             this.groupBoxROM.Name = "groupBoxROM";
             this.groupBoxROM.Size = new System.Drawing.Size(139, 90);
             this.groupBoxROM.TabIndex = 9;
             this.groupBoxROM.TabStop = false;
             this.groupBoxROM.Text = "ROM";
             // 
+            // labelDescInject
+            // 
+            this.labelDescInject.AutoSize = true;
+            this.labelDescInject.Location = new System.Drawing.Point(118, 24);
+            this.labelDescInject.Name = "labelDescInject";
+            this.labelDescInject.Size = new System.Drawing.Size(185, 13);
+            this.labelDescInject.TabIndex = 6;
+            this.labelDescInject.Text = "Run clean ROM for Emulator injection";
+            // 
+            // labelROM
+            // 
+            this.labelROM.AutoSize = true;
+            this.labelROM.Location = new System.Drawing.Point(11, 24);
+            this.labelROM.Name = "labelROM";
+            this.labelROM.Size = new System.Drawing.Size(121, 13);
+            this.labelROM.TabIndex = 7;
+            this.labelROM.Text = "Or create patched ROM";
+            // 
+            // labelInfo
+            // 
+            this.labelInfo.AutoSize = true;
+            this.labelInfo.Location = new System.Drawing.Point(75, 9);
+            this.labelInfo.Name = "labelInfo";
+            this.labelInfo.Size = new System.Drawing.Size(358, 26);
+            this.labelInfo.TabIndex = 8;
+            this.labelInfo.Text = "Welcome to hacktice control! In order to use the tool, either a payload\r\nneeds to" +
+    " be injected in the emulator or patched ROM needs to be created.";
+            this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Tool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(508, 474);
+            this.ClientSize = new System.Drawing.Size(508, 503);
+            this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.groupBoxROM);
             this.Controls.Add(this.groupBoxConfig);
             this.Controls.Add(this.groupBoxInject);
@@ -634,7 +669,9 @@
             this.groupBoxMiscTimer.ResumeLayout(false);
             this.groupBoxMiscTimer.PerformLayout();
             this.groupBoxROM.ResumeLayout(false);
+            this.groupBoxROM.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -684,5 +721,8 @@
         private System.Windows.Forms.CheckBox checkBoxMTBurning;
         private System.Windows.Forms.Button buttonSaveConfig;
         private System.Windows.Forms.Button buttonLoadConfig;
+        private System.Windows.Forms.Label labelDescInject;
+        private System.Windows.Forms.Label labelROM;
+        private System.Windows.Forms.Label labelInfo;
     }
 }
