@@ -15,17 +15,19 @@ typedef struct
     char lRAction;
     char cButtonsAction;
     char dpadDownAction;
-    char warp;
     char wallkickFrame;
     char distanceFromClosestRed;
     char distanceFromClosestSecret;
+    char distanceFromClosestPiranha;
+    char distanceFromClosestPanel;
     char timerShow;
     char timerStyle;
     char timerStopOnCoinStar;
     char stateSaveStyle;
     char muteMusic;
-    char musicNumber;
     char deathAction;
+    char _reserved0;
+    char _reserved1;
 
     char checkpointWallkick;
     char checkpointDoor;

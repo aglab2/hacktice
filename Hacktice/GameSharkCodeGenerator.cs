@@ -6,12 +6,6 @@ namespace Hacktice
 {
     internal class GameSharkCodeGenerator
     {
-        static readonly List<RomToRamConverter> Converters = new List<RomToRamConverter>{
-            new RomToRamConverter(0x1000  , 0xF4580, 0x80246000), // main
-            new RomToRamConverter(0xF5580 , 0x13490, 0x80378800), // engine
-            new RomToRamConverter(0x7f1200, 0x800000 - 0x7f1200, 0x8005c000 - 0xEE00), // hook
-        };
-
         const string HackticeCheckVerifier = "D104E012 4753\n";
         const string HackticeWriteVerifier = "8104E012 4753\n";
 
@@ -26,22 +20,9 @@ namespace Hacktice
             return codeBuilder.ToString();
         }
 
-        private uint ToRamAddr(uint romAddr)
-        {
-            foreach (var conv in Converters)
-            {
-                if (conv.IsIn(romAddr))
-                {
-                    return conv.Convert(romAddr);
-                }
-            }
-
-            throw new ArgumentException($"Unknown romAddr 0x{romAddr:X}");
-        }
-
         public void Add(uint romAddr, byte[] patch, int off, int size, bool isConst)
         {
-            uint ramAddr = ToRamAddr(romAddr);
+            uint ramAddr = RomToRamConverter.Convert(romAddr);
             while (0 != size)
             {
                 if (!isConst)

@@ -9,6 +9,9 @@
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
 
+static char sWarp;
+static char sMusicNumber;
+
 Config sConfig = {
     .magic = HACKTICE_CONFIG_CANARY,
     .selfSize = sizeof(Config),
@@ -90,7 +93,7 @@ static const ConfigDescriptor sGeneralDescriptors[] =
     
     { &sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
 
-    { &sConfig.musicNumber,   uMUSIC_NUMBER,  lMusicNumbers, 64 },
+    { &sMusicNumber,   uMUSIC_NUMBER,  lMusicNumbers, 64 },
     { &sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
     { &sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
     { &sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
@@ -102,7 +105,7 @@ static const ConfigDescriptor sGeneralDescriptors[] =
 
 // Warp
 static const ConfigDescriptor sWarpDescriptors[] = {
-    { &sConfig.warp, uSELECT_WARP_TARGET, NULL, 25 },
+    { &sWarp, uSELECT_WARP_TARGET, NULL, 25 },
 };
 #define sWarpMaxAllowedOption 0
 
@@ -280,13 +283,13 @@ bool Config_showButtons()
 
 LevelConv_PlainLevels Config_warpId()
 {
-    return (LevelConv_PlainLevels) sConfig.warp;
+    return (LevelConv_PlainLevels) sWarp;
 }
 
 LevelConv_PlainLevels Config_warpIdAndReset()
 {
     int w = Config_warpId();
-    sConfig.warp = 0;
+    sWarp = 0;
     sPage = Pages_GENERAL;
     return w;
 }   
@@ -367,7 +370,7 @@ bool Config_muteMusic()
 
 char Config_musicNumber()
 {
-    return sConfig.musicNumber;
+    return sMusicNumber;
 }
 
 Config_DeathAction Config_deathAction()

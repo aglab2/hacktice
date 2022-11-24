@@ -4,7 +4,7 @@
 
 extern uintptr_t _start[];
 
-#define HACKTICE_START_STATUS_OFFSET 4
+#define HACKTICE_START_STATUS_OFFSET 6
 
 static inline uintptr_t HackticeGetStatus()
 { return _start[HACKTICE_START_STATUS_OFFSET]; }
