@@ -5,6 +5,7 @@ namespace Hacktice
     [StructLayout(LayoutKind.Sequential)]
     public class Config
     {
+        // TODO: I am assuming zero initialization here. Is it fair?
         public byte lAction;
         public byte showButtons;
         public byte stickStyle;
@@ -25,8 +26,8 @@ namespace Hacktice
         public byte timerStyle;
         public byte timerShow;
 
-        public byte _reserved1;
-        public byte _reserved0;
+        public byte __reserved1;
+        public byte __reserved0;
         public byte deathAction;
         public byte muteMusic;
 
@@ -64,8 +65,6 @@ namespace Hacktice
                 && timerStopOnCoinStar == o.timerStopOnCoinStar
                 && timerShow == o.timerShow
                 && timerStyle == o.timerStyle
-                && _reserved1 == o._reserved1
-                && _reserved0 == o._reserved0
                 && deathAction == o.deathAction
                 && muteMusic == o.muteMusic
                 && checkpointLava == o.checkpointLava
