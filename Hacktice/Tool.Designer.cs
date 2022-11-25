@@ -82,7 +82,6 @@
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBoxAutoInject = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -143,7 +142,6 @@
             // 
             // groupBoxInject
             // 
-            this.groupBoxInject.Controls.Add(this.checkBoxAutoInject);
             this.groupBoxInject.Controls.Add(this.labelDescInject);
             this.groupBoxInject.Controls.Add(this.buttonInjectInEmulator);
             this.groupBoxInject.Controls.Add(this.labelEmulatorState);
@@ -577,9 +575,9 @@
             this.labelDPadDown.AutoSize = true;
             this.labelDPadDown.Location = new System.Drawing.Point(196, 154);
             this.labelDPadDown.Name = "labelDPadDown";
-            this.labelDPadDown.Size = new System.Drawing.Size(137, 13);
+            this.labelDPadDown.Size = new System.Drawing.Size(135, 13);
             this.labelDPadDown.TabIndex = 15;
-            this.labelDPadDown.Text = "DPad Down Buttons Action";
+            this.labelDPadDown.Text = "DPad Down buttons action";
             // 
             // comboBoxFC
             // 
@@ -604,9 +602,9 @@
             this.label4C.AutoSize = true;
             this.label4C.Location = new System.Drawing.Point(196, 114);
             this.label4C.Name = "label4C";
-            this.label4C.Size = new System.Drawing.Size(95, 13);
+            this.label4C.Size = new System.Drawing.Size(94, 13);
             this.label4C.TabIndex = 13;
-            this.label4C.Text = "4 C Buttons Action";
+            this.label4C.Text = "4 C Buttons action";
             // 
             // comboBoxLR
             // 
@@ -631,9 +629,9 @@
             this.labelLR.AutoSize = true;
             this.labelLR.Location = new System.Drawing.Point(196, 74);
             this.labelLR.Name = "labelLR";
-            this.labelLR.Size = new System.Drawing.Size(99, 13);
+            this.labelLR.Size = new System.Drawing.Size(97, 13);
             this.labelLR.TabIndex = 11;
-            this.labelLR.Text = "L+R Buttons Action";
+            this.labelLR.Text = "L+R buttons action";
             // 
             // comboBoxL
             // 
@@ -658,9 +656,9 @@
             this.labelLButtonAction.AutoSize = true;
             this.labelLButtonAction.Location = new System.Drawing.Point(196, 34);
             this.labelLButtonAction.Name = "labelLButtonAction";
-            this.labelLButtonAction.Size = new System.Drawing.Size(80, 13);
+            this.labelLButtonAction.Size = new System.Drawing.Size(78, 13);
             this.labelLButtonAction.TabIndex = 9;
-            this.labelLButtonAction.Text = "L Button Action";
+            this.labelLButtonAction.Text = "L button action";
             // 
             // checkBoxButtons
             // 
@@ -713,25 +711,13 @@
             // 
             // labelInfo
             // 
-            this.labelInfo.AutoSize = true;
-            this.labelInfo.Location = new System.Drawing.Point(75, 9);
+            this.labelInfo.Location = new System.Drawing.Point(13, 9);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(358, 26);
+            this.labelInfo.Size = new System.Drawing.Size(483, 26);
             this.labelInfo.TabIndex = 8;
             this.labelInfo.Text = "Welcome to hacktice control! In order to use the tool, either a payload\r\nneeds to" +
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkBoxAutoInject
-            // 
-            this.checkBoxAutoInject.AutoSize = true;
-            this.checkBoxAutoInject.Location = new System.Drawing.Point(255, 67);
-            this.checkBoxAutoInject.Name = "checkBoxAutoInject";
-            this.checkBoxAutoInject.Size = new System.Drawing.Size(77, 17);
-            this.checkBoxAutoInject.TabIndex = 41;
-            this.checkBoxAutoInject.Text = "Auto Inject";
-            this.checkBoxAutoInject.UseVisualStyleBackColor = true;
-            this.checkBoxAutoInject.CheckedChanged += new System.EventHandler(this.checkBoxAutoInject_CheckedChanged);
             // 
             // Tool
             // 
@@ -746,6 +732,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Tool";
+            this.ShowIcon = false;
             this.Text = "hacktice";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).EndInit();
             this.groupBoxInject.ResumeLayout(false);
@@ -757,7 +744,6 @@
             this.groupBoxROM.ResumeLayout(false);
             this.groupBoxROM.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -815,6 +801,5 @@
         private System.Windows.Forms.Label labelExpl;
         private System.Windows.Forms.Button buttonSetDefault;
         private System.Windows.Forms.Button buttonReset;
-        private System.Windows.Forms.CheckBox checkBoxAutoInject;
     }
 }

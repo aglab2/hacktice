@@ -17,7 +17,7 @@ namespace Hacktice
         private IntPtr _ptrOnFrameHook;
         private IntPtr _ptrPtrConfig;
 
-        static readonly string[] ProcessNames = {
+        static readonly string[] s_ProcessNames = {
             "project64", "project64d",
             "mupen64-rerecording",
             "mupen64-pucrash",
@@ -32,7 +32,7 @@ namespace Hacktice
 
         private Process FindEmulatorProcess()
         {
-            foreach (string name in ProcessNames)
+            foreach (string name in s_ProcessNames)
             {
                 Process process = Process.GetProcessesByName(name).Where(p => !p.HasExited).FirstOrDefault();
                 if (process != null)
