@@ -40,7 +40,7 @@ void SaveState_onNormal()
     {
         sMustSaveState = false;
         state->area  = gCurrAreaIndex;
-        state->level = gCurrCourseNum;
+        state->level = gCurrLevelNum;
         state->size = sizeof(State);
         memcpy(state->memory, &gMarioStates, StateSize);
     }
@@ -48,7 +48,7 @@ void SaveState_onNormal()
     {
         if (Config_action() == Config_ButtonAction_LOAD_STATE)
         {
-            if (state->area == gCurrAreaIndex && state->level == gCurrCourseNum)
+            if (state->area == gCurrAreaIndex && state->level == gCurrLevelNum)
             {
                 memcpy(&gMarioStates, state->memory, StateSize);
                 resetCamera();

@@ -19,6 +19,7 @@
 #include "status.h"
 #include "text_manager.h"
 #include "timer.h"
+#include "version.h"
 #include "wallkick_frame.h"
 
 #define PLAY_MODE_NORMAL 0
@@ -39,9 +40,10 @@ void onFrame()
         WallkickFrame_onNormal();
         Interaction_onNormal();
         Music_onFrame();
+        Version_onFrame();
 
         Checkpoint_onNormal();
-        
+
         Action_onNormal();
     }
 
@@ -61,7 +63,9 @@ uintptr_t _start[] = {
     (uintptr_t) Music_setVolumeHook,
     (uintptr_t) DeathFloor_checkDeathBarrierHook,
     HACKTICE_CANARY,
-    HACKTICE_MAKE_VERSION(1, 3, 1),
+#define HACKTICE_VERSION(maj, min, patch) (((maj) << 24) | ((min) << 16) | ((patch))),
+#include "xversion.h"
+#undef HACKTICE_VERSION
     HACKTICE_STATUS_INIT,
     (uintptr_t) &sConfig,
     (uintptr_t) 0x80026000,

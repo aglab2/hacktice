@@ -2,7 +2,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 
 # Alter these 4 variables according to your need
-CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor
+CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor version
 ROM = sr8.z64
 INCLUDE_PATH = sm64-api/sm64
 LIBRARY_PATH = sm64-api/ld
