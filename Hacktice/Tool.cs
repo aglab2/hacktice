@@ -79,6 +79,7 @@ namespace Hacktice
                 comboBoxLR.SelectedIndex = 0;
                 comboBoxFC.SelectedIndex = 0;
                 comboBoxDpadDown.SelectedIndex = 0;
+                comboBoxDpadUp.SelectedIndex = 0;
                 comboBoxTimerStyle.SelectedIndex = 0;
                 comboBoxStateStyle.SelectedIndex = 0;
                 comboBoxDeathAction.SelectedIndex = 0;
@@ -423,6 +424,7 @@ namespace Hacktice
                 lRAction = (byte)comboBoxLR.SelectedIndex,
                 cButtonsAction = (byte)comboBoxFC.SelectedIndex,
                 dpadDownAction = (byte)comboBoxDpadDown.SelectedIndex,
+                dpadUpAction = (byte)comboBoxDpadUp.SelectedIndex,
                 wallkickFrame = Convert.ToByte(checkBoxWKFrame.Checked),
                 distanceFromClosestRed = Convert.ToByte(checkBoxDistanceToRedCoin.Checked),
                 distanceFromClosestSecret = Convert.ToByte(checkBoxDistanceToSecret.Checked),
@@ -461,6 +463,7 @@ namespace Hacktice
                 comboBoxLR.SelectedIndex = config.lRAction;
                 comboBoxFC.SelectedIndex = config.cButtonsAction;
                 comboBoxDpadDown.SelectedIndex = config.dpadDownAction;
+                comboBoxDpadUp.SelectedIndex = config.dpadUpAction;
                 checkBoxWKFrame.Checked = 0 != config.wallkickFrame;
                 checkBoxDistanceToRedCoin.Checked = 0 != config.distanceFromClosestRed;
                 checkBoxDistanceToSecret.Checked = 0 != config.distanceFromClosestSecret;

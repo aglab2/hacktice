@@ -26,8 +26,8 @@ typedef struct
     char stateSaveStyle;
     char muteMusic;
     char deathAction;
-    char _reserved0;
-    char _reserved1;
+    char dpadUpAction;
+    char warpWheel;
 
     char checkpointWallkick;
     char checkpointDoor;

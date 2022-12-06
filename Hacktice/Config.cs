@@ -26,8 +26,8 @@ namespace Hacktice
         public byte timerStyle;
         public byte timerShow;
 
-        public byte __reserved1;
-        public byte __reserved0;
+        public byte warpWheel;
+        public byte dpadUpAction;
         public byte deathAction;
         public byte muteMusic;
 
@@ -78,7 +78,9 @@ namespace Hacktice
                 && checkpointPlatform == o.checkpointPlatform
                 && checkpointObject == o.checkpointObject
                 && checkpointCoin == o.checkpointCoin
-                && checkpointRed == o.checkpointRed;
+                && checkpointRed == o.checkpointRed
+                && dpadUpAction == o.dpadUpAction
+                && warpWheel == o.warpWheel;
         }
     }
 }

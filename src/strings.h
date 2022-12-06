@@ -16,6 +16,7 @@ extern const u8 uDISTANCE_TO_SECRET[];
 extern const u8 uDOOR[];
 extern const u8 uDOWN[];
 extern const u8 uDPAD_DOWN_ACTION[];
+extern const u8 uDPAD_UP_ACTION[];
 extern const u8 uGENERAL[];
 extern const u8 uGRAB[];
 extern const u8 uGRAPHICS[];

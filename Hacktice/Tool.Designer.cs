@@ -82,6 +82,8 @@
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.comboBoxDpadUp = new System.Windows.Forms.ComboBox();
+            this.labelDPadUpAction = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -164,6 +166,8 @@
             // 
             // groupBoxConfig
             // 
+            this.groupBoxConfig.Controls.Add(this.comboBoxDpadUp);
+            this.groupBoxConfig.Controls.Add(this.labelDPadUpAction);
             this.groupBoxConfig.Controls.Add(this.buttonReset);
             this.groupBoxConfig.Controls.Add(this.buttonSetDefault);
             this.groupBoxConfig.Controls.Add(this.labelExpl);
@@ -196,14 +200,14 @@
             this.groupBoxConfig.Enabled = false;
             this.groupBoxConfig.Location = new System.Drawing.Point(13, 138);
             this.groupBoxConfig.Name = "groupBoxConfig";
-            this.groupBoxConfig.Size = new System.Drawing.Size(483, 354);
+            this.groupBoxConfig.Size = new System.Drawing.Size(483, 379);
             this.groupBoxConfig.TabIndex = 8;
             this.groupBoxConfig.TabStop = false;
             this.groupBoxConfig.Text = "Config";
             // 
             // buttonReset
             // 
-            this.buttonReset.Location = new System.Drawing.Point(264, 325);
+            this.buttonReset.Location = new System.Drawing.Point(258, 350);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(80, 23);
             this.buttonReset.TabIndex = 32;
@@ -213,7 +217,7 @@
             // 
             // buttonSetDefault
             // 
-            this.buttonSetDefault.Location = new System.Drawing.Point(178, 325);
+            this.buttonSetDefault.Location = new System.Drawing.Point(172, 350);
             this.buttonSetDefault.Name = "buttonSetDefault";
             this.buttonSetDefault.Size = new System.Drawing.Size(80, 23);
             this.buttonSetDefault.TabIndex = 31;
@@ -242,7 +246,7 @@
             // 
             // buttonLoadConfig
             // 
-            this.buttonLoadConfig.Location = new System.Drawing.Point(92, 325);
+            this.buttonLoadConfig.Location = new System.Drawing.Point(86, 350);
             this.buttonLoadConfig.Name = "buttonLoadConfig";
             this.buttonLoadConfig.Size = new System.Drawing.Size(80, 23);
             this.buttonLoadConfig.TabIndex = 29;
@@ -252,7 +256,7 @@
             // 
             // buttonSaveConfig
             // 
-            this.buttonSaveConfig.Location = new System.Drawing.Point(6, 325);
+            this.buttonSaveConfig.Location = new System.Drawing.Point(0, 350);
             this.buttonSaveConfig.Name = "buttonSaveConfig";
             this.buttonSaveConfig.Size = new System.Drawing.Size(80, 23);
             this.buttonSaveConfig.TabIndex = 6;
@@ -417,7 +421,7 @@
             // labelDeathAction
             // 
             this.labelDeathAction.AutoSize = true;
-            this.labelDeathAction.Location = new System.Drawing.Point(6, 240);
+            this.labelDeathAction.Location = new System.Drawing.Point(6, 274);
             this.labelDeathAction.Name = "labelDeathAction";
             this.labelDeathAction.Size = new System.Drawing.Size(87, 13);
             this.labelDeathAction.TabIndex = 27;
@@ -432,7 +436,7 @@
             "go to Act Select",
             "go to Level Reset",
             "load savestate"});
-            this.comboBoxDeathAction.Location = new System.Drawing.Point(100, 237);
+            this.comboBoxDeathAction.Location = new System.Drawing.Point(100, 271);
             this.comboBoxDeathAction.Name = "comboBoxDeathAction";
             this.comboBoxDeathAction.Size = new System.Drawing.Size(220, 21);
             this.comboBoxDeathAction.TabIndex = 26;
@@ -454,7 +458,7 @@
             // labelStateCond
             // 
             this.labelStateCond.AutoSize = true;
-            this.labelStateCond.Location = new System.Drawing.Point(6, 213);
+            this.labelStateCond.Location = new System.Drawing.Point(6, 247);
             this.labelStateCond.Name = "labelStateCond";
             this.labelStateCond.Size = new System.Drawing.Size(88, 13);
             this.labelStateCond.TabIndex = 24;
@@ -467,7 +471,7 @@
             this.comboBoxStateStyle.Items.AddRange(new object[] {
             "button is pressed on pause",
             "any pause happens"});
-            this.comboBoxStateStyle.Location = new System.Drawing.Point(100, 210);
+            this.comboBoxStateStyle.Location = new System.Drawing.Point(100, 244);
             this.comboBoxStateStyle.Name = "comboBoxStateStyle";
             this.comboBoxStateStyle.Size = new System.Drawing.Size(220, 21);
             this.comboBoxStateStyle.TabIndex = 23;
@@ -519,7 +523,7 @@
             // checkBoxDistanceToSecret
             // 
             this.checkBoxDistanceToSecret.AutoSize = true;
-            this.checkBoxDistanceToSecret.Location = new System.Drawing.Point(6, 287);
+            this.checkBoxDistanceToSecret.Location = new System.Drawing.Point(6, 321);
             this.checkBoxDistanceToSecret.Name = "checkBoxDistanceToSecret";
             this.checkBoxDistanceToSecret.Size = new System.Drawing.Size(194, 17);
             this.checkBoxDistanceToSecret.TabIndex = 19;
@@ -531,7 +535,7 @@
             // checkBoxDistanceToRedCoin
             // 
             this.checkBoxDistanceToRedCoin.AutoSize = true;
-            this.checkBoxDistanceToRedCoin.Location = new System.Drawing.Point(6, 264);
+            this.checkBoxDistanceToRedCoin.Location = new System.Drawing.Point(6, 298);
             this.checkBoxDistanceToRedCoin.Name = "checkBoxDistanceToRedCoin";
             this.checkBoxDistanceToRedCoin.Size = new System.Drawing.Size(203, 17);
             this.checkBoxDistanceToRedCoin.TabIndex = 18;
@@ -575,9 +579,9 @@
             this.labelDPadDown.AutoSize = true;
             this.labelDPadDown.Location = new System.Drawing.Point(196, 154);
             this.labelDPadDown.Name = "labelDPadDown";
-            this.labelDPadDown.Size = new System.Drawing.Size(135, 13);
+            this.labelDPadDown.Size = new System.Drawing.Size(130, 13);
             this.labelDPadDown.TabIndex = 15;
-            this.labelDPadDown.Text = "DPad Down buttons action";
+            this.labelDPadDown.Text = "DPad Down button action";
             // 
             // comboBoxFC
             // 
@@ -719,11 +723,38 @@
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // comboBoxDpadUp
+            // 
+            this.comboBoxDpadUp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDpadUp.FormattingEnabled = true;
+            this.comboBoxDpadUp.Items.AddRange(new object[] {
+            "Off",
+            "Act Select",
+            "Level Reset",
+            "Start Reset",
+            "Levitate",
+            "Load State"});
+            this.comboBoxDpadUp.Location = new System.Drawing.Point(199, 209);
+            this.comboBoxDpadUp.Name = "comboBoxDpadUp";
+            this.comboBoxDpadUp.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDpadUp.TabIndex = 34;
+            this.toolTip.SetToolTip(this.comboBoxDpadUp, "Changes action on pressing DPad Down buttons. D DOWN ACTION in game.");
+            this.comboBoxDpadUp.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
+            // 
+            // labelDPadUpAction
+            // 
+            this.labelDPadUpAction.AutoSize = true;
+            this.labelDPadUpAction.Location = new System.Drawing.Point(196, 193);
+            this.labelDPadUpAction.Name = "labelDPadUpAction";
+            this.labelDPadUpAction.Size = new System.Drawing.Size(116, 13);
+            this.labelDPadUpAction.TabIndex = 33;
+            this.labelDPadUpAction.Text = "DPad Up button action";
+            // 
             // Tool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(508, 503);
+            this.ClientSize = new System.Drawing.Size(508, 529);
             this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.groupBoxROM);
             this.Controls.Add(this.groupBoxConfig);
@@ -801,5 +832,7 @@
         private System.Windows.Forms.Label labelExpl;
         private System.Windows.Forms.Button buttonSetDefault;
         private System.Windows.Forms.Button buttonReset;
+        private System.Windows.Forms.ComboBox comboBoxDpadUp;
+        private System.Windows.Forms.Label labelDPadUpAction;
     }
 }

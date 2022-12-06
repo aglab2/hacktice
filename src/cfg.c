@@ -47,7 +47,7 @@ static const u8* const stateSaveNames[]  = { uBUTTON, uPAUSE };
 static const u8* const deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
 
 // Config_ButtonAction
-static const u8* const lActionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
+static const u8* const actionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
 
 static u8 lMusicNumber[] = { 0x00, 0x00, 0xff };
 static const u8* const lMusicNumbers[] = { lMusicNumber, NULL };
@@ -84,10 +84,12 @@ static const ConfigDescriptor sGeneralDescriptors[] =
     { &sConfig.showButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
     { &sConfig.stickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
 
-    { &sConfig.lAction,       uLACTION,           VALUE_NAMES(lActionNames) },
-    { &sConfig.lRAction,      uLRACTION,          VALUE_NAMES(lActionNames) },
-    { &sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(lActionNames) },
-    { &sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(lActionNames) },
+    { &sConfig.lAction,       uLACTION,           VALUE_NAMES(actionNames) },
+    { &sConfig.lRAction,      uLRACTION,          VALUE_NAMES(actionNames) },
+    { &sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(actionNames) },
+    { &sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(actionNames) },
+    { &sConfig.dpadUpAction,  uDPAD_UP_ACTION  ,  VALUE_NAMES(actionNames) },
+
     { &sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
     
     { &sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
@@ -330,6 +332,10 @@ Config_ButtonAction Config_action()
     else if (sConfig.dpadDownAction && BUTTONS_PRESSED(D_JPAD))
     {
         return (Config_ButtonAction) sConfig.dpadDownAction;
+    }
+    else if (sConfig.dpadUpAction && BUTTONS_PRESSED(U_JPAD))
+    {
+        return (Config_ButtonAction) sConfig.dpadUpAction;
     }
 
     return Config_ButtonAction_OFF;
