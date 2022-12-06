@@ -59,4 +59,5 @@ extern const u8 uYACTION[];
 extern const u8 uYRACTION[];
 extern const u8 uWALLKICKFRAME[];
 extern const u8 uWALLKICK[];
+extern const u8 uWARP_WHEEL[];
 extern const u8 uXCAM[];

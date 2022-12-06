@@ -196,9 +196,19 @@ namespace Hacktice
             var color = GetStateColor();
             bool canUseConfig = _stateValue == State.HACKTICE_RUNNING;
             bool canInjectInEmu = _stateValue >= State.ROM;
+            var version = new Version(1, 0, 0);
             if (!canUseConfig)
             {
                 _lastSeenEmulatorConfig = null;
+            }
+            else
+            {
+                try
+                {
+                    version = _emulator.ReadVersion();
+                }
+                catch (Exception)
+                { }
             }
 
             SafeInvoke(delegate {
@@ -206,6 +216,10 @@ namespace Hacktice
                 labelEmulatorState.Text = state;
                 groupBoxConfig.Enabled = canUseConfig;
                 buttonInjectInEmulator.Enabled = canInjectInEmu;
+
+                checkBoxWarpWheel.Enabled = version >= new Version(1, 3, 3);
+                comboBoxDpadUp.Enabled = version >= new Version(1, 3, 3);
+
                 if (canUseConfig)
                 {
                     labelInfo.Text = "Config files can be saved and loaded as necessary.\nShown config is synchronized with a running emulator.";
@@ -436,6 +450,7 @@ namespace Hacktice
                 stateSaveStyle = (byte)comboBoxStateStyle.SelectedIndex,
                 muteMusic = Convert.ToByte(checkBoxMuteMusic.Checked),
                 deathAction = (byte)comboBoxDeathAction.SelectedIndex,
+                warpWheel = Convert.ToByte(checkBoxWarpWheel.Checked),
 
                 checkpointWallkick = Convert.ToByte(checkBoxMTWallkick.Checked),
                 checkpointDoor = Convert.ToByte(checkBoxMTDoor.Checked),
@@ -473,6 +488,7 @@ namespace Hacktice
                 comboBoxStateStyle.SelectedIndex = config.stateSaveStyle;
                 checkBoxMuteMusic.Checked = 0 != config.muteMusic;
                 comboBoxDeathAction.SelectedIndex = config.deathAction;
+                checkBoxWarpWheel.Checked = 0 != config.warpWheel;
 
                 checkBoxMTWallkick.Checked = 0 != config.checkpointWallkick;
                 checkBoxMTDoor.Checked = 0 != config.checkpointDoor;

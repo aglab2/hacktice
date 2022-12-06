@@ -16,6 +16,7 @@ Config sConfig = {
     .magic = HACKTICE_CONFIG_CANARY,
     .selfSize = sizeof(Config),
     .timerShow = true,
+    .warpWheel = true,
 };
 
 typedef enum Pages
@@ -101,6 +102,8 @@ static const ConfigDescriptor sGeneralDescriptors[] =
     { &sConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
     { &sConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
     { &sConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
+
+    { &sConfig.warpWheel,     uWARP_WHEEL, VALUE_NAMES(onOffValueNames) },
 };
 #define sGeneralMaxAllowedOption (sizeof(sGeneralDescriptors) / sizeof(*sGeneralDescriptors) - 1)
 
@@ -267,7 +270,7 @@ static void processInputs()
         }
     }
 
-    if (desc->maxValueCount > 10)
+    if (desc->maxValueCount > 10 && sConfig.warpWheel)
     {
         int controllerDistance = (int)gControllers->rawStickX * (int)gControllers->rawStickX + (int)gControllers->rawStickY * (int)gControllers->rawStickY;
         if (controllerDistance > 1000)
@@ -295,16 +298,24 @@ bool Config_showButtons()
     return sConfig.showButtons;
 }
 
-LevelConv_PlainLevels Config_warpId()
+static inline LevelConv_PlainLevels Config_warpId()
 {
     return (LevelConv_PlainLevels) sWarp;
 }
 
 LevelConv_PlainLevels Config_warpIdAndReset()
 {
+    if (sPage != Pages_WARP)
+    {
+        return LevelConv_PlainLevels_OFF;
+    }
+
     int w = Config_warpId();
-    sWarp = 0;
-    sPage = Pages_GENERAL;
+    if (0 != w)
+    {
+        sPage = Pages_GENERAL;
+    }
+
     return w;
 }   
 

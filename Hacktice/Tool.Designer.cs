@@ -38,6 +38,9 @@
             this.groupBoxInject = new System.Windows.Forms.GroupBox();
             this.labelDescInject = new System.Windows.Forms.Label();
             this.groupBoxConfig = new System.Windows.Forms.GroupBox();
+            this.checkBoxWarpWheel = new System.Windows.Forms.CheckBox();
+            this.comboBoxDpadUp = new System.Windows.Forms.ComboBox();
+            this.labelDPadUpAction = new System.Windows.Forms.Label();
             this.buttonReset = new System.Windows.Forms.Button();
             this.buttonSetDefault = new System.Windows.Forms.Button();
             this.labelExpl = new System.Windows.Forms.Label();
@@ -82,8 +85,6 @@
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.comboBoxDpadUp = new System.Windows.Forms.ComboBox();
-            this.labelDPadUpAction = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -166,6 +167,7 @@
             // 
             // groupBoxConfig
             // 
+            this.groupBoxConfig.Controls.Add(this.checkBoxWarpWheel);
             this.groupBoxConfig.Controls.Add(this.comboBoxDpadUp);
             this.groupBoxConfig.Controls.Add(this.labelDPadUpAction);
             this.groupBoxConfig.Controls.Add(this.buttonReset);
@@ -204,6 +206,46 @@
             this.groupBoxConfig.TabIndex = 8;
             this.groupBoxConfig.TabStop = false;
             this.groupBoxConfig.Text = "Config";
+            // 
+            // checkBoxWarpWheel
+            // 
+            this.checkBoxWarpWheel.AutoSize = true;
+            this.checkBoxWarpWheel.Location = new System.Drawing.Point(6, 211);
+            this.checkBoxWarpWheel.Name = "checkBoxWarpWheel";
+            this.checkBoxWarpWheel.Size = new System.Drawing.Size(136, 17);
+            this.checkBoxWarpWheel.TabIndex = 35;
+            this.checkBoxWarpWheel.Text = "Warp wheel using stick";
+            this.toolTip.SetToolTip(this.checkBoxWarpWheel, "Enables warp wheel to select the warp target using control stick rotation. WARP W" +
+        "HEEL in game.");
+            this.checkBoxWarpWheel.UseVisualStyleBackColor = true;
+            this.checkBoxWarpWheel.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
+            // 
+            // comboBoxDpadUp
+            // 
+            this.comboBoxDpadUp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDpadUp.FormattingEnabled = true;
+            this.comboBoxDpadUp.Items.AddRange(new object[] {
+            "Off",
+            "Act Select",
+            "Level Reset",
+            "Start Reset",
+            "Levitate",
+            "Load State"});
+            this.comboBoxDpadUp.Location = new System.Drawing.Point(199, 210);
+            this.comboBoxDpadUp.Name = "comboBoxDpadUp";
+            this.comboBoxDpadUp.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDpadUp.TabIndex = 34;
+            this.toolTip.SetToolTip(this.comboBoxDpadUp, "Changes action on pressing DPad Up button. D UP ACTION in game.");
+            this.comboBoxDpadUp.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
+            // 
+            // labelDPadUpAction
+            // 
+            this.labelDPadUpAction.AutoSize = true;
+            this.labelDPadUpAction.Location = new System.Drawing.Point(196, 194);
+            this.labelDPadUpAction.Name = "labelDPadUpAction";
+            this.labelDPadUpAction.Size = new System.Drawing.Size(116, 13);
+            this.labelDPadUpAction.TabIndex = 33;
+            this.labelDPadUpAction.Text = "DPad Up button action";
             // 
             // buttonReset
             // 
@@ -571,7 +613,7 @@
             this.comboBoxDpadDown.Name = "comboBoxDpadDown";
             this.comboBoxDpadDown.Size = new System.Drawing.Size(121, 21);
             this.comboBoxDpadDown.TabIndex = 16;
-            this.toolTip.SetToolTip(this.comboBoxDpadDown, "Changes action on pressing DPad Down buttons. D DOWN ACTION in game.");
+            this.toolTip.SetToolTip(this.comboBoxDpadDown, "Changes action on pressing DPad Down button. D DOWN ACTION in game.");
             this.comboBoxDpadDown.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
             // 
             // labelDPadDown
@@ -723,33 +765,6 @@
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // comboBoxDpadUp
-            // 
-            this.comboBoxDpadUp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDpadUp.FormattingEnabled = true;
-            this.comboBoxDpadUp.Items.AddRange(new object[] {
-            "Off",
-            "Act Select",
-            "Level Reset",
-            "Start Reset",
-            "Levitate",
-            "Load State"});
-            this.comboBoxDpadUp.Location = new System.Drawing.Point(199, 209);
-            this.comboBoxDpadUp.Name = "comboBoxDpadUp";
-            this.comboBoxDpadUp.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxDpadUp.TabIndex = 34;
-            this.toolTip.SetToolTip(this.comboBoxDpadUp, "Changes action on pressing DPad Down buttons. D DOWN ACTION in game.");
-            this.comboBoxDpadUp.SelectionChangeCommitted += new System.EventHandler(this.Config_CheckedChanged);
-            // 
-            // labelDPadUpAction
-            // 
-            this.labelDPadUpAction.AutoSize = true;
-            this.labelDPadUpAction.Location = new System.Drawing.Point(196, 193);
-            this.labelDPadUpAction.Name = "labelDPadUpAction";
-            this.labelDPadUpAction.Size = new System.Drawing.Size(116, 13);
-            this.labelDPadUpAction.TabIndex = 33;
-            this.labelDPadUpAction.Text = "DPad Up button action";
-            // 
             // Tool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -834,5 +849,6 @@
         private System.Windows.Forms.Button buttonReset;
         private System.Windows.Forms.ComboBox comboBoxDpadUp;
         private System.Windows.Forms.Label labelDPadUpAction;
+        private System.Windows.Forms.CheckBox checkBoxWarpWheel;
     }
 }

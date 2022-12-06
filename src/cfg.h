@@ -68,7 +68,6 @@ typedef enum Config_ButtonAction
 } Config_ButtonAction;
 Config_ButtonAction Config_action();
 
-LevelConv_PlainLevels Config_warpId();
 LevelConv_PlainLevels Config_warpIdAndReset();
 
 bool Config_showWallkickFrame();
