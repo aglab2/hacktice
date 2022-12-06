@@ -528,7 +528,7 @@ namespace Hacktice
                 try
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(Config));
-                    using (var writer = sfd.OpenFile())
+                    using (var writer = new FileStream(sfd.FileName, FileMode.Create))
                     {
                         ser.Serialize(writer, MakeConfig());
                     }
@@ -587,7 +587,7 @@ namespace Hacktice
             {
                 var path = Path.Combine(Application.LocalUserAppDataPath, DEFAULT_CONFIG_NAME);
                 var ser = new XmlSerializer(typeof(Config));
-                using (var writer = new FileStream(path, FileMode.OpenOrCreate))
+                using (var writer = new FileStream(path, FileMode.Create))
                 {
                     ser.Serialize(writer, MakeConfig());
                 }
