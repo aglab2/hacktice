@@ -90,7 +90,17 @@
 	jr ra
 	addiu sp, sp, 0x18
 
-; ++ Main hook to load data in
+; +++ check_death_barrier hack
+.orga 0xb5fc
+.area 0x4C, 0x00
+	lw at, 0x8004e00c
+	jalr at
+	lw a0, 0x18(sp)
+	b 0xb64c
+	nop
+.endarea
+
+; +++ Main hook to load data in
 
 .headersize 0x80245000
 
@@ -138,7 +148,7 @@
 .headersize (code_ram - code_rom)
 
 .orga code_rom
-	execonce:
+execonce:
 	addiu sp, sp, -0x18; don't get rid of those extra things. they are needed
 	sw ra, 0x14(sp)
 	or a0, r0, r0
@@ -163,7 +173,7 @@
 	nop
 
 .orga code_rom+0x100
-	execeveryframe:
+execeveryframe:
 	addiu sp, sp, 0xffe8; don't get rid of those extra things. they are needed
 	sw ra, 0x14(sp)
 
@@ -185,6 +195,29 @@
 	nop
 	nop
 	nop
+
+.orga code_rom+0x200
+stalling:
+	jr ra
+	nop
+
+.orga code_rom+0x300
+upgrade:
+	addiu sp, sp, -0x18; don't get rid of those extra things. they are needed
+	sw ra, 0x14(sp)
+	
+	lw ra, 0x14(sp)
+	jr ra
+	addiu sp, sp, 0x18
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+
 
 ;execviframes:
 	;addiu sp, sp, 0xffe8

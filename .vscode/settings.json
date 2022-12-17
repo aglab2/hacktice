@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "config.h": "c",
+        "xversion.h": "c"
+    }
+}
