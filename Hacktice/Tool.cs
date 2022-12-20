@@ -59,7 +59,7 @@ namespace Hacktice
 
         class MuteScope : IDisposable
         {
-            Tool _tool;
+            readonly Tool _tool;
 
             public MuteScope(Tool tool)
             {
@@ -169,7 +169,6 @@ namespace Hacktice
                 case State.ROM:
                     return "ROM is found but hacktice is not injected.\nUse 'Inject in Emulator' button";
                 case State.HACKTICE_CORRUPTED:
-                    var version = _emulator.ReadVersion();
                     return $"{GetHackticeName()} is found but it is in unknown state.\nReset emulator and try injecting again";
                 case State.HACKTICE_INJECTED:
                     return $"{GetHackticeName()} payload is found but it is inactive.\nMake a savestate and load it";
@@ -218,7 +217,7 @@ namespace Hacktice
             var state = GetStateString();
             var color = GetStateColor();
             bool canUseConfig = _stateValue >= State.HACKTICE_RUNNING;
-            bool canInjectInEmu = _stateValue >= State.ROM && _stateValue != State.HACKTICE_RUNNING;
+            bool canInjectInEmu = _stateValue >= State.ROM && _stateValue != State.HACKTICE_RUNNING && _stateValue != State.HACKTICE_RUNNING_CAN_UPGRADE;
             bool needsUpgrade = _stateValue == State.HACKTICE_RUNNING_CAN_UPGRADE;
             var version = new Version(1, 0, 0);
             if (!canUseConfig)

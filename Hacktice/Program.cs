@@ -20,8 +20,15 @@ namespace Hacktice
             }
             else
             {
-                Patcher patcher = new Patcher(args[0]);
-                patcher.Apply();
+                try
+                {
+                    Patcher patcher = new Patcher(args[0]);
+                    patcher.Apply();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to apply patch!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }
