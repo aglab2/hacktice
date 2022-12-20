@@ -28,10 +28,15 @@ namespace Hacktice
             XmlPatches patches = new XmlPatches();
             foreach (var patch in patches)
             {
+                // Ignore upgrade hacktice codes
+                if (patch.Offset == 0x7f1400 || patch.Offset == 0x7f1500)
+                    continue;
+
                 Array.Copy(patch.Data, 0, rom, patch.Offset, patch.Data.Length);
             }
 
-            Array.Copy(Resource.data, 0, rom, 0x7f2000, Resource.data.Length);
+            Array.Copy(Resource.payload_header, 0, rom, 0x7f2000, Resource.payload_header.Length);
+            Array.Copy(Resource.payload_data, 0, rom, 0x7f2000 + Resource.payload_header.Length, Resource.payload_data.Length);
 
             N64CRC crcCalculator = new N64CRC();
             crcCalculator.crc(rom);

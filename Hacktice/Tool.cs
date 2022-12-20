@@ -16,14 +16,20 @@ namespace Hacktice
             ROM,
             HACKTICE_CORRUPTED,
             HACKTICE_INJECTED,
+
+            HACKTICE_UPGRADE_DISABLED,
+            HACKTICE_UPGRADE_DATA_WRITTEN,
+
             HACKTICE_RUNNING,
+            HACKTICE_RUNNING_CAN_UPGRADE,
         };
 
         readonly System.Threading.Timer _timer;
 
         // Access from '_timer' thread only
         State _stateValue = State.INVALIDATED;
-        Emulator _emulator = new Emulator();
+        readonly Emulator _emulator = new Emulator();
+        readonly Version _payloadVersion;
         Config _lastSeenEmulatorConfig = new Config();
         private State EmulatorState
         {
@@ -98,6 +104,11 @@ namespace Hacktice
             { }
 
             _config = MakeConfig();
+
+            var header = Resource.payload_header;
+            int versionCombo = (header[20] << 24) | (header[21] << 16) | (header[22] << 8) | header[23];
+            _payloadVersion = new Version(versionCombo);
+            Text = $"hacktice v{_payloadVersion}";
         }
 
         ~Tool()
@@ -162,8 +173,14 @@ namespace Hacktice
                     return $"{GetHackticeName()} is found but it is in unknown state.\nReset emulator and try injecting again";
                 case State.HACKTICE_INJECTED:
                     return $"{GetHackticeName()} payload is found but it is inactive.\nMake a savestate and load it";
+                case State.HACKTICE_UPGRADE_DISABLED:
+                    return $"hacktice is disabled, upgrading...";
+                case State.HACKTICE_UPGRADE_DATA_WRITTEN:
+                    return $"hacktice data written, upgrading...";
                 case State.HACKTICE_RUNNING:
-                    return $"{ GetHackticeName()} is running";
+                    return $"{GetHackticeName()} is running";
+                case State.HACKTICE_RUNNING_CAN_UPGRADE:
+                    return $"{GetHackticeName()} is running but current version is {_payloadVersion}";
             }
 
             return "Corrupted";
@@ -183,8 +200,14 @@ namespace Hacktice
                     return Color.IndianRed;
                 case State.HACKTICE_INJECTED:
                     return Color.Yellow;
+                case State.HACKTICE_UPGRADE_DISABLED:
+                    return Color.LightYellow;
+                case State.HACKTICE_UPGRADE_DATA_WRITTEN:
+                    return Color.LightGoldenrodYellow;
                 case State.HACKTICE_RUNNING:
                     return Color.Green;
+                case State.HACKTICE_RUNNING_CAN_UPGRADE:
+                    return Color.DarkGreen;
             }
 
             return Color.Red;
@@ -194,8 +217,9 @@ namespace Hacktice
         {
             var state = GetStateString();
             var color = GetStateColor();
-            bool canUseConfig = _stateValue == State.HACKTICE_RUNNING;
-            bool canInjectInEmu = _stateValue >= State.ROM;
+            bool canUseConfig = _stateValue >= State.HACKTICE_RUNNING;
+            bool canInjectInEmu = _stateValue >= State.ROM && _stateValue != State.HACKTICE_RUNNING;
+            bool needsUpgrade = _stateValue == State.HACKTICE_RUNNING_CAN_UPGRADE;
             var version = new Version(1, 0, 0);
             if (!canUseConfig)
             {
@@ -215,6 +239,7 @@ namespace Hacktice
                 pictureBoxState.BackColor = color;
                 labelEmulatorState.Text = state;
                 groupBoxConfig.Enabled = canUseConfig;
+                buttonInjectInEmulator.Text = needsUpgrade ? "Upgrade in Emulator" : "Inject in Emulator";
                 buttonInjectInEmulator.Enabled = canInjectInEmu;
 
                 checkBoxWarpWheel.Enabled = version >= new Version(1, 3, 3);
@@ -231,18 +256,52 @@ namespace Hacktice
             });
         }
 
-        private void InjectHacktice()
+        private void InjectHackticePayloadData()
         {
-            _emulator.WriteToEmulator(0x7f2000, Resource.data);
+            _emulator.WriteToEmulator((uint)(0x7f2000 + Resource.payload_header.Length), Resource.payload_data);
+        }
+
+        private void InjectHackticePayloadHeaderAndHooks()
+        {
+            _emulator.WriteToEmulator(0x7f2000, Resource.payload_header);
             XmlPatches patches = new XmlPatches();
             foreach (var patch in patches)
             {
-                // Ignore code that copies from ROM to RAM
-                if (patch.Offset == 0x396c || patch.Offset == 0x7f1200)
+                // Ignore code that copies from ROM to RAM and upgrades hacktice
+                if (patch.Offset == 0x396c || patch.Offset == 0x7f1200 || patch.Offset == 0x7f1400 || patch.Offset == 0x7f1500)
                     continue;
 
                 _emulator.WriteToEmulator((uint)patch.Offset, patch.Data);
             }
+        }
+
+        private void InjectHacktice()
+        {
+            InjectHackticePayloadData();
+            InjectHackticePayloadHeaderAndHooks();
+        }
+
+        private void DisableHacktice()
+        {
+            XmlPatches patches = new XmlPatches();
+            foreach (var patch in patches)
+            {
+                // Write disabler code - it will invalidate the hook memory
+                if (patch.Offset != 0x7F1400 && patch.Offset != 0x7F1500)
+                    continue;
+
+                _emulator.WriteToEmulator((uint)patch.Offset, patch.Data);
+            }
+
+            // this detour call writeback on data cache
+            _emulator.WriteHackticeDetours(0x8004d400, 4);
+        }
+
+        private void UpgradeDisabledHacktice()
+        {
+            InjectHackticePayloadData();
+            // this detour invalidate i/d cache
+            _emulator.WriteHackticeDetours(0x8004d500, 4);
         }
 
         private void PrepareHacktice()
@@ -276,7 +335,17 @@ namespace Hacktice
                     }
                     if (val == 0x41435456)
                     {
-                        newState = State.HACKTICE_RUNNING;
+                        newState = _emulator.ReadVersion() == _payloadVersion ? State.HACKTICE_RUNNING_CAN_UPGRADE : State.HACKTICE_RUNNING_CAN_UPGRADE;
+                        return;
+                    }
+                    if (val == 0x4453424c)
+                    {
+                        newState = State.HACKTICE_UPGRADE_DISABLED;
+                        return;
+                    }
+                    if (val == 0x55504752)
+                    {
+                        newState = State.HACKTICE_UPGRADE_DATA_WRITTEN;
                         return;
                     }
                 }
@@ -317,12 +386,27 @@ namespace Hacktice
                 if (EmulatorState >= State.ROM)
                 {
                     if (injectHacktice)
-                        InjectHacktice();
+                    {
+                        if (EmulatorState != State.HACKTICE_RUNNING_CAN_UPGRADE)
+                            InjectHacktice();
+                        else
+                            DisableHacktice();
+                    }
+
+                    if (EmulatorState == State.HACKTICE_UPGRADE_DISABLED)
+                    {
+                        UpgradeDisabledHacktice();
+                    }
+
+                    if (EmulatorState == State.HACKTICE_UPGRADE_DATA_WRITTEN)
+                    {
+                        InjectHackticePayloadHeaderAndHooks();
+                    }
 
                     PrepareHacktice();
                 }
 
-                if (EmulatorState == State.HACKTICE_RUNNING)
+                if (EmulatorState >= State.HACKTICE_RUNNING)
                 {
                     var userUpdatedConfig = NeedToUpdateConfig;
 
@@ -380,45 +464,6 @@ namespace Hacktice
                     return;
                 }
             }
-        }
-
-        private int FindHackticeConfigPosition(byte[] payload)
-        {
-            // The main payload has part that is constant and part that is in the end and has 'HCFG' magic in it
-            // round to 4, most likely it is unnecessary but just in case
-            int off = payload.Length - (payload.Length % 4) - 4;
-            while (off != 0)
-            {
-                if (payload[off] == 'H' && payload[off + 1] == 'C' && payload[off + 2] == 'F' && payload[off + 3] == 'G')
-                {
-                    return off;
-                }
-
-                off -= 4;
-            }
-
-            throw new ArgumentException("Failed to find Hacktice config in the payload");
-        }
-
-        // Unused currently
-        private void buttonGSCode_Click(object sender, EventArgs e)
-        {
-            GameSharkCodeGenerator generator;
-            generator = new GameSharkCodeGenerator();
-
-            XmlPatches patches = new XmlPatches();
-            foreach (var patch in patches)
-            {
-                // Ignore code that copies from ROM to RAM
-                if (patch.Offset == 0x396c || patch.Offset == 0x7f1200)
-                    continue;
-
-                generator.Add((uint)patch.Offset, patch.Data, 0, patch.Data.Length, true);
-            }
-
-            int hcfgOff = FindHackticeConfigPosition(Resource.data);
-            generator.Add(0x7f2000, Resource.data, 0, hcfgOff, true);
-            generator.Add(0x7f2000 + (uint) hcfgOff, Resource.data, hcfgOff, Resource.data.Length - hcfgOff, false);
         }
 
         private void buttonInjectInEmulator_Click(object sender, EventArgs e)

@@ -377,3 +377,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 Hacktice/data
+Hacktice/payload_data
+Hacktice/payload_header

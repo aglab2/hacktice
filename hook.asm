@@ -149,7 +149,7 @@
 
 .orga code_rom
 execonce:
-	addiu sp, sp, -0x18; don't get rid of those extra things. they are needed
+	addiu sp, sp, -0x18
 	sw ra, 0x14(sp)
 	or a0, r0, r0
 	jal 0x80277ee0
@@ -174,7 +174,7 @@ execonce:
 
 .orga code_rom+0x100
 execeveryframe:
-	addiu sp, sp, 0xffe8; don't get rid of those extra things. they are needed
+	addiu sp, sp, 0xffe8
 	sw ra, 0x14(sp)
 
 	lw at, 0x8004e000
@@ -197,15 +197,24 @@ execeveryframe:
 	nop
 
 .orga code_rom+0x200
-stalling:
-	jr ra
-	nop
-
-.orga code_rom+0x300
-upgrade:
-	addiu sp, sp, -0x18; don't get rid of those extra things. they are needed
+disable:
+	addiu sp, sp, 0xffe8
 	sw ra, 0x14(sp)
-	
+
+	lw t1, 0x8004E018
+	li t0, 1146307148
+	beq t0, t1, nowriteback
+	NOP
+
+	; osWritebackDCache(0x8004e000, 0xE000)
+	li a0, 0x8004e000
+	jal 0x80325d20
+	li a1, 0xE000
+
+	li t0, 1146307148
+	sw t0, 0x8004E018
+
+nowriteback:
 	lw ra, 0x14(sp)
 	jr ra
 	addiu sp, sp, 0x18
@@ -218,6 +227,41 @@ upgrade:
 	nop
 	nop
 
+.orga code_rom+0x300
+upgrade:
+	addiu sp, sp, 0xffe8
+	sw ra, 0x14(sp)
+
+	lw t1, 0x8004E018
+	li t0, 1431324498
+	beq t0, t1, noinval
+	NOP
+
+	; osInvalICache(0x8004e000, 0xE000)
+	li a0, 0x8004e000
+	jal 0x80324610
+	li a1, 0xE000
+
+	; osInvalDCache(0x8004e000, 0xE000)
+	li a0, 0x8004e000
+	jal 0x803243b0
+	li a1, 0xE000
+	
+	li t0, 1431324498
+	sw t0, 0x8004E018
+
+noinval:
+	lw ra, 0x14(sp)
+	jr ra
+	addiu sp, sp, 0x18
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 ;execviframes:
 	;addiu sp, sp, 0xffe8

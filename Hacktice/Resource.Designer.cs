@@ -61,21 +61,31 @@ namespace Hacktice {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] data {
-            get {
-                object obj = ResourceManager.GetObject("data", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;&lt;patch&gt;&lt;data&gt;&lt;address&gt;0x396C&lt;/address&gt;&lt;bytes&gt;0x3C,0x04,0x80,0x05,0x24,0x84,0xD2,0x00,0x3C,0x05,0x00,0x7F,0x24,0xA5,0x12,0x00,0x3C,0x06,0x00,0x80,0x0C,0x09,0xE1,0x41,0x00,0x00,0x00,0x00,0x0C,0x01,0x34,0x80,0x00,0x00,0x00,0x00&lt;/bytes&gt;&lt;/data&gt;&lt;data&gt;&lt;address&gt;0x4688&lt;/address&gt;&lt;bytes&gt;0xA0,0x3B,0xB2,0x5E&lt;/bytes&gt;&lt;/data&gt;&lt;data&gt;&lt;address&gt;0x4694&lt;/address&gt;&lt;bytes&gt;0x00,0x00,0x00,0x00&lt;/bytes&gt;&lt;/data&gt;&lt;data&gt;&lt;address&gt;0x5024&lt;/address&gt;&lt;bytes&gt;0x10,0x00,0x00,0x05&lt;/bytes&gt;&lt;/data&gt;&lt;data&gt;&lt;address&gt;0x5150&lt;/address&gt;&lt;byte [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string hook {
             get {
                 return ResourceManager.GetString("hook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] payload_data {
+            get {
+                object obj = ResourceManager.GetObject("payload_data", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] payload_header {
+            get {
+                object obj = ResourceManager.GetObject("payload_header", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

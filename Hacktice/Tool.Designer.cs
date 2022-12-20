@@ -125,7 +125,7 @@
             this.buttonInjectInEmulator.Enabled = false;
             this.buttonInjectInEmulator.Location = new System.Drawing.Point(6, 19);
             this.buttonInjectInEmulator.Name = "buttonInjectInEmulator";
-            this.buttonInjectInEmulator.Size = new System.Drawing.Size(110, 23);
+            this.buttonInjectInEmulator.Size = new System.Drawing.Size(123, 23);
             this.buttonInjectInEmulator.TabIndex = 5;
             this.buttonInjectInEmulator.Text = "Inject in Emulator";
             this.buttonInjectInEmulator.UseVisualStyleBackColor = true;
@@ -159,7 +159,7 @@
             // labelDescInject
             // 
             this.labelDescInject.AutoSize = true;
-            this.labelDescInject.Location = new System.Drawing.Point(118, 24);
+            this.labelDescInject.Location = new System.Drawing.Point(135, 24);
             this.labelDescInject.Name = "labelDescInject";
             this.labelDescInject.Size = new System.Drawing.Size(185, 13);
             this.labelDescInject.TabIndex = 6;

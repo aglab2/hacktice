@@ -306,5 +306,16 @@ namespace Hacktice
             _process.ReadValue(_ptrVersion, out int version);
             return new Version(version);
         }
+
+        public void WriteHackticeDetours(uint fn, int repeats)
+        {
+            var fnBytes = BitConverter.GetBytes(fn);
+            var bytes = new byte[sizeof(uint) * repeats];
+            for (int i = 0; i < repeats; i++)
+            {
+                Array.Copy(fnBytes, 0, bytes, sizeof(uint) * i, 4);
+            }
+            _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x4e000)), bytes);
+        }
     }
 }

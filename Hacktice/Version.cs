@@ -71,6 +71,16 @@ namespace Hacktice
             return v1.CompareTo(v2) >= 0;
         }
 
+        public static bool operator ==(Version v1, Version v2)
+        {
+            return v1.CompareTo(v2) == 0;
+        }
+
+        public static bool operator !=(Version v1, Version v2)
+        {
+            return v1.CompareTo(v2) != 0;
+        }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return $"{major.ToString(format, formatProvider)}.{minor.ToString(format, formatProvider)}.{patch.ToString(format, formatProvider)}";

@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Emulator.cs" />
-    <Compile Include="GameSharkCodeGenerator.cs" />
     <Compile Include="MagicManager.cs" />
     <Compile Include="N64CRC.cs" />
     <Compile Include="Patcher.cs" />
@@ -75,6 +74,7 @@
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Tool.resx">
       <DependentUpon>Tool.cs</DependentUpon>
@@ -84,6 +84,8 @@
     <None Include="app.config" />
     <None Include="data" />
     <None Include="hook.xml" />
+    <None Include="payload_data" />
+    <None Include="payload_header" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
