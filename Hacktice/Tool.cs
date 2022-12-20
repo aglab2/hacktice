@@ -334,7 +334,7 @@ namespace Hacktice
                     }
                     if (val == 0x41435456)
                     {
-                        newState = _emulator.ReadVersion() == _payloadVersion ? State.HACKTICE_RUNNING_CAN_UPGRADE : State.HACKTICE_RUNNING_CAN_UPGRADE;
+                        newState = _emulator.ReadVersion() == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
                         return;
                     }
                     if (val == 0x4453424c)
