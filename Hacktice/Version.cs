@@ -81,6 +81,25 @@ namespace Hacktice
             return v1.CompareTo(v2) != 0;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            var version = obj as Version;
+            if (!(version is object))
+            {
+                throw new ArgumentException("Object is not a Version");
+            }
+
+            return major.Equals(version.major) && minor.Equals(version.minor) && patch.Equals(version.patch);
+        }
+
+        public override int GetHashCode()
+        {
+            return major.GetHashCode() ^ minor.GetHashCode() ^ patch.GetHashCode();
+        }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return $"{major.ToString(format, formatProvider)}.{minor.ToString(format, formatProvider)}.{patch.ToString(format, formatProvider)}";
