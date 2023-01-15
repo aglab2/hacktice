@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "config.h": "c",
-        "xversion.h": "c",
-        "object_constants.h": "c"
-    }
-}
