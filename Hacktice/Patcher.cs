@@ -38,6 +38,13 @@ namespace Hacktice
             Array.Copy(Resource.payload_header, 0, rom, 0x7f2000, Resource.payload_header.Length);
             Array.Copy(Resource.payload_data, 0, rom, 0x7f2000 + Resource.payload_header.Length, Resource.payload_data.Length);
 
+            // For backwards compatibility we write in the rom stuff that was overwritten in previous hacktice versions
+            rom[0x57e9c] = 0xad;
+            rom[0x57e9d] = 0xe8;
+
+            rom[0x57ec0] = 0xa5;
+            rom[0x57ec1] = 0x4d;
+
             N64CRC crcCalculator = new N64CRC();
             crcCalculator.crc(rom);
 
