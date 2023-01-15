@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/level_update.h"
 #include "game/envfx_snow.h"
+#include "object_constants.h"
 
 #include "cfg.h"
 #include "timer.h"
@@ -104,4 +105,15 @@ void LevelReset_onNormal()
         Timer_reset();
         resetCamera();
     }
+}
+
+s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
+{
+    if (sTimerRunningDeferred)
+    {
+        spawnInfo->behaviorArg &= ~(RESPAWN_INFO_DONT_RESPAWN << 8);
+        return true;
+    }
+
+    return (spawnInfo->behaviorArg & (RESPAWN_INFO_DONT_RESPAWN << 8)) != (RESPAWN_INFO_DONT_RESPAWN << 8);
 }

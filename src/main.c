@@ -69,4 +69,7 @@ uintptr_t _start[] = {
     HACKTICE_STATUS_INIT,
     (uintptr_t) &sConfig,
     (uintptr_t) 0x80026000,
+    (uintptr_t) LevelReset_onSpawnObjectsFromInfoHook,
+    (uintptr_t) 0 /*reserved for future use*/,
+    (uintptr_t) 0 /*reserved for future use*/,
 };

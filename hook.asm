@@ -1,9 +1,3 @@
-; +++ Prepare common codes
-.orga 0x57E9C
-	NOP
-.orga 0x57EC0
-	NOP
-
 ; Stars always yellow
 ;.orga 0xAD548
 ;	B 0xAD56C
@@ -90,7 +84,7 @@
 	jr ra
 	addiu sp, sp, 0x18
 
-; +++ check_death_barrier hack
+; +++ check_death_barrier hook
 .orga 0xb5fc
 .area 0x4C, 0x00
 	lw at, 0x8004e00c
@@ -99,6 +93,13 @@
 	b 0xb64c
 	nop
 .endarea
+
+; +++ spawn_objects_from_info hook for level reset
+.orga 0x58044
+	lw at, 0x8004e024
+	jalr at
+	lw a0, 0x2c(sp) ; spawnInfo
+	beq v0, r0, 0x581a8
 
 ; +++ Main hook to load data in
 
