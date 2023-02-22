@@ -21,19 +21,6 @@ Config sConfig = {
     .name = "PRACTICE",
 };
 
-typedef enum Pages
-{
-    Pages_CHECKPOINTS,
-    Pages_GENERAL,
-    Pages_WARP,
-    Pages_PagesCount,
-} Pages;
-
-static int sPage = Pages_GENERAL;
-// poor man constexpr
-#define sMaxAllowedPage (Pages_PagesCount - 1)
-static const u8* lPageNames[] = { uCHECKPOINTS, uGENERAL, uWARP };
-
 typedef struct ConfigDescriptor
 {
     char* value;
@@ -76,36 +63,49 @@ static const ConfigDescriptor sCheckpointsDescriptors[] =
 };
 #define sCheckpointsMaxAllowedOption (sizeof(sCheckpointsDescriptors) / sizeof(*sCheckpointsDescriptors) - 1)
 
-// General
-static const ConfigDescriptor sGeneralDescriptors[] =
+// Visuals
+static const ConfigDescriptor sVisualsDescriptors[] =
 {
-    { &sConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
-    { &sConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },
-    
     { &sConfig.showButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
     { &sConfig.stickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
 
-    { &sConfig.lAction,       uLACTION,           VALUE_NAMES(actionNames) },
-    { &sConfig.lRAction,      uLRACTION,          VALUE_NAMES(actionNames) },
-    { &sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(actionNames) },
-    { &sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(actionNames) },
-    { &sConfig.dpadUpAction,  uDPAD_UP_ACTION  ,  VALUE_NAMES(actionNames) },
+    { &sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
 
+    { &sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
+    { &sConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
+    { &sConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
+
+    { &sConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
+
+    { &sConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
+    { &sConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },        
+};
+#define sVisualsMaxAllowedOption (sizeof(sVisualsDescriptors) / sizeof(*sVisualsDescriptors) - 1)
+
+// General
+static const ConfigDescriptor sGeneralDescriptors[] =
+{
     { &sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
     
     { &sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
 
     { &Config_gMusicNumber,    uMUSIC_NUMBER,  lMusicNumbers, 64 },
     { &sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
-    { &sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
-    { &sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
-    { &sConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
-    { &sConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
-    { &sConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
 
     { &sConfig.warpWheel,     uWARP_WHEEL, VALUE_NAMES(onOffValueNames) },
 };
 #define sGeneralMaxAllowedOption (sizeof(sGeneralDescriptors) / sizeof(*sGeneralDescriptors) - 1)
+
+// Shortcuts
+static const ConfigDescriptor sShortcutsDescriptors[] =
+{
+    { &sConfig.lAction,       uLACTION,           VALUE_NAMES(actionNames) },
+    { &sConfig.lRAction,      uLRACTION,          VALUE_NAMES(actionNames) },
+    { &sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(actionNames) },
+    { &sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(actionNames) },
+    { &sConfig.dpadUpAction,  uDPAD_UP_ACTION  ,  VALUE_NAMES(actionNames) },
+};
+#define sShortcutsMaxAllowedOption (sizeof(sShortcutsDescriptors) / sizeof(*sShortcutsDescriptors) - 1)
 
 // Warp
 static const ConfigDescriptor sWarpDescriptors[] = {
@@ -114,21 +114,43 @@ static const ConfigDescriptor sWarpDescriptors[] = {
 #define sWarpMaxAllowedOption 0
 
 // Common
-static const ConfigDescriptor* const sDescriptors[] = 
+typedef enum Pages
 {
-    sCheckpointsDescriptors,
-    sGeneralDescriptors,
-    sWarpDescriptors,
+    Pages_CHECKPOINTS,
+    Pages_VISUALS,
+    Pages_GENERAL,
+    Pages_SHORTCUTS,
+    Pages_WARP,
+    Pages_PagesCount,
+} Pages;
+
+static unsigned char sPage = Pages_GENERAL;
+// poor man constexpr
+#define sMaxAllowedPage (Pages_PagesCount - 1)
+
+typedef struct PageDescriptor
+{
+    const u8* name;
+    const ConfigDescriptor* configs;
+    char maxAllowedOption;
+} PageDescriptor;
+
+#define PAGE_CONFIG(desc) desc, sizeof(desc)/sizeof(*desc) - 1
+static const PageDescriptor sPageDescriptors[] = 
+{
+    { uCHECKPOINTS, PAGE_CONFIG(sCheckpointsDescriptors) },
+    { uVISUALS    , PAGE_CONFIG(sVisualsDescriptors) },
+    { uGENERAL    , PAGE_CONFIG(sGeneralDescriptors) },
+    { uSHORTCUTS  , PAGE_CONFIG(sShortcutsDescriptors) },
+    { uWARP       , PAGE_CONFIG(sWarpDescriptors) },
 };
-static int sPickedOptions[3] = {
+
+static unsigned char sPickedOptions[] = {
     sCheckpointsMaxAllowedOption / 2,
+    sVisualsMaxAllowedOption     / 2,
     sGeneralMaxAllowedOption     / 2,
+    sShortcutsMaxAllowedOption   / 2,
     sWarpMaxAllowedOption        / 2,
-};
-static const int sMaxAllowedOptions[3] = {
-    sCheckpointsMaxAllowedOption,
-    sGeneralMaxAllowedOption,
-    sWarpMaxAllowedOption,
 };
 
 s16 get_str_x_pos_from_center(s16 centerPos, const u8 *str);
@@ -173,8 +195,9 @@ static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
 static void render()
 {
     int pickedOption = sPickedOptions[sPage];
-    int maxAllowedOption = sMaxAllowedOptions[sPage]; 
-    const ConfigDescriptor* descriptors = sDescriptors[sPage];
+    const PageDescriptor* pageDescriptor = &sPageDescriptors[sPage];
+    int maxAllowedOption = pageDescriptor->maxAllowedOption;
+    const ConfigDescriptor* descriptors = pageDescriptor->configs;
 
     if (0 != sPage)
         print_generic_string(20, 210, uLEFT_Z);
@@ -189,7 +212,7 @@ static void render()
     print_generic_string(70, 115, uDOWN);
     print_generic_string_centered(72, 105, uC_DOWN);
 
-    print_generic_string_centered(160, 210, lPageNames[(int) sPage]);
+    print_generic_string_centered(160, 210, pageDescriptor->name);
 
     const int height = 190;
     if (pickedOption >= 2)
@@ -217,9 +240,10 @@ static void render()
 
 static void processInputs()
 {
-    int* pickedOption = &sPickedOptions[sPage];
-    const ConfigDescriptor* desc = &sDescriptors[sPage][*pickedOption];
-    int maxAllowedOption = sMaxAllowedOptions[sPage]; 
+    unsigned char* pickedOption = &sPickedOptions[sPage];
+    const PageDescriptor* pageDescriptor = &sPageDescriptors[sPage];
+    const ConfigDescriptor* desc = &pageDescriptor->configs[*pickedOption];
+    int maxAllowedOption = pageDescriptor->maxAllowedOption;
 
     if (gControllers->buttonPressed & L_JPAD)
     {
