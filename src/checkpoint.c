@@ -10,9 +10,10 @@
 #include "text_manager.h"
 #include "sm64.h"
 
-static bool sShow = false;
 static int sWasLastNumCollidedObjects = 0;
 static bool sWasLastPlatform = false;
+
+char Checkpoint_gShow = false;
 
 static void addTimeLine()
 {
@@ -29,9 +30,9 @@ static void addTimeLine()
 
 void Checkpoint_onNormal()
 {
-    if (sShow)
+    if (Checkpoint_gShow)
     {
-        sShow = false;
+        Checkpoint_gShow = false;
         return addTimeLine();
     }
 
@@ -67,9 +68,4 @@ void Checkpoint_onNormal()
     ADD_TIME_ON_EVENT(Groundpound, ACT_GROUND_POUND)
     ADD_TIME_ON_EVENT(Burning, ACT_BURNING_GROUND)
     ADD_TIME_ON_EVENT(Cannon, ACT_IN_CANNON)
-}
-
-void Checkpoint_registerEvent()
-{
-    sShow = true;
 }

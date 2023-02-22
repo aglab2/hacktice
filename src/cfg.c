@@ -9,14 +9,16 @@
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
 
-static char sWarp;
-static char sMusicNumber;
+char Config_gWarp;
+char Config_gMusicNumber;
+char Config_gOnDeathAction;
 
 Config sConfig = {
     .magic = HACKTICE_CONFIG_CANARY,
     .selfSize = sizeof(Config),
     .timerShow = true,
     .warpWheel = true,
+    .name = "PRACTICE",
 };
 
 typedef enum Pages
@@ -52,8 +54,6 @@ static const u8* const actionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLE
 
 static u8 lMusicNumber[] = { 0x00, 0x00, 0xff };
 static const u8* const lMusicNumbers[] = { lMusicNumber, NULL };
-
-static u8 sOnDeathAction = 0;
 
 #define VALUE_NAMES(x) x, ARRAY_SIZE(x)
 #define INT_NAMES(x, cnt) x, cnt
@@ -95,7 +95,7 @@ static const ConfigDescriptor sGeneralDescriptors[] =
     
     { &sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
 
-    { &sMusicNumber,   uMUSIC_NUMBER,  lMusicNumbers, 64 },
+    { &Config_gMusicNumber,    uMUSIC_NUMBER,  lMusicNumbers, 64 },
     { &sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
     { &sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
     { &sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
@@ -109,7 +109,7 @@ static const ConfigDescriptor sGeneralDescriptors[] =
 
 // Warp
 static const ConfigDescriptor sWarpDescriptors[] = {
-    { &sWarp, uSELECT_WARP_TARGET, NULL, 25 },
+    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, 25 },
 };
 #define sWarpMaxAllowedOption 0
 
@@ -288,19 +288,9 @@ void Config_onPause()
     processInputs();
 }
 
-Config_StickStyle Config_showStick()
-{
-    return (Config_StickStyle) sConfig.stickStyle;
-}
-
-bool Config_showButtons()
-{
-    return sConfig.showButtons;
-}
-
 static inline LevelConv_PlainLevels Config_warpId()
 {
-    return (LevelConv_PlainLevels) sWarp;
+    return (LevelConv_PlainLevels) Config_gWarp;
 }
 
 LevelConv_PlainLevels Config_warpIdAndReset()
@@ -323,9 +313,9 @@ LevelConv_PlainLevels Config_warpIdAndReset()
 
 Config_ButtonAction Config_action()
 {
-    if (sOnDeathAction)
+    if (Config_gOnDeathAction)
     {
-        return (Config_ButtonAction) sOnDeathAction;
+        return (Config_ButtonAction) Config_gOnDeathAction;
     }
 
     if (sConfig.lRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
@@ -350,124 +340,4 @@ Config_ButtonAction Config_action()
     }
 
     return Config_ButtonAction_OFF;
-}
-
-bool Config_showWallkickFrame()
-{
-    return sConfig.wallkickFrame;
-}
-
-bool Config_showDistanceFromClosestRed()
-{
-    return sConfig.distanceFromClosestRed;
-}
-
-bool Config_showDistanceFromClosestSecret()
-{
-    return sConfig.distanceFromClosestSecret;
-}
-
-bool Config_showSpeed()
-{
-    return sConfig.speed;
-}
-
-bool Config_timerShow()
-{
-    return sConfig.timerShow;
-}
-
-Config_TimerStyle Config_timerStyle()
-{
-    return (Config_TimerStyle) sConfig.timerStyle;
-}
-
-bool Config_timerStopOnCoinStar()
-{
-    return sConfig.timerStopOnCoinStar;
-}
-
-Config_StateSaveStyle Config_saveStateStyle()
-{
-    return (Config_StateSaveStyle) sConfig.stateSaveStyle;
-}
-
-bool Config_muteMusic()
-{
-    return sConfig.muteMusic;
-}
-
-char Config_musicNumber()
-{
-    return sMusicNumber;
-}
-
-Config_DeathAction Config_deathAction()
-{
-    return (Config_DeathAction) sConfig.deathAction;
-}
-
-void Config_setOnDeathAction(Config_ButtonAction act)
-{
-    sOnDeathAction = (u8) act;
-}
-
-bool Config_checkpointWallkick()
-{
-    return sConfig.checkpointWallkick;
-}
-
-bool Config_checkpointDoor()
-{
-    return sConfig.checkpointDoor;
-}
-
-bool Config_checkpointPole()
-{
-    return sConfig.checkpointPole;
-}
-
-bool Config_checkpointLava()
-{
-    return sConfig.checkpointLava;
-}
-
-bool Config_checkpointGroundpound()
-{
-    return sConfig.checkpointGroundpound;
-}
-
-bool Config_checkpointBurning()
-{
-    return sConfig.checkpointBurning;
-}
-
-bool Config_checkpointCannon()
-{
-    return sConfig.checkpointCannon;
-}
-
-bool Config_checkpointWarp()
-{
-    return sConfig.checkpointWarp;
-}
-
-bool Config_checkpointRed()
-{
-    return sConfig.checkpointRed;
-}
-
-bool Config_checkpointCoin()
-{
-    return sConfig.checkpointCoin;
-}
-
-bool Config_checkpointObject()
-{
-    return sConfig.checkpointObject;
-}
-
-bool Config_checkpointPlatform()
-{
-    return sConfig.checkpointPlatform;
 }

@@ -46,6 +46,27 @@ namespace Hacktice
         public byte checkpointCoin;
         public byte checkpointRed;
 
+        // since version 1.3.6
+        public byte name3 = (byte)'C';
+        public byte name2 = (byte)'A';
+        public byte name1 = (byte)'R';
+        public byte name0 = (byte)'P';
+
+        public byte name7 = (byte)'E';
+        public byte name6 = (byte)'C';
+        public byte name5 = (byte)'I';
+        public byte name4 = (byte)'T';
+
+        public byte showName;
+        public byte name10;
+        public byte name9;
+        public byte name8;
+
+        public void setName(string name)
+        {
+            name0 = name1 = name2 = name3 = name4 = name5 = name6 = name7 = name8 = name9 = name10 = 0;
+        }
+
         // TODO: Do this better please
         public bool Equals(Config o)
         {
@@ -80,7 +101,8 @@ namespace Hacktice
                 && checkpointCoin == o.checkpointCoin
                 && checkpointRed == o.checkpointRed
                 && dpadUpAction == o.dpadUpAction
-                && warpWheel == o.warpWheel;
+                && warpWheel == o.warpWheel
+                && showName == o.showName;
         }
     }
 }

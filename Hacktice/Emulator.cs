@@ -297,7 +297,22 @@ namespace Hacktice
             var config = (Config) Marshal.PtrToStructure(ptr, typeof(Config));
             Marshal.FreeHGlobal(ptr);
 
-            // TODO: Trim config based on 'hackticeConfigSize'. Currently it is unnecessary
+            if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("name3"))
+            {
+                config.name0 = (byte)'P';
+                config.name1 = (byte)'R';
+                config.name2 = (byte)'A';
+                config.name3 = (byte)'C';
+                config.name4 = (byte)'T';
+                config.name5 = (byte)'I';
+                config.name6 = (byte)'C';
+                config.name7 = (byte)'E';
+                config.name8 = 0;
+                config.name9 = 0;
+                config.name10 = 0;
+                config.showName = 0;
+            }
+
             return config;
         }
 
