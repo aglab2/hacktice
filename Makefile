@@ -20,6 +20,7 @@ ROM_OFFSET = 8331264
 SRC_FILES = $(patsubst %, $(SRC_DIR)/%.c, $(CPP_FILES))
 OBJ_FILES = $(patsubst %, $(OBJ_DIR)/%.o, $(CPP_FILES))
 
+PAYLOAD_RAW = $(OBJ_DIR)/payload-raw
 PAYLOAD = $(OBJ_DIR)/payload
 PAYLOAD_HEADER = $(TOOL_DIR)/payload_header
 PAYLOAD_DATA = $(TOOL_DIR)/payload_data
@@ -34,8 +35,11 @@ all: $(OBJ_DIR) $(ROM) $(PAYLOAD_HEADER) $(PAYLOAD_DATA)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< -c -o $@
 
-$(PAYLOAD): $(OBJ_FILES)
+$(PAYLOAD_RAW): $(OBJ_FILES)
 	$(LD) -o $@ -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^
+
+$(PAYLOAD): $(PAYLOAD_RAW)
+	python remove_teq.py $(PAYLOAD_HEADER_SIZE) $(PAYLOAD_RAW) $(PAYLOAD)
 
 $(ROM): $(PAYLOAD)
 	dd bs=1 seek=$(ROM_OFFSET) if=$^ of=$@ conv=notrunc
