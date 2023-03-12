@@ -45,7 +45,7 @@ void InputViewer_onNormal()
         print_text_fmt_int(270, 40, "%d", ABS(x));
         print_text_fmt_int(270, 20, "%d", ABS(y));
         if (x)
-            print_text(250, 40, POSITIVE(x) ? "L" : "R");
+            print_text(250, 40, POSITIVE(x) ? "R" : "L");
 
         if (y)
             print_text(250, 20, POSITIVE(y) ? "U" : "D");
