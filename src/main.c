@@ -70,6 +70,6 @@ uintptr_t _start[] = {
     (uintptr_t) &sConfig,
     (uintptr_t) 0x80026000,
     (uintptr_t) LevelReset_onSpawnObjectsFromInfoHook,
-    (uintptr_t) 0 /*reserved for future use*/,
+    (uintptr_t) LevelReset_setObjectRespawnInfoBits,
     (uintptr_t) 0 /*reserved for future use*/,
 };

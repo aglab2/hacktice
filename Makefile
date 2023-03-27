@@ -28,7 +28,7 @@ PAYLOAD_DATA = $(TOOL_DIR)/payload_data
 CC = clang
 AR = llvm-ar
 LD = ld.lld
-CFLAGS = -flto -Wall -Wdouble-promotion -Oz -mfix4300 -march=mips2 --target=mips-img-elf -fomit-frame-pointer -G0 -I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc -mno-check-zero-division -fno-exceptions -fno-builtin -fno-rtti -fno-common -mno-abicalls -DTARGET_N64 -mfpxx
+CFLAGS = -DBINARY -flto -Wall -Wdouble-promotion -Oz -mfix4300 -march=mips2 --target=mips-img-elf -fomit-frame-pointer -G0 -I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc -mno-check-zero-division -fno-exceptions -fno-builtin -fno-rtti -fno-common -mno-abicalls -DTARGET_N64 -mfpxx
 
 all: $(OBJ_DIR) $(ROM) $(PAYLOAD_HEADER) $(PAYLOAD_DATA)
 

@@ -6,6 +6,7 @@
 #include "game/level_update.h"
 #include "game/envfx_snow.h"
 #include "object_constants.h"
+#include "libc/stddef.h"
 
 #include "cfg.h"
 #include "timer.h"
@@ -13,6 +14,10 @@
 static bool sTimerRunningDeferred = false;
 extern u8 sTransitionColorFadeCount[4];
 extern u16 sTransitionTextureFadeCount[2];
+
+#define container_of(ptr, type, member) ({ \
+                const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+                (type *)( (char *)__mptr - offsetof(type,member) );})
 
 static void resetCamera()
 {
@@ -107,13 +112,48 @@ void LevelReset_onNormal()
     }
 }
 
+static inline bool isScroll(struct SpawnInfo* spawnInfo)
+{
+#ifdef BINARY
+    // TODO: This is very hacky, do a more careful check
+    if (spawnInfo->behaviorScript == (void*) 0x401700)
+        return true;
+#endif
+
+    return false;
+}
+
 s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
 {
-    if (sTimerRunningDeferred)
+    if (sTimerRunningDeferred && !isScroll(spawnInfo))
     {
         spawnInfo->behaviorArg &= ~(RESPAWN_INFO_DONT_RESPAWN << 8);
         return true;
     }
 
     return (spawnInfo->behaviorArg & (RESPAWN_INFO_DONT_RESPAWN << 8)) != (RESPAWN_INFO_DONT_RESPAWN << 8);
+}
+
+void LevelReset_setObjectRespawnInfoBits(struct Object *obj, u8 bits) 
+{
+    switch (obj->respawnInfoType) 
+    {
+        case RESPAWN_INFO_TYPE_32:
+        {
+            u32* info32 = (u32 *) obj->respawnInfo;
+            struct SpawnInfo* spawnInfo = container_of(info32, struct SpawnInfo, behaviorArg);
+            if (!isScroll(spawnInfo))
+            {
+                *info32 |= bits << 8;
+            }
+        }
+        break;
+
+        case RESPAWN_INFO_TYPE_16:
+        {
+            u16* info16 = (u16 *) obj->respawnInfo;
+            *info16 |= bits << 8;
+        }
+        break;
+    }
 }

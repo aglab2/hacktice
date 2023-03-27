@@ -101,6 +101,17 @@
 	lw a0, 0x2c(sp) ; spawnInfo
 	beq v0, r0, 0x581a8
 
+; +++ set_object_respawn_info_bits hook for level reset
+.orga 0x57e58
+	addiu sp, sp, -0x18
+	sw ra, 0x14(sp)
+	lw at, 0x8004e028
+	jalr at
+	nop
+	lw ra, 0x14(sp)
+	jr ra
+	addiu sp, sp, 0x18
+
 ; +++ Main hook to load data in
 
 .headersize 0x80245000
