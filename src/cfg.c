@@ -1,11 +1,11 @@
 #include "cfg.h"
 #include "array_size.h"
+#include "binary.h"
 #include "shared.h"
 #include "string_conv.h"
 #include "strings.h"
 
 #include "types.h"
-#include "game/game.h"
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
 
@@ -153,11 +153,9 @@ static unsigned char sPickedOptions[] = {
     sWarpMaxAllowedOption        / 2,
 };
 
-s16 get_str_x_pos_from_center(s16 centerPos, const u8 *str);
-
 static void print_generic_string_centered(s16 x, s16 y, const u8 *str)
 {
-    s16 newX = get_str_x_pos_from_center(x, str);
+    s16 newX = GET_STR_X_POS_FROM_CENTER(x, str, 10.f);
     print_generic_string(newX, y, str);
 }
 

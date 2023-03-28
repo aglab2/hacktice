@@ -1,8 +1,8 @@
 #include "level_reset.h"
 
+#include "binary.h"
 #include "types.h"
 #include "game/camera.h"
-#include "game/game.h"
 #include "game/level_update.h"
 #include "game/envfx_snow.h"
 #include "object_constants.h"
@@ -114,6 +114,8 @@ void LevelReset_onNormal()
 
 static inline bool isScroll(struct SpawnInfo* spawnInfo)
 {
+    (void) spawnInfo;
+
 #ifdef BINARY
     // TODO: This is very hacky, do a more careful check
     if (spawnInfo->behaviorScript == (void*) 0x401700)
@@ -134,6 +136,7 @@ s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
     return (spawnInfo->behaviorArg & (RESPAWN_INFO_DONT_RESPAWN << 8)) != (RESPAWN_INFO_DONT_RESPAWN << 8);
 }
 
+#ifdef BINARY
 void LevelReset_setObjectRespawnInfoBits(struct Object *obj, u8 bits) 
 {
     switch (obj->respawnInfoType) 
@@ -157,3 +160,4 @@ void LevelReset_setObjectRespawnInfoBits(struct Object *obj, u8 bits)
         break;
     }
 }
+#endif

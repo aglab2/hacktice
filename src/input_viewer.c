@@ -1,7 +1,7 @@
 #include "input_viewer.h"
 
+#include "binary.h"
 #include "types.h"
-#include "game/game.h"
 #include "game/ingame_menu.h"
 #include "game/print.h"
 #include "libc/string.h"

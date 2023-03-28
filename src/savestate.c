@@ -1,20 +1,27 @@
 #include "savestate.h"
 
+#include "binary.h"
 #include "cfg.h"
 #include "text_manager.h"
 
 #include "game/area.h"
 #include "game/camera.h"
-#include "game/game.h"
 #include "game/print.h"
 #include "game/level_update.h"
 #include "libc/string.h"
 
-#define StateSize 0x26B28
-
 void set_play_mode(s16 playMode);
 
-static bool sMustSaveState = true;
+#ifdef BINARY
+static u8* _hackticeStateDataStart = (u8*) &gMarioStates;
+static u8* _hackticeStateDataEnd = ((u8*) &gMarioStates) + 0x26B28;
+#else
+State gHacktice_State[1];
+extern u8 _hackticeStateDataStart[];
+extern u8 _hackticeStateDataEnd[];
+#endif
+
+static bool sMustSaveState = 0;
 
 static void resetCamera()
 {
@@ -34,23 +41,21 @@ static void resetCamera()
 
 void SaveState_onNormal()
 {
-    // TODO: Remove hardcode
-    State* state = (State*) (0x80026000);
     if (sMustSaveState)
     {
         sMustSaveState = false;
-        state->area  = gCurrAreaIndex;
-        state->level = gCurrLevelNum;
-        state->size = sizeof(State);
-        memcpy(state->memory, &gMarioStates, StateSize);
+        gHacktice_State->area  = gCurrAreaIndex;
+        gHacktice_State->level = gCurrLevelNum;
+        gHacktice_State->size = sizeof(State);
+        memcpy(gHacktice_State->memory, _hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart);
     }
     else
     {
         if (Config_action() == Config_ButtonAction_LOAD_STATE)
         {
-            if (state->area == gCurrAreaIndex && state->level == gCurrLevelNum)
+            if (gHacktice_State->area == gCurrAreaIndex && gHacktice_State->level == gCurrLevelNum)
             {
-                memcpy(&gMarioStates, state->memory, StateSize);
+                memcpy(_hackticeStateDataStart, gHacktice_State->memory, _hackticeStateDataEnd - _hackticeStateDataStart);
                 resetCamera();
             }
         }

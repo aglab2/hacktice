@@ -25,7 +25,7 @@
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
 
-void onFrame()
+void Hacktice_onFrame()
 {
     HackticeSetStatus(HACKTICE_STATUS_ACTIVE);
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
@@ -51,15 +51,15 @@ void onFrame()
     TextManager_onFrame();
 }
 
-void onPause()
+void Hacktice_onPause()
 {
     SaveState_onPause();
     Config_onPause();
 }
 
 uintptr_t _start[] = {
-    (uintptr_t) onFrame,
-    (uintptr_t) onPause,
+    (uintptr_t) Hacktice_onFrame,
+    (uintptr_t) Hacktice_onPause,
     (uintptr_t) Music_setVolumeHook,
     (uintptr_t) DeathFloor_checkDeathBarrierHook,
     HACKTICE_CANARY,
@@ -68,8 +68,16 @@ uintptr_t _start[] = {
 #undef HACKTICE_VERSION
     HACKTICE_STATUS_INIT,
     (uintptr_t) &sConfig,
-    (uintptr_t) 0x80026000,
+    (uintptr_t) gHacktice_State,
     (uintptr_t) LevelReset_onSpawnObjectsFromInfoHook,
+#ifdef BINARY
     (uintptr_t) LevelReset_setObjectRespawnInfoBits,
+#else
+    (uintptr_t) 0 /*ignored*/,
+#endif
     (uintptr_t) 0 /*reserved for future use*/,
 };
+
+#ifndef BINARY
+bool Hacktice_gEnabled = true;
+#endif

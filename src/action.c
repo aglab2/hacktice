@@ -1,3 +1,3 @@
 #include "action.h"
 
-int Action_sLastAction = 0;
+u32 Action_sLastAction = 0;

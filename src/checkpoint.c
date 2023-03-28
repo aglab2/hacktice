@@ -3,6 +3,7 @@
 #include "game/level_update.h"
 #include "game/mario.h"
 #include "game/print.h"
+#include "game/object_list_processor.h"
 #include "libc/stdio.h"
 
 #include "action.h"

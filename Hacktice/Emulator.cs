@@ -309,7 +309,7 @@ namespace Hacktice
                 config.name7 = (byte)'E';
                 config.name8 = 0;
                 config.name9 = 0;
-                config.name10 = 0;
+                config._nameReserved = 0;
                 config.showName = 0;
             }
 

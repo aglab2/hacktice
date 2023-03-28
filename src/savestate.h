@@ -5,10 +5,19 @@
 void SaveState_onPause();
 void SaveState_onNormal();
 
+// TODO: This is very much a culprit, useless one too
+#define MaxStateSize 0x30000
+
 typedef struct
 {
     s32 size;
-    s8 level;
-    s8 area;
-    char memory[0];
+    s16 level;
+    s16 area;
+    char memory[MaxStateSize];
 } State;
+
+#ifdef BINARY
+extern State gHacktice_State[1];
+#else
+static State* gHacktice_State = (State*) (0x80026000);
+#endif

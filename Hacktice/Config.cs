@@ -58,13 +58,14 @@ namespace Hacktice
         public byte name4 = (byte)'T';
 
         public byte showName;
-        public byte name10;
+        public byte _nameReserved;
         public byte name9;
         public byte name8;
 
         public void setName(string name)
         {
-            name0 = name1 = name2 = name3 = name4 = name5 = name6 = name7 = name8 = name9 = name10 = 0;
+            _nameReserved = 0;
+            name0 = name1 = name2 = name3 = name4 = name5 = name6 = name7 = name8 = name9 = 0;
         }
 
         // TODO: Do this better please
