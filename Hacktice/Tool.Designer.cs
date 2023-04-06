@@ -85,6 +85,7 @@
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -94,7 +95,7 @@
             // 
             // buttonPatch
             // 
-            this.buttonPatch.Location = new System.Drawing.Point(16, 51);
+            this.buttonPatch.Location = new System.Drawing.Point(14, 58);
             this.buttonPatch.Name = "buttonPatch";
             this.buttonPatch.Size = new System.Drawing.Size(110, 23);
             this.buttonPatch.TabIndex = 0;
@@ -737,6 +738,7 @@
             // 
             // groupBoxROM
             // 
+            this.groupBoxROM.Controls.Add(this.label1);
             this.groupBoxROM.Controls.Add(this.labelROM);
             this.groupBoxROM.Controls.Add(this.buttonPatch);
             this.groupBoxROM.Location = new System.Drawing.Point(357, 42);
@@ -749,7 +751,7 @@
             // labelROM
             // 
             this.labelROM.AutoSize = true;
-            this.labelROM.Location = new System.Drawing.Point(11, 24);
+            this.labelROM.Location = new System.Drawing.Point(11, 20);
             this.labelROM.Name = "labelROM";
             this.labelROM.Size = new System.Drawing.Size(121, 13);
             this.labelROM.TabIndex = 7;
@@ -764,6 +766,15 @@
             this.labelInfo.Text = "Welcome to hacktice control! In order to use the tool, either a payload\r\nneeds to" +
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 35);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(106, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "with selected configs";
             // 
             // Tool
             // 
@@ -850,5 +861,6 @@
         private System.Windows.Forms.ComboBox comboBoxDpadUp;
         private System.Windows.Forms.Label labelDPadUpAction;
         private System.Windows.Forms.CheckBox checkBoxWarpWheel;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -453,8 +453,16 @@ namespace Hacktice
             {
                 try
                 {
-                    Patcher patcher = new Patcher(openFileDialog.FileName);
+                    var path = openFileDialog.FileName;
+                    var rom = File.ReadAllBytes(path);
+                    Patcher patcher = new Patcher(rom);
+                    if (!patcher.IsBinary())
+                    {
+                        MessageBox.Show("Only binary ROMs are currently supported!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                     patcher.Apply();
+                    patcher.Save(path);
                     MessageBox.Show("Patch applied successfully!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception)

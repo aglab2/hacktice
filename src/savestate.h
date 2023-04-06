@@ -17,7 +17,7 @@ typedef struct
 } State;
 
 #ifdef BINARY
-extern State gHacktice_State[1];
+#define gHacktice_State ((State*) 0x80026000)
 #else
-static State* gHacktice_State = (State*) (0x80026000);
+extern State gHacktice_State[1];
 #endif
