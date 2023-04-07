@@ -8,9 +8,9 @@ namespace Hacktice
 {
     internal class Version : IFormattable, IComparable
     {
-        int major;
-        int minor;
-        int patch;
+        public readonly int major;
+        public readonly int minor;
+        public readonly int patch;
 
         public Version(int combo)
         {

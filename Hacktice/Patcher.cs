@@ -1,8 +1,25 @@
-﻿using System;
+﻿using BigEndianExtension;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
+using static System.Net.IPAddress;
+
+namespace BigEndianExtension
+{
+    public static class BigEndian
+    {
+        public static short ToBigEndian(this short value) => HostToNetworkOrder(value);
+        public static int ToBigEndian(this int value) => HostToNetworkOrder(value);
+        public static long ToBigEndian(this long value) => HostToNetworkOrder(value);
+        public static short FromBigEndian(this short value) => NetworkToHostOrder(value);
+        public static int FromBigEndian(this int value) => NetworkToHostOrder(value);
+        public static long FromBigEndian(this long value) => NetworkToHostOrder(value);
+    }
+}
 
 namespace Hacktice
 {
@@ -48,6 +65,86 @@ namespace Hacktice
 
             _rom[0x57ec0] = 0xa5;
             _rom[0x57ec1] = 0x4d;
+        }
+
+        static unsafe List<int> FindAll(byte[] arrayToSearchThrough, uint val)
+        {
+            var list = new List<int>();
+            if (arrayToSearchThrough.Length < 4)
+                return list;
+
+            fixed (byte* bptr = arrayToSearchThrough)
+            {
+                uint* ptr = (uint*)bptr;
+                int uintCount = arrayToSearchThrough.Length / 4 - 1;
+                for (int i = 0; i < uintCount; i++)
+                {
+                    if (ptr[i] == val)
+                        list.Add(i * 4);
+                }
+            }
+
+            return list;
+        }
+
+        static bool IsReasonable(Version version)
+        {
+            return version.major < 10 && version.minor < 100 && version.patch < 1000;
+        }
+
+        public Version FindHackticeVersion()
+        {
+            var val = BitConverter.ToInt32(_rom, 0x7f2010);
+            foreach (var location in FindAll(_rom, 0x43544B48))
+            {
+                try
+                {
+                    var check = BitConverter.ToUInt32(_rom, location + 8);
+                    if (check != 0x54494e49)
+                        continue;
+
+                    var version = new Version(BitConverter.ToInt32(_rom, location + 4).ToBigEndian());
+                    if (IsReasonable(version))
+                        return version;
+                }
+                catch (Exception) { }
+            }
+
+            return null;
+        }
+
+        public void WriteConfig(Config cfg)
+        {
+            int configLocation = 0;
+            int hackticeConfigSize = 0;
+            foreach (var location in FindAll(_rom, 0x47464348))
+            {
+                hackticeConfigSize = BitConverter.ToInt32(_rom, configLocation + 4);
+                var check = BitConverter.ToUInt64(_rom, location + 0x28);
+                if (check == 0x4543495443415250 || hackticeConfigSize > 0x10000)
+                {
+                    configLocation = location;
+                    break;
+                }
+            }
+
+            if (0 == configLocation)
+            {
+                throw new Exception("Failed to find config location!");
+            }
+
+            var size = Marshal.SizeOf(typeof(Config));
+            int writeSize = Math.Min(size, hackticeConfigSize);
+            if (0 == writeSize)
+                throw new Exception("Config size cannot be 0");
+
+            var bytes = new byte[size];
+            var ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(cfg, ptr, false);
+            Marshal.Copy(ptr, bytes, 0, size);
+            Marshal.FreeHGlobal(ptr);
+
+            Buffer.BlockCopy(bytes, 0, _rom, configLocation + 8, writeSize);
         }
 
         public void Save(string path)

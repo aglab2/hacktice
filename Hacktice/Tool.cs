@@ -237,12 +237,8 @@ namespace Hacktice
             SafeInvoke(delegate {
                 pictureBoxState.BackColor = color;
                 labelEmulatorState.Text = state;
-                groupBoxConfig.Enabled = canUseConfig;
                 buttonInjectInEmulator.Text = needsUpgrade ? "Upgrade in Emulator" : "Inject in Emulator";
                 buttonInjectInEmulator.Enabled = canInjectInEmu;
-
-                checkBoxWarpWheel.Enabled = version >= new Version(1, 3, 3);
-                comboBoxDpadUp.Enabled = version >= new Version(1, 3, 3);
 
                 if (canUseConfig)
                 {
@@ -456,12 +452,29 @@ namespace Hacktice
                     var path = openFileDialog.FileName;
                     var rom = File.ReadAllBytes(path);
                     Patcher patcher = new Patcher(rom);
-                    if (!patcher.IsBinary())
+                    bool binary = patcher.IsBinary();
+                    if (binary)
                     {
-                        MessageBox.Show("Only binary ROMs are currently supported!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        patcher.Apply();
+                    }
+
+                    var version = patcher.FindHackticeVersion();
+                    if (!(version is object)) 
+                    {
+                        MessageBox.Show("Patch failed to be applied!\n\nDecomp ROMs currently require prepatched source code with hacktice 1.3 or later. Ask developer to port hacktice for your hack. Example is available at https://github.com/aglab2/sapphire", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    patcher.Apply();
+
+                    if (version != _payloadVersion)
+                    {
+                        var result = MessageBox.Show($"Prepatched hacktice {version} was detected in the ROM which is different from current version {_payloadVersion}. Do you still want to write current configs in the ROM?", "hacktice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result != DialogResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+
+                    patcher.WriteConfig(MakeConfig());
                     patcher.Save(path);
                     MessageBox.Show("Patch applied successfully!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

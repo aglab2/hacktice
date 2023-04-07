@@ -82,10 +82,10 @@
             this.checkBoxButtons = new System.Windows.Forms.CheckBox();
             this.comboBoxStick = new System.Windows.Forms.ComboBox();
             this.groupBoxROM = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -200,7 +200,6 @@
             this.groupBoxConfig.Controls.Add(this.checkBoxButtons);
             this.groupBoxConfig.Controls.Add(this.comboBoxStick);
             this.groupBoxConfig.Controls.Add(this.checkBoxShowSpeed);
-            this.groupBoxConfig.Enabled = false;
             this.groupBoxConfig.Location = new System.Drawing.Point(13, 138);
             this.groupBoxConfig.Name = "groupBoxConfig";
             this.groupBoxConfig.Size = new System.Drawing.Size(483, 379);
@@ -748,6 +747,15 @@
             this.groupBoxROM.TabStop = false;
             this.groupBoxROM.Text = "ROM";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 35);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(106, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "with selected configs";
+            // 
             // labelROM
             // 
             this.labelROM.AutoSize = true;
@@ -766,15 +774,6 @@
             this.labelInfo.Text = "Welcome to hacktice control! In order to use the tool, either a payload\r\nneeds to" +
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 35);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(106, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "with selected configs";
             // 
             // Tool
             // 

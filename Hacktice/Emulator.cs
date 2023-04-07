@@ -257,7 +257,7 @@ namespace Hacktice
             _process.ReadValue(configSizePtr, out int hackticeConfigSize);
 
             var size = Marshal.SizeOf(typeof(Config));
-            int writeSize = Math.Max(size, hackticeConfigSize);
+            int writeSize = Math.Min(size, hackticeConfigSize);
             if (0 == writeSize)
                 throw new ArgumentException($"Config size cannot be 0");
 
@@ -268,7 +268,7 @@ namespace Hacktice
             Marshal.FreeHGlobal(ptr);
 
             var configPtr = new IntPtr((long)(_ramPtrBase + configOff + 8));
-            _process.WriteBytes(configPtr, bytes);
+            _process.WriteBytes(configPtr, bytes, new UIntPtr((uint) writeSize));
         }
 
         public Config ReadConfig()

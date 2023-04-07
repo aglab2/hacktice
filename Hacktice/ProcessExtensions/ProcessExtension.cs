@@ -310,6 +310,16 @@ namespace Hacktice.ProcessExtensions
             return true;
         }
 
+        public static bool WriteBytes(this Process process, IntPtr addr, byte[] bytes, SizeT amount)
+        {
+            SizeT written;
+            if (!WinAPI.WriteProcessMemory(process.Handle, addr, bytes, amount, out written)
+                || written != amount)
+                return false;
+
+            return true;
+        }
+
         static object ResolveToType(byte[] bytes, Type type)
         {
             object val;

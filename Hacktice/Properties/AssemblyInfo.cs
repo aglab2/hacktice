@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Hacktice")]
 [assembly: AssemblyDescription("Tool to control hacktice payload in N64 emulators")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("https://github.com/aglab2/hacktice")]
+[assembly: AssemblyCompany("aglab2")]
 [assembly: AssemblyProduct("Hacktice")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright © https://github.com/aglab2/hacktice 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
