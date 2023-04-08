@@ -17,5 +17,6 @@ namespace Hacktice
         public const uint HackticeStatusActive = 0x41435456; // ACTV
         public const uint HackticeStatusDisabled = 0x4453424c; // DSBL
         public const uint HackticeStatusUpgrading = 0x55504752; // UPGR
+        public const uint HackticeStatusHeartbeat = 0x48524254; // HRBT
     }
 }

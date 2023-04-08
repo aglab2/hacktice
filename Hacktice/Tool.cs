@@ -26,6 +26,8 @@ namespace Hacktice
         };
 
         const string SapphireEEPROMName = "SM64 Sapphire";
+        const int MaxBeatsToCheck = 200;
+        const int HeartbeatLeaveaway = 10;
 
         readonly System.Threading.Timer _timer;
 
@@ -34,10 +36,11 @@ namespace Hacktice
         readonly Emulator _emulator = new Emulator();
         readonly Version _payloadVersion;
         Config _lastSeenEmulatorConfig = new Config();
+        int _heartbeatActive = 0;
         private State EmulatorState
         {
             get { return _stateValue; }
-            set { var oldValue = _stateValue; _stateValue = value; if (oldValue != _stateValue) { UpdateEmulatorState(); } }
+            set { var oldValue = _stateValue; _stateValue = value; if (oldValue != _stateValue) { _heartbeatActive = 0; UpdateEmulatorState(); } }
         }
 
         // Used from UI thread to avoid event loops
@@ -318,29 +321,43 @@ namespace Hacktice
                 if (!_emulator.RefreshHacktice())
                     return;
 
-                newState = State.HACKTICE_CORRUPTED;
+                if (_heartbeatActive >= 0)
                 {
-                    int status = _emulator.HackticeStatus;
-                    if (status == Canary.HackticeStatusInit)
+                    newState = State.HACKTICE_CORRUPTED;
                     {
-                        newState = State.HACKTICE_INJECTED;
-                        return;
+                        int status = _emulator.HackticeStatus;
+                        if (status == Canary.HackticeStatusInit)
+                        {
+                            newState = State.HACKTICE_INJECTED;
+                            return;
+                        }
+                        if (status == Canary.HackticeStatusHeartbeat)
+                        {
+                            newState = State.ROM;
+                            return;
+                        }
+                        if (status == Canary.HackticeStatusActive)
+                        {
+                            newState = _emulator.HackticeVersion == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
+                            return;
+                        }
+                        if (status == Canary.HackticeStatusDisabled)
+                        {
+                            newState = State.HACKTICE_UPGRADE_DISABLED;
+                            return;
+                        }
+                        if (status == Canary.HackticeStatusUpgrading)
+                        {
+                            newState = State.HACKTICE_UPGRADE_DATA_WRITTEN;
+                            return;
+                        }
                     }
-                    if (status == Canary.HackticeStatusActive)
-                    {
-                        newState = _emulator.HackticeVersion == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
-                        return;
-                    }
-                    if (status == Canary.HackticeStatusDisabled)
-                    {
-                        newState = State.HACKTICE_UPGRADE_DISABLED;
-                        return;
-                    }
-                    if (status == Canary.HackticeStatusUpgrading)
-                    {
-                        newState = State.HACKTICE_UPGRADE_DATA_WRITTEN;
-                        return;
-                    }
+                }
+                else
+                {
+                    // there is a bit of leaveaway before we start complaining that hacktice does not run
+                    newState = State.HACKTICE_RUNNING;
+                    return;
                 }
             }
             finally
@@ -407,6 +424,13 @@ namespace Hacktice
 
                 if (EmulatorState >= State.HACKTICE_RUNNING)
                 {
+                    _heartbeatActive++;
+                    if (_heartbeatActive >= MaxBeatsToCheck) 
+                    {
+                        _emulator.WriteStatus(Canary.HackticeStatusHeartbeat);
+                        _heartbeatActive = -HeartbeatLeaveaway;
+                    }
+
                     var userUpdatedConfig = NeedToUpdateConfig;
 
                     // TODO: This logic gets complicated, separate this away

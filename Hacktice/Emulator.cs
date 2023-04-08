@@ -28,6 +28,7 @@ namespace Hacktice
          */
         const int HackticeHeaderSize = 20;
         private IntPtr? _ptrHackticeHeader;
+        private IntPtr? _ptrHackticeStatus;
         private byte[] _hackticeHeader = new byte[HackticeHeaderSize];
         private byte[] _ram; // just a cache
 
@@ -297,6 +298,7 @@ namespace Hacktice
                     return true;
 
                 _ptrHackticeHeader = null;
+                _ptrHackticeStatus = null;
             }
 
             if (!(_ram is object))
@@ -309,6 +311,7 @@ namespace Hacktice
             {
                 // attempt all locations and find if any is reasonable
                 _ptrHackticeHeader = new IntPtr((long)(_ramPtrBase + (ulong)location));
+                _ptrHackticeStatus = new IntPtr((long)(_ramPtrBase + (ulong)location + 8));
                 if (RefreshHackticeHeaderAndCheckIfValid())
                     return true;
             }
@@ -437,6 +440,11 @@ namespace Hacktice
             _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A64)), new byte[] { 0x1b, 0x01 });
             _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A4C)), new byte[] { 0xf9, 0x00 });
             _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A34)), new byte[] { 0xe5, 0x00 });
+        }
+
+        public void WriteStatus(uint status)
+        {
+            _process.WriteBytes(_ptrHackticeStatus.Value, BitConverter.GetBytes(status));
         }
     }
 }
