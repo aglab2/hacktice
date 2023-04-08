@@ -77,7 +77,7 @@ namespace Hacktice
         public Version FindHackticeVersion()
         {
             var val = BitConverter.ToInt32(_rom, 0x7f2010);
-            foreach (var location in MemFind.All(_rom, (uint) 0x43544B48.ToBigEndian()))
+            foreach (var location in MemFind.All(_rom, (uint) ((int) Canary.HackticeMagic).ToBigEndian()))
             {
                 try
                 {
@@ -99,11 +99,10 @@ namespace Hacktice
         {
             int configLocation = 0;
             int hackticeConfigSize = 0;
-            foreach (var location in MemFind.All(_rom, Canary.ConfigMagic))
+            foreach (var location in MemFind.All(_rom, (uint)((int)Canary.ConfigMagic).ToBigEndian()))
             {
-                hackticeConfigSize = BitConverter.ToInt32(_rom, configLocation + 4);
-                var check = BitConverter.ToUInt64(_rom, location + 0x28);
-                if (check == 0x4543495443415250 || hackticeConfigSize > 0x10000)
+                hackticeConfigSize = BitConverter.ToInt32(_rom, location + 4).ToBigEndian();
+                if (hackticeConfigSize < 0x10000)
                 {
                     configLocation = location;
                     break;

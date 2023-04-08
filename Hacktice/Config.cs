@@ -82,21 +82,26 @@ namespace Hacktice
         public string GetCustomText()
         {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < customText.Length; i++)
+            try
             {
-                int ibase = i / 4;
-                int ioff = i % 4;
-                int namePos = ibase * 4 + (3 - ioff);
-                byte b = customText[namePos];
-                if (b != 0)
+                for (int i = 0; i < customText.Length; i++)
                 {
-                    builder.Append(b);
-                }
-                else
-                {
-                    break;
+                    int ibase = i / 4;
+                    int ioff = i % 4;
+                    int namePos = ibase * 4 + (3 - ioff);
+                    byte b = customText[namePos];
+                    if (b != 0)
+                    {
+                        builder.Append((char)b);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
+            catch (Exception)
+            { }
             return builder.ToString();
         }
 

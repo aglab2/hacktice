@@ -489,9 +489,9 @@ namespace Hacktice
                     patcher.Save(path);
                     MessageBox.Show("Patch applied successfully!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to patch!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Failed to patch: {ex.Message}", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -569,6 +569,10 @@ namespace Hacktice
                 checkBoxMuteMusic.Checked = 0 != config.muteMusic;
                 comboBoxDeathAction.SelectedIndex = config.deathAction;
                 checkBoxWarpWheel.Checked = 0 != config.warpWheel;
+                checkBoxSoftReset.Checked = 0 != config.softReset;
+                checkBoxShowCustomText.Checked = 0 != config.showCustomText;
+                if (config.customText is object)
+                    textBoxCustomText.Text = config.GetCustomText();
 
                 checkBoxMTWallkick.Checked = 0 != config.checkpointWallkick;
                 checkBoxMTDoor.Checked = 0 != config.checkpointDoor;

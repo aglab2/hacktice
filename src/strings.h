@@ -10,6 +10,7 @@ extern const u8 uC_DOWN[];
 extern const u8 uC_UP[];
 extern const u8 uCOIN[];
 extern const u8 uCHECKPOINTS[];
+extern const u8 uCUSTOM_TEXT[];
 extern const u8 uDEATH_ACTION[];
 extern const u8 uDISTANCE_TO_RED[];
 extern const u8 uDISTANCE_TO_SECRET[];
