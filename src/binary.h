@@ -56,3 +56,7 @@ static void* sCourseNames = (void*) 0x02010f68;
 extern u8 seg2_course_name_table[];
 UNUSED static const void* sCourseNames = (void*) seg2_course_name_table;
 #endif
+
+#ifndef MARIO_FALL_SOUND_PLAYED
+#define MARIO_FALL_SOUND_PLAYED MARIO_UNKNOWN_18
+#endif

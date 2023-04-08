@@ -76,7 +76,6 @@ namespace Hacktice
 
         public Version FindHackticeVersion()
         {
-            var val = BitConverter.ToInt32(_rom, 0x7f2010);
             foreach (var location in MemFind.All(_rom, (uint) ((int) Canary.HackticeMagic).ToBigEndian()))
             {
                 try
@@ -93,6 +92,18 @@ namespace Hacktice
             }
 
             return null;
+        }
+
+        void CopyByteswap(byte[] src, int srcOff, byte[] dst, int dstOff, int amount) 
+        {
+            if (amount % 4 != 0)
+                throw new ArgumentException($"Amount {amount} is not divisible by 4");
+
+            for (int i = 0; i < amount; i++)
+            {
+                int iswap = (4 * (i / 4)) + (3 - (i % 4));
+                dst[dstOff + i] = src[srcOff + iswap];
+            }
         }
 
         public void WriteConfig(Config cfg)
@@ -125,7 +136,7 @@ namespace Hacktice
             Marshal.Copy(ptr, bytes, 0, size);
             Marshal.FreeHGlobal(ptr);
 
-            Buffer.BlockCopy(bytes, 0, _rom, configLocation + 8, writeSize);
+            CopyByteswap(bytes, 0, _rom, configLocation + 8, writeSize);
         }
 
         public void Save(string path)
