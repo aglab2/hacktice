@@ -1,19 +1,19 @@
 INCLUDE symbols.ld
 
-ENTRY(_start)
+ENTRY(Hacktice_start)
 
 SECTIONS 
 {
   .sm64 0x8004E000 : 
   {
-    *(.data._start)
+    *(.data.Hacktice_start)
     *(.text*)
 	
 	. = . + 0x40;
 
     *(.rodata*)
 
-    *(.data.sConfig)
+    *(.data.Hacktice_gConfig)
     *(.data*)
     *(.bss*)
   } =0x0

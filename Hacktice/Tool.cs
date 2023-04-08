@@ -13,6 +13,7 @@ namespace Hacktice
         {
             INVALIDATED,
             EMULATOR,
+            ROM_DECOMP,
             ROM,
             HACKTICE_CORRUPTED,
             HACKTICE_INJECTED,
@@ -166,6 +167,8 @@ namespace Hacktice
                     return "No supported emulator is running.";
                 case State.EMULATOR:
                     return "Emulator is running but no running ROM found";
+                case State.ROM_DECOMP:
+                    return "ROM is found but hacktice is not injected.\nInjection in decomp ROMs is currently not supported";
                 case State.ROM:
                     return "ROM is found but hacktice is not injected.\nUse 'Inject in Emulator' button";
                 case State.HACKTICE_CORRUPTED:
@@ -193,6 +196,8 @@ namespace Hacktice
                     return Color.DarkGray;
                 case State.EMULATOR:
                     return Color.MediumPurple;
+                case State.ROM_DECOMP:
+                    return Color.DarkRed;
                 case State.ROM:
                     return Color.DarkKhaki;
                 case State.HACKTICE_CORRUPTED:
@@ -307,14 +312,14 @@ namespace Hacktice
             {
                 {
                     int val = _emulator.ReadHackticeCanary();
-                    if (val != 0x484B5443)
+                    if (val != Canary.HackticeMagic)
                     {
                         return;
                     }
                 }
                 {
                     long val = _emulator.ReadOnFrameHook();
-                    if (val != 0x000000000c0134c0)
+                    if (val != Canary.OnFrameHookMagic)
                     {
                         return;
                     }
@@ -323,22 +328,22 @@ namespace Hacktice
                 newState = State.HACKTICE_CORRUPTED;
                 {
                     int val = _emulator.ReadHackticeStatus();
-                    if (val == 0x494E4954)
+                    if (val == Canary.HackticeStatusInit)
                     {
                         newState = State.HACKTICE_INJECTED;
                         return;
                     }
-                    if (val == 0x41435456)
+                    if (val == Canary.HackticeStatusActive)
                     {
                         newState = _emulator.ReadVersion() == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
                         return;
                     }
-                    if (val == 0x4453424c)
+                    if (val == Canary.HackticeStatusDisabled)
                     {
                         newState = State.HACKTICE_UPGRADE_DISABLED;
                         return;
                     }
-                    if (val == 0x55504752)
+                    if (val == Canary.HackticeStatusUpgrading)
                     {
                         newState = State.HACKTICE_UPGRADE_DATA_WRITTEN;
                         return;
@@ -382,6 +387,12 @@ namespace Hacktice
                 {
                     if (injectHacktice)
                     {
+                        if (_emulator.IsDecomp())
+                        {
+                            SafeInvoke(() => { MessageBox.Show("hacktice cannot be injected in decomp roms!", "hacktice", MessageBoxButtons.OK, MessageBoxIcon.Error); });
+                            return;
+                        }
+
                         if (EmulatorState != State.HACKTICE_RUNNING_CAN_UPGRADE)
                             InjectHacktice();
                         else
@@ -494,7 +505,7 @@ namespace Hacktice
 
         private Config MakeConfig()
         {
-            return new Config
+            var cfg = new Config
             {
                 speed = Convert.ToByte(checkBoxShowSpeed.Checked),
                 stickStyle = (byte)comboBoxStick.SelectedIndex,
@@ -516,6 +527,8 @@ namespace Hacktice
                 muteMusic = Convert.ToByte(checkBoxMuteMusic.Checked),
                 deathAction = (byte)comboBoxDeathAction.SelectedIndex,
                 warpWheel = Convert.ToByte(checkBoxWarpWheel.Checked),
+                softReset = Convert.ToByte(checkBoxSoftReset.Checked),
+                showCustomText = Convert.ToByte(checkBoxShowCustomText.Checked),
 
                 checkpointWallkick = Convert.ToByte(checkBoxMTWallkick.Checked),
                 checkpointDoor = Convert.ToByte(checkBoxMTDoor.Checked),
@@ -530,6 +543,8 @@ namespace Hacktice
                 checkpointObject = Convert.ToByte(checkBoxMTObject.Checked),
                 checkpointPlatform = Convert.ToByte(checkBoxMTPlatform.Checked)
             };
+            cfg.SetCustomText(textBoxCustomText.Text);
+            return cfg;
         }
 
         private void UpdateUIFromConfig(Config config)

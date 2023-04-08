@@ -13,12 +13,12 @@ char Config_gWarp;
 char Config_gMusicNumber;
 char Config_gOnDeathAction;
 
-Config sConfig = {
+Config Hacktice_gConfig = {
     .magic = HACKTICE_CONFIG_CANARY,
     .selfSize = sizeof(Config),
     .timerShow = true,
     .warpWheel = true,
-    .name = "PRACTICE",
+    .customText = "PRACTICE",
 };
 
 typedef struct ConfigDescriptor
@@ -48,62 +48,63 @@ static const u8* const lMusicNumbers[] = { lMusicNumber, NULL };
 // Checkpoints
 static const ConfigDescriptor sCheckpointsDescriptors[] =
 {
-    { &sConfig.checkpointBurning,     uBURNING,     VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointCannon,      uCANNON,      VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointCoin,        uCOIN,        VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointDoor,        uDOOR,        VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointGroundpound, uGROUNDPOUND, VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointLava,        uLAVA,        VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointObject,      uOBJECT,      VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointPlatform,    uPLATFORM,    VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointPole,        uPOLE,        VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointRed,         uRED,         VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointWallkick,    uWALLKICK,    VALUE_NAMES(onOffValueNames) },
-    { &sConfig.checkpointWarp,        uWARP,        VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointBurning,     uBURNING,     VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointCannon,      uCANNON,      VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointCoin,        uCOIN,        VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointDoor,        uDOOR,        VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointGroundpound, uGROUNDPOUND, VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointLava,        uLAVA,        VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointObject,      uOBJECT,      VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointPlatform,    uPLATFORM,    VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointPole,        uPOLE,        VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointRed,         uRED,         VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointWallkick,    uWALLKICK,    VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.checkpointWarp,        uWARP,        VALUE_NAMES(onOffValueNames) },
 };
 #define sCheckpointsMaxAllowedOption (sizeof(sCheckpointsDescriptors) / sizeof(*sCheckpointsDescriptors) - 1)
 
 // Visuals
 static const ConfigDescriptor sVisualsDescriptors[] =
 {
-    { &sConfig.showButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
-    { &sConfig.stickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
+    { &Hacktice_gConfig.showButtons,   uBUTTONS,       VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.stickStyle,    uSTICK,         VALUE_NAMES(inputValueNames) },
 
-    { &sConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.speed,         uSPEED,         VALUE_NAMES(onOffValueNames) },
 
-    { &sConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
-    { &sConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
-    { &sConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.timerShow,     uTIMER,         VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.timerStyle,    uTIMERSTYLE,    VALUE_NAMES(timerValueNames) },
+    { &Hacktice_gConfig.timerStopOnCoinStar, uTIMER100,VALUE_NAMES(onOffValueNames) },
 
-    { &sConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.wallkickFrame, uWALLKICKFRAME, VALUE_NAMES(onOffValueNames) },
 
-    { &sConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
-    { &sConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },        
+    { &Hacktice_gConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) },        
 };
 #define sVisualsMaxAllowedOption (sizeof(sVisualsDescriptors) / sizeof(*sVisualsDescriptors) - 1)
 
 // General
 static const ConfigDescriptor sGeneralDescriptors[] =
 {
-    { &sConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.muteMusic,     uMUTE_MUSIC,    VALUE_NAMES(onOffValueNames) },
     
-    { &sConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
+    { &Hacktice_gConfig.deathAction,   uDEATH_ACTION,  VALUE_NAMES(deathActionNames) },
 
+    { &Hacktice_gConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
     { &Config_gMusicNumber,    uMUSIC_NUMBER,  lMusicNumbers, 64 },
-    { &sConfig.stateSaveStyle, uSSAVESTYLE,   VALUE_NAMES(stateSaveNames) },
 
-    { &sConfig.warpWheel,     uWARP_WHEEL, VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.warpWheel,     uWARP_WHEEL, VALUE_NAMES(onOffValueNames) },
+    { &Hacktice_gConfig.softReset,     uSOFT_RESET, VALUE_NAMES(onOffValueNames) },
 };
 #define sGeneralMaxAllowedOption (sizeof(sGeneralDescriptors) / sizeof(*sGeneralDescriptors) - 1)
 
 // Shortcuts
 static const ConfigDescriptor sShortcutsDescriptors[] =
 {
-    { &sConfig.lAction,       uLACTION,           VALUE_NAMES(actionNames) },
-    { &sConfig.lRAction,      uLRACTION,          VALUE_NAMES(actionNames) },
-    { &sConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(actionNames) },
-    { &sConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(actionNames) },
-    { &sConfig.dpadUpAction,  uDPAD_UP_ACTION  ,  VALUE_NAMES(actionNames) },
+    { &Hacktice_gConfig.lAction,       uLACTION,           VALUE_NAMES(actionNames) },
+    { &Hacktice_gConfig.lRAction,      uLRACTION,          VALUE_NAMES(actionNames) },
+    { &Hacktice_gConfig.cButtonsAction,u4_CBUTTONS_ACTION, VALUE_NAMES(actionNames) },
+    { &Hacktice_gConfig.dpadDownAction,uDPAD_DOWN_ACTION,  VALUE_NAMES(actionNames) },
+    { &Hacktice_gConfig.dpadUpAction,  uDPAD_UP_ACTION  ,  VALUE_NAMES(actionNames) },
 };
 #define sShortcutsMaxAllowedOption (sizeof(sShortcutsDescriptors) / sizeof(*sShortcutsDescriptors) - 1)
 
@@ -169,7 +170,7 @@ static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
         const u8* courseName = uOFF;
         if (0 != value)
         {
-            u8** courseNameTbl = (u8**) segmented_to_virtual((void*) 0x02010f68);
+            u8** courseNameTbl = (u8**) segmented_to_virtual(sCourseNames);
             int id = value - 1;
             courseName = (u8*) segmented_to_virtual(courseNameTbl[id]);
         }
@@ -292,7 +293,7 @@ static void processInputs()
         }
     }
 
-    if (desc->maxValueCount > 10 && sConfig.warpWheel)
+    if (desc->maxValueCount > 10 && Hacktice_gConfig.warpWheel)
     {
         int controllerDistance = (int)gControllers->rawStickX * (int)gControllers->rawStickX + (int)gControllers->rawStickY * (int)gControllers->rawStickY;
         if (controllerDistance > 1000)
@@ -340,25 +341,25 @@ Config_ButtonAction Config_action()
         return (Config_ButtonAction) Config_gOnDeathAction;
     }
 
-    if (sConfig.lRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
+    if (Hacktice_gConfig.lRAction && BUTTONS_PRESSED(L_TRIG | R_TRIG))
     {
-        return (Config_ButtonAction) sConfig.lRAction;
+        return (Config_ButtonAction) Hacktice_gConfig.lRAction;
     }
-    else if (sConfig.lAction && BUTTONS_PRESSED(L_TRIG))
+    else if (Hacktice_gConfig.lAction && BUTTONS_PRESSED(L_TRIG))
     {
-        return (Config_ButtonAction) sConfig.lAction;
+        return (Config_ButtonAction) Hacktice_gConfig.lAction;
     }
-    else if (sConfig.cButtonsAction && BUTTONS_PRESSED(U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS))
+    else if (Hacktice_gConfig.cButtonsAction && BUTTONS_PRESSED(U_CBUTTONS | D_CBUTTONS | R_CBUTTONS | L_CBUTTONS))
     {
-        return (Config_ButtonAction) sConfig.cButtonsAction;
+        return (Config_ButtonAction) Hacktice_gConfig.cButtonsAction;
     }
-    else if (sConfig.dpadDownAction && BUTTONS_PRESSED(D_JPAD))
+    else if (Hacktice_gConfig.dpadDownAction && BUTTONS_PRESSED(D_JPAD))
     {
-        return (Config_ButtonAction) sConfig.dpadDownAction;
+        return (Config_ButtonAction) Hacktice_gConfig.dpadDownAction;
     }
-    else if (sConfig.dpadUpAction && BUTTONS_PRESSED(U_JPAD))
+    else if (Hacktice_gConfig.dpadUpAction && BUTTONS_PRESSED(U_JPAD))
     {
-        return (Config_ButtonAction) sConfig.dpadUpAction;
+        return (Config_ButtonAction) Hacktice_gConfig.dpadUpAction;
     }
 
     return Config_ButtonAction_OFF;

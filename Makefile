@@ -3,7 +3,7 @@ OBJ_DIR = obj
 TOOL_DIR = Hacktice
 
 # Alter these 4 variables according to your need
-CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor version
+CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor version soft_reset custom_text
 
 # If _start will have more elements, adjust this variable 
 PAYLOAD_HEADER_SIZE = 48
@@ -36,7 +36,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< -c -o $@
 
 $(PAYLOAD_RAW): $(OBJ_FILES)
-	$(LD) -o $@ -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^
+	$(LD) -o $@ -L. -L $(LIBRARY_PATH) --oformat binary -T ldscript -M $^ > out.txt
 
 $(PAYLOAD): $(PAYLOAD_RAW)
 	python remove_teq.py $(PAYLOAD_HEADER_SIZE) $(PAYLOAD_RAW) $(PAYLOAD)

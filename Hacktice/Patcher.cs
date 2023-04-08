@@ -27,6 +27,8 @@ namespace Hacktice
     {
         readonly byte[] _rom;
 
+        const uint BinaryCheck = 0x00602480;
+
         public Patcher(byte[] rom)
         {
             _rom = rom;
@@ -41,7 +43,7 @@ namespace Hacktice
         {
             // this is pretty terrible check but it works for now
             uint call = BitConverter.ToUInt32(_rom, 8);
-            return call == 0x00602480;
+            return call == BinaryCheck;
         }
 
         public void Apply()
@@ -67,26 +69,6 @@ namespace Hacktice
             _rom[0x57ec1] = 0x4d;
         }
 
-        static unsafe List<int> FindAll(byte[] arrayToSearchThrough, uint val)
-        {
-            var list = new List<int>();
-            if (arrayToSearchThrough.Length < 4)
-                return list;
-
-            fixed (byte* bptr = arrayToSearchThrough)
-            {
-                uint* ptr = (uint*)bptr;
-                int uintCount = arrayToSearchThrough.Length / 4 - 1;
-                for (int i = 0; i < uintCount; i++)
-                {
-                    if (ptr[i] == val)
-                        list.Add(i * 4);
-                }
-            }
-
-            return list;
-        }
-
         static bool IsReasonable(Version version)
         {
             return version.major < 10 && version.minor < 100 && version.patch < 1000;
@@ -95,7 +77,7 @@ namespace Hacktice
         public Version FindHackticeVersion()
         {
             var val = BitConverter.ToInt32(_rom, 0x7f2010);
-            foreach (var location in FindAll(_rom, 0x43544B48))
+            foreach (var location in MemFind.All(_rom, (uint) 0x43544B48.ToBigEndian()))
             {
                 try
                 {
@@ -117,7 +99,7 @@ namespace Hacktice
         {
             int configLocation = 0;
             int hackticeConfigSize = 0;
-            foreach (var location in FindAll(_rom, 0x47464348))
+            foreach (var location in MemFind.All(_rom, Canary.ConfigMagic))
             {
                 hackticeConfigSize = BitConverter.ToInt32(_rom, configLocation + 4);
                 var check = BitConverter.ToUInt64(_rom, location + 0x28);

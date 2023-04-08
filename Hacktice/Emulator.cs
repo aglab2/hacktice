@@ -11,6 +11,7 @@ namespace Hacktice
     {
         private Process _process;
         private ulong _ramPtrBase = 0;
+        private IntPtr _ptrRam;
         private IntPtr _ptrCanary;
         private IntPtr _ptrVersion;
         private IntPtr _ptrStatus;
@@ -149,10 +150,13 @@ namespace Hacktice
 
                 MagicManager mm = new MagicManager(_process, romPtrBaseSuggestions.ToArray(), ramPtrBaseSuggestions.ToArray(), offset);
                 _ramPtrBase = mm.ramPtrBase;
-                _ptrCanary = new IntPtr((long)(_ramPtrBase + 0x4E010));
-                _ptrVersion = new IntPtr((long)(_ramPtrBase + 0x4E014));
-                _ptrStatus = new IntPtr((long)(_ramPtrBase + 0x4E018));
-                _ptrPtrConfig = new IntPtr((long)(_ramPtrBase + 0x4E01C));
+                _ptrRam = new IntPtr((long)_ramPtrBase);
+                // valid only for the binary case
+                uint binaryHackticeOffset = 0x4E010;
+                _ptrCanary = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset));
+                _ptrVersion = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0x4));
+                _ptrStatus = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0x8));
+                _ptrPtrConfig = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0xc));
                 _ptrOnFrameHook = new IntPtr((long)(_ramPtrBase + 0x3805D4));
                 return PrepareResult.OK;
             }
@@ -297,20 +301,13 @@ namespace Hacktice
             var config = (Config) Marshal.PtrToStructure(ptr, typeof(Config));
             Marshal.FreeHGlobal(ptr);
 
-            if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("name3"))
+            if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("_pad1"))
             {
-                config.name0 = (byte)'P';
-                config.name1 = (byte)'R';
-                config.name2 = (byte)'A';
-                config.name3 = (byte)'C';
-                config.name4 = (byte)'T';
-                config.name5 = (byte)'I';
-                config.name6 = (byte)'C';
-                config.name7 = (byte)'E';
-                config.name8 = 0;
-                config.name9 = 0;
-                config._nameReserved = 0;
-                config.showName = 0;
+                config.SetCustomText("PRACTICE");
+                config._pad1 = 0;
+                config._pad0 = 0;
+                config.softReset = 0;
+                config.showCustomText = 0;
             }
 
             return config;
@@ -320,6 +317,17 @@ namespace Hacktice
         {
             _process.ReadValue(_ptrVersion, out int version);
             return new Version(version);
+        }
+
+        private uint ReadRAMHeader()
+        {
+            return _process.ReadValue<uint>(_ptrRam);
+        }
+
+        public bool IsDecomp()
+        {
+            uint hdr = ReadRAMHeader();
+            return Canary.BinaryRamMagic != hdr;
         }
 
         public void WriteHackticeDetours(uint fn, int repeats)

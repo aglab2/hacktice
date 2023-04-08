@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Hacktice
 {
@@ -47,25 +50,54 @@ namespace Hacktice
         public byte checkpointRed;
 
         // since version 1.3.6
-        public byte name3 = (byte)'C';
-        public byte name2 = (byte)'A';
-        public byte name1 = (byte)'R';
-        public byte name0 = (byte)'P';
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 28)]
+        public byte[] customText;
 
-        public byte name7 = (byte)'E';
-        public byte name6 = (byte)'C';
-        public byte name5 = (byte)'I';
-        public byte name4 = (byte)'T';
+        public byte _pad1;
+        public byte _pad0;
+        public byte softReset;
+        public byte showCustomText;
 
-        public byte showName;
-        public byte _nameReserved;
-        public byte name9;
-        public byte name8;
-
-        public void setName(string name)
+        public void SetCustomText(string _name)
         {
-            _nameReserved = 0;
-            name0 = name1 = name2 = name3 = name4 = name5 = name6 = name7 = name8 = name9 = 0;
+            var name = _name.ToUpper().Trim();
+            customText = new byte[28];
+            for (int i = 0; i < customText.Length; i++)
+            {
+                int ibase = i / 4;
+                int ioff = i % 4;
+                int namePos = ibase * 4 + (3 - ioff);
+                if (namePos < name.Length)
+                {
+                    customText[i] = (byte) name[namePos];
+                }
+                else
+                {
+                    customText[i] = 0;
+                }
+            }
+            customText[24] = 0;
+        }
+
+        public string GetCustomText()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < customText.Length; i++)
+            {
+                int ibase = i / 4;
+                int ioff = i % 4;
+                int namePos = ibase * 4 + (3 - ioff);
+                byte b = customText[namePos];
+                if (b != 0)
+                {
+                    builder.Append(b);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return builder.ToString();
         }
 
         // TODO: Do this better please
@@ -103,7 +135,9 @@ namespace Hacktice
                 && checkpointRed == o.checkpointRed
                 && dpadUpAction == o.dpadUpAction
                 && warpWheel == o.warpWheel
-                && showName == o.showName;
+                && Enumerable.SequenceEqual(customText, o.customText)
+                && softReset == o.softReset
+                && showCustomText == o.showCustomText;
         }
     }
 }

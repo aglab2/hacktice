@@ -86,6 +86,9 @@
             this.labelROM = new System.Windows.Forms.Label();
             this.labelInfo = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxSoftReset = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowCustomText = new System.Windows.Forms.CheckBox();
+            this.textBoxCustomText = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxState)).BeginInit();
             this.groupBoxInject.SuspendLayout();
             this.groupBoxConfig.SuspendLayout();
@@ -168,6 +171,9 @@
             // 
             // groupBoxConfig
             // 
+            this.groupBoxConfig.Controls.Add(this.textBoxCustomText);
+            this.groupBoxConfig.Controls.Add(this.checkBoxShowCustomText);
+            this.groupBoxConfig.Controls.Add(this.checkBoxSoftReset);
             this.groupBoxConfig.Controls.Add(this.checkBoxWarpWheel);
             this.groupBoxConfig.Controls.Add(this.comboBoxDpadUp);
             this.groupBoxConfig.Controls.Add(this.labelDPadUpAction);
@@ -202,7 +208,7 @@
             this.groupBoxConfig.Controls.Add(this.checkBoxShowSpeed);
             this.groupBoxConfig.Location = new System.Drawing.Point(13, 138);
             this.groupBoxConfig.Name = "groupBoxConfig";
-            this.groupBoxConfig.Size = new System.Drawing.Size(483, 379);
+            this.groupBoxConfig.Size = new System.Drawing.Size(483, 416);
             this.groupBoxConfig.TabIndex = 8;
             this.groupBoxConfig.TabStop = false;
             this.groupBoxConfig.Text = "Config";
@@ -249,7 +255,7 @@
             // 
             // buttonReset
             // 
-            this.buttonReset.Location = new System.Drawing.Point(258, 350);
+            this.buttonReset.Location = new System.Drawing.Point(264, 383);
             this.buttonReset.Name = "buttonReset";
             this.buttonReset.Size = new System.Drawing.Size(80, 23);
             this.buttonReset.TabIndex = 32;
@@ -259,7 +265,7 @@
             // 
             // buttonSetDefault
             // 
-            this.buttonSetDefault.Location = new System.Drawing.Point(172, 350);
+            this.buttonSetDefault.Location = new System.Drawing.Point(178, 383);
             this.buttonSetDefault.Name = "buttonSetDefault";
             this.buttonSetDefault.Size = new System.Drawing.Size(80, 23);
             this.buttonSetDefault.TabIndex = 31;
@@ -288,7 +294,7 @@
             // 
             // buttonLoadConfig
             // 
-            this.buttonLoadConfig.Location = new System.Drawing.Point(86, 350);
+            this.buttonLoadConfig.Location = new System.Drawing.Point(92, 383);
             this.buttonLoadConfig.Name = "buttonLoadConfig";
             this.buttonLoadConfig.Size = new System.Drawing.Size(80, 23);
             this.buttonLoadConfig.TabIndex = 29;
@@ -298,7 +304,7 @@
             // 
             // buttonSaveConfig
             // 
-            this.buttonSaveConfig.Location = new System.Drawing.Point(0, 350);
+            this.buttonSaveConfig.Location = new System.Drawing.Point(6, 383);
             this.buttonSaveConfig.Name = "buttonSaveConfig";
             this.buttonSaveConfig.Size = new System.Drawing.Size(80, 23);
             this.buttonSaveConfig.TabIndex = 6;
@@ -463,7 +469,7 @@
             // labelDeathAction
             // 
             this.labelDeathAction.AutoSize = true;
-            this.labelDeathAction.Location = new System.Drawing.Point(6, 274);
+            this.labelDeathAction.Location = new System.Drawing.Point(6, 287);
             this.labelDeathAction.Name = "labelDeathAction";
             this.labelDeathAction.Size = new System.Drawing.Size(87, 13);
             this.labelDeathAction.TabIndex = 27;
@@ -478,7 +484,7 @@
             "go to Act Select",
             "go to Level Reset",
             "load savestate"});
-            this.comboBoxDeathAction.Location = new System.Drawing.Point(100, 271);
+            this.comboBoxDeathAction.Location = new System.Drawing.Point(100, 284);
             this.comboBoxDeathAction.Name = "comboBoxDeathAction";
             this.comboBoxDeathAction.Size = new System.Drawing.Size(220, 21);
             this.comboBoxDeathAction.TabIndex = 26;
@@ -500,7 +506,7 @@
             // labelStateCond
             // 
             this.labelStateCond.AutoSize = true;
-            this.labelStateCond.Location = new System.Drawing.Point(6, 247);
+            this.labelStateCond.Location = new System.Drawing.Point(6, 260);
             this.labelStateCond.Name = "labelStateCond";
             this.labelStateCond.Size = new System.Drawing.Size(88, 13);
             this.labelStateCond.TabIndex = 24;
@@ -513,7 +519,7 @@
             this.comboBoxStateStyle.Items.AddRange(new object[] {
             "button is pressed on pause",
             "any pause happens"});
-            this.comboBoxStateStyle.Location = new System.Drawing.Point(100, 244);
+            this.comboBoxStateStyle.Location = new System.Drawing.Point(100, 257);
             this.comboBoxStateStyle.Name = "comboBoxStateStyle";
             this.comboBoxStateStyle.Size = new System.Drawing.Size(220, 21);
             this.comboBoxStateStyle.TabIndex = 23;
@@ -565,7 +571,7 @@
             // checkBoxDistanceToSecret
             // 
             this.checkBoxDistanceToSecret.AutoSize = true;
-            this.checkBoxDistanceToSecret.Location = new System.Drawing.Point(6, 321);
+            this.checkBoxDistanceToSecret.Location = new System.Drawing.Point(6, 360);
             this.checkBoxDistanceToSecret.Name = "checkBoxDistanceToSecret";
             this.checkBoxDistanceToSecret.Size = new System.Drawing.Size(194, 17);
             this.checkBoxDistanceToSecret.TabIndex = 19;
@@ -577,7 +583,7 @@
             // checkBoxDistanceToRedCoin
             // 
             this.checkBoxDistanceToRedCoin.AutoSize = true;
-            this.checkBoxDistanceToRedCoin.Location = new System.Drawing.Point(6, 298);
+            this.checkBoxDistanceToRedCoin.Location = new System.Drawing.Point(6, 337);
             this.checkBoxDistanceToRedCoin.Name = "checkBoxDistanceToRedCoin";
             this.checkBoxDistanceToRedCoin.Size = new System.Drawing.Size(203, 17);
             this.checkBoxDistanceToRedCoin.TabIndex = 18;
@@ -775,11 +781,45 @@
     " be injected in the emulator or patched ROM needs to be created.";
             this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // checkBoxSoftReset
+            // 
+            this.checkBoxSoftReset.AutoSize = true;
+            this.checkBoxSoftReset.Location = new System.Drawing.Point(6, 234);
+            this.checkBoxSoftReset.Name = "checkBoxSoftReset";
+            this.checkBoxSoftReset.Size = new System.Drawing.Size(113, 17);
+            this.checkBoxSoftReset.TabIndex = 36;
+            this.checkBoxSoftReset.Text = "Z+L for Soft Reset";
+            this.toolTip.SetToolTip(this.checkBoxSoftReset, "Enables warp wheel to select the warp target using control stick rotation. WARP W" +
+        "HEEL in game.");
+            this.checkBoxSoftReset.UseVisualStyleBackColor = true;
+            this.checkBoxSoftReset.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
+            // 
+            // checkBoxShowCustomText
+            // 
+            this.checkBoxShowCustomText.AutoSize = true;
+            this.checkBoxShowCustomText.Location = new System.Drawing.Point(6, 313);
+            this.checkBoxShowCustomText.Name = "checkBoxShowCustomText";
+            this.checkBoxShowCustomText.Size = new System.Drawing.Size(110, 17);
+            this.checkBoxShowCustomText.TabIndex = 37;
+            this.checkBoxShowCustomText.Text = "Show custom text";
+            this.toolTip.SetToolTip(this.checkBoxShowCustomText, "Displays distance to reds. D TO RED in game.");
+            this.checkBoxShowCustomText.UseVisualStyleBackColor = true;
+            this.checkBoxShowCustomText.CheckedChanged += new System.EventHandler(this.Config_CheckedChanged);
+            // 
+            // textBoxCustomText
+            // 
+            this.textBoxCustomText.Location = new System.Drawing.Point(122, 311);
+            this.textBoxCustomText.Name = "textBoxCustomText";
+            this.textBoxCustomText.Size = new System.Drawing.Size(198, 20);
+            this.textBoxCustomText.TabIndex = 38;
+            this.textBoxCustomText.Text = "PRACTICE";
+            this.textBoxCustomText.TextChanged += new System.EventHandler(this.Config_CheckedChanged);
+            // 
             // Tool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(508, 529);
+            this.ClientSize = new System.Drawing.Size(508, 562);
             this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.groupBoxROM);
             this.Controls.Add(this.groupBoxConfig);
@@ -861,5 +901,8 @@
         private System.Windows.Forms.Label labelDPadUpAction;
         private System.Windows.Forms.CheckBox checkBoxWarpWheel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxSoftReset;
+        private System.Windows.Forms.CheckBox checkBoxShowCustomText;
+        private System.Windows.Forms.TextBox textBoxCustomText;
     }
 }

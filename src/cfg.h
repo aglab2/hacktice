@@ -46,14 +46,16 @@ typedef struct
     char checkpointObject;
     char checkpointPlatform;
 
-    char name[12];
-    char showName;
+    char customText[27];
+    char _customTextReserved; // must be always '\0'
+
+    char showCustomText;
+    char softReset;
     char _pad0;
     char _pad1;
-    char _pad2;
 } Config;
 
-extern Config sConfig;
+extern Config Hacktice_gConfig;
 
 void Config_onPause();
 
@@ -63,8 +65,8 @@ typedef enum Config_StickStyle
     Config_StickStyle_VALUE,
     Config_StickStyle_GRAPHICS,  
 } Config_StickStyle;
-static inline Config_StickStyle Config_showStick() { return (Config_StickStyle) sConfig.stickStyle; }
-static inline bool Config_showButtons() { return sConfig.showButtons; }
+static inline Config_StickStyle Config_showStick() { return (Config_StickStyle) Hacktice_gConfig.stickStyle; }
+static inline bool Config_showButtons() { return Hacktice_gConfig.showButtons; }
 
 typedef enum Config_ButtonAction
 {
@@ -79,28 +81,28 @@ Config_ButtonAction Config_action();
 
 LevelConv_PlainLevels Config_warpIdAndReset();
 
-static inline bool Config_showWallkickFrame() { return sConfig.wallkickFrame; }
-static inline bool Config_showDistanceFromClosestRed() { return sConfig.distanceFromClosestRed; }
-static inline bool Config_showDistanceFromClosestSecret() { return sConfig.distanceFromClosestSecret; }
-static inline bool Config_showSpeed() { return sConfig.speed; }
-static inline bool Config_timerShow() { return sConfig.timerShow; }
+static inline bool Config_showWallkickFrame() { return Hacktice_gConfig.wallkickFrame; }
+static inline bool Config_showDistanceFromClosestRed() { return Hacktice_gConfig.distanceFromClosestRed; }
+static inline bool Config_showDistanceFromClosestSecret() { return Hacktice_gConfig.distanceFromClosestSecret; }
+static inline bool Config_showSpeed() { return Hacktice_gConfig.speed; }
+static inline bool Config_timerShow() { return Hacktice_gConfig.timerShow; }
 
 typedef enum Config_TimerStyle
 {
     Config_TimerStyle_GRAB,
     Config_TimerStyle_XCAM,
 } Config_TimerStyle;
-static inline Config_TimerStyle Config_timerStyle() { return (Config_TimerStyle) sConfig.timerStyle; }
-static inline bool Config_timerStopOnCoinStar() { return sConfig.timerStopOnCoinStar; }
+static inline Config_TimerStyle Config_timerStyle() { return (Config_TimerStyle) Hacktice_gConfig.timerStyle; }
+static inline bool Config_timerStopOnCoinStar() { return Hacktice_gConfig.timerStopOnCoinStar; }
 
 typedef enum Config_StateSaveStyle
 {
     Config_StateSaveStyle_BUTTON,
     Config_StateSaveStyle_PAUSE,
 } Config_StateSaveStyle;
-static inline Config_StateSaveStyle Config_saveStateStyle() { return (Config_StateSaveStyle) sConfig.stateSaveStyle; }
+static inline Config_StateSaveStyle Config_saveStateStyle() { return (Config_StateSaveStyle) Hacktice_gConfig.stateSaveStyle; }
 
-static inline bool Config_muteMusic() { return sConfig.muteMusic; }
+static inline bool Config_muteMusic() { return Hacktice_gConfig.muteMusic; }
 static inline char Config_musicNumber() { return Config_gMusicNumber; }
 
 typedef enum Config_DeathAction
@@ -110,18 +112,18 @@ typedef enum Config_DeathAction
     Config_DeathAction_LEVEL_RESET,
     Config_DeathAction_LOAD_STATE,
 } Config_DeathAction;
-static inline Config_DeathAction Config_deathAction() { return (Config_DeathAction) sConfig.deathAction; }
+static inline Config_DeathAction Config_deathAction() { return (Config_DeathAction) Hacktice_gConfig.deathAction; }
 static inline void Config_setOnDeathAction(Config_ButtonAction act) { Config_gOnDeathAction = (u8) act; }
 
-static inline bool Config_checkpointWallkick() { return sConfig.checkpointWallkick; }
-static inline bool Config_checkpointDoor() { return sConfig.checkpointDoor; }
-static inline bool Config_checkpointPole() { return sConfig.checkpointPole; }
-static inline bool Config_checkpointLava() { return sConfig.checkpointLava; }
-static inline bool Config_checkpointGroundpound() { return sConfig.checkpointGroundpound; }
-static inline bool Config_checkpointBurning() { return sConfig.checkpointBurning; }
-static inline bool Config_checkpointCannon() { return sConfig.checkpointCannon; }
-static inline bool Config_checkpointWarp() { return sConfig.checkpointWarp; }
-static inline bool Config_checkpointRed() { return sConfig.checkpointRed; }
-static inline bool Config_checkpointCoin() { return sConfig.checkpointCoin; }
-static inline bool Config_checkpointObject() { return sConfig.checkpointObject; }
-static inline bool Config_checkpointPlatform() { return sConfig.checkpointPlatform; }
+static inline bool Config_checkpointWallkick() { return Hacktice_gConfig.checkpointWallkick; }
+static inline bool Config_checkpointDoor() { return Hacktice_gConfig.checkpointDoor; }
+static inline bool Config_checkpointPole() { return Hacktice_gConfig.checkpointPole; }
+static inline bool Config_checkpointLava() { return Hacktice_gConfig.checkpointLava; }
+static inline bool Config_checkpointGroundpound() { return Hacktice_gConfig.checkpointGroundpound; }
+static inline bool Config_checkpointBurning() { return Hacktice_gConfig.checkpointBurning; }
+static inline bool Config_checkpointCannon() { return Hacktice_gConfig.checkpointCannon; }
+static inline bool Config_checkpointWarp() { return Hacktice_gConfig.checkpointWarp; }
+static inline bool Config_checkpointRed() { return Hacktice_gConfig.checkpointRed; }
+static inline bool Config_checkpointCoin() { return Hacktice_gConfig.checkpointCoin; }
+static inline bool Config_checkpointObject() { return Hacktice_gConfig.checkpointObject; }
+static inline bool Config_checkpointPlatform() { return Hacktice_gConfig.checkpointPlatform; }

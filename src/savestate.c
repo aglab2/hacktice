@@ -16,7 +16,7 @@ void set_play_mode(s16 playMode);
 static u8* _hackticeStateDataStart = (u8*) &gMarioStates;
 static u8* _hackticeStateDataEnd = ((u8*) &gMarioStates) + 0x26B28;
 #else
-State gHacktice_State[1];
+State Hacktice_gState[1];
 extern u8 _hackticeStateDataStart[];
 extern u8 _hackticeStateDataEnd[];
 #endif
@@ -44,18 +44,18 @@ void SaveState_onNormal()
     if (sMustSaveState)
     {
         sMustSaveState = false;
-        gHacktice_State->area  = gCurrAreaIndex;
-        gHacktice_State->level = gCurrLevelNum;
-        gHacktice_State->size = sizeof(State);
-        memcpy(gHacktice_State->memory, _hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart);
+        Hacktice_gState->area  = gCurrAreaIndex;
+        Hacktice_gState->level = gCurrLevelNum;
+        Hacktice_gState->size = sizeof(State);
+        memcpy(Hacktice_gState->memory, _hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart);
     }
     else
     {
         if (Config_action() == Config_ButtonAction_LOAD_STATE)
         {
-            if (gHacktice_State->area == gCurrAreaIndex && gHacktice_State->level == gCurrLevelNum)
+            if (Hacktice_gState->area == gCurrAreaIndex && Hacktice_gState->level == gCurrLevelNum)
             {
-                memcpy(_hackticeStateDataStart, gHacktice_State->memory, _hackticeStateDataEnd - _hackticeStateDataStart);
+                memcpy(_hackticeStateDataStart, Hacktice_gState->memory, _hackticeStateDataEnd - _hackticeStateDataStart);
                 resetCamera();
             }
         }

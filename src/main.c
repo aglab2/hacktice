@@ -5,6 +5,7 @@
 #include "action.h"
 #include "checkpoint.h"
 #include "cfg.h"
+#include "custom_text.h"
 #include "death.h"
 #include "death_floor.h"
 #include "distance.h"
@@ -15,6 +16,7 @@
 #include "music.h"
 #include "savestate.h"
 #include "shared.h"
+#include "soft_reset.h"
 #include "speed.h"
 #include "status.h"
 #include "text_manager.h"
@@ -27,6 +29,8 @@
 
 void Hacktice_onFrame()
 {
+    SoftReset_onFrame();
+
     HackticeSetStatus(HACKTICE_STATUS_ACTIVE);
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
     {
@@ -41,6 +45,7 @@ void Hacktice_onFrame()
         Interaction_onNormal();
         Music_onFrame();
         Version_onFrame();
+        CustomText_onFrame();
 
         Checkpoint_onNormal();
 
@@ -57,7 +62,7 @@ void Hacktice_onPause()
     Config_onPause();
 }
 
-uintptr_t _start[] = {
+uintptr_t Hacktice_start[] = {
     (uintptr_t) Hacktice_onFrame,
     (uintptr_t) Hacktice_onPause,
     (uintptr_t) Music_setVolumeHook,
@@ -67,8 +72,8 @@ uintptr_t _start[] = {
 #include "xversion.h"
 #undef HACKTICE_VERSION
     HACKTICE_STATUS_INIT,
-    (uintptr_t) &sConfig,
-    (uintptr_t) gHacktice_State,
+    (uintptr_t) &Hacktice_gConfig,
+    (uintptr_t) Hacktice_gState,
     (uintptr_t) LevelReset_onSpawnObjectsFromInfoHook,
 #ifdef BINARY
     (uintptr_t) LevelReset_setObjectRespawnInfoBits,

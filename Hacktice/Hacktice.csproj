@@ -73,9 +73,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Canary.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Emulator.cs" />
     <Compile Include="MagicManager.cs" />
+    <Compile Include="MemFind.cs" />
     <Compile Include="N64CRC.cs" />
     <Compile Include="Patcher.cs" />
     <Compile Include="ProcessExtensions\DeepPointer.cs" />
