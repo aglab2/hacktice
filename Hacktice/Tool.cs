@@ -150,8 +150,7 @@ namespace Hacktice
         {
             try 
             {
-                var version = _emulator.ReadVersion();
-                return $"hacktice v{version}";
+                return $"hacktice v{_emulator.HackticeVersion}";
             }
             catch (Exception)
             {
@@ -231,12 +230,7 @@ namespace Hacktice
             }
             else
             {
-                try
-                {
-                    version = _emulator.ReadVersion();
-                }
-                catch (Exception)
-                { }
+                version = _emulator.HackticeVersion;
             }
 
             SafeInvoke(delegate {
@@ -310,40 +304,28 @@ namespace Hacktice
             State newState = State.ROM;
             try
             {
-                {
-                    int val = _emulator.ReadHackticeCanary();
-                    if (val != Canary.HackticeMagic)
-                    {
-                        return;
-                    }
-                }
-                {
-                    long val = _emulator.ReadOnFrameHook();
-                    if (val != Canary.OnFrameHookMagic)
-                    {
-                        return;
-                    }
-                }
+                if (!_emulator.RefreshHacktice())
+                    return;
 
                 newState = State.HACKTICE_CORRUPTED;
                 {
-                    int val = _emulator.ReadHackticeStatus();
-                    if (val == Canary.HackticeStatusInit)
+                    int status = _emulator.HackticeStatus;
+                    if (status == Canary.HackticeStatusInit)
                     {
                         newState = State.HACKTICE_INJECTED;
                         return;
                     }
-                    if (val == Canary.HackticeStatusActive)
+                    if (status == Canary.HackticeStatusActive)
                     {
-                        newState = _emulator.ReadVersion() == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
+                        newState = _emulator.HackticeVersion == _payloadVersion ? State.HACKTICE_RUNNING : State.HACKTICE_RUNNING_CAN_UPGRADE;
                         return;
                     }
-                    if (val == Canary.HackticeStatusDisabled)
+                    if (status == Canary.HackticeStatusDisabled)
                     {
                         newState = State.HACKTICE_UPGRADE_DISABLED;
                         return;
                     }
-                    if (val == Canary.HackticeStatusUpgrading)
+                    if (status == Canary.HackticeStatusUpgrading)
                     {
                         newState = State.HACKTICE_UPGRADE_DATA_WRITTEN;
                         return;
@@ -358,7 +340,7 @@ namespace Hacktice
 
         private bool IsEmulatorReady()
         {
-            return EmulatorState >= State.ROM && _emulator.Ok();
+            return EmulatorState > State.ROM && _emulator.Ok();
         }
 
         private void EmulatorStateUpdate(object state)

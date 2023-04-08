@@ -104,5 +104,10 @@ namespace Hacktice
         {
             return $"{major.ToString(format, formatProvider)}.{minor.ToString(format, formatProvider)}.{patch.ToString(format, formatProvider)}";
         }
+
+        public bool IsReasonable()
+        {
+            return major < 10 && minor < 100 && patch < 1000;
+        }
     }
 }

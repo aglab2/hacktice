@@ -182,6 +182,16 @@ namespace Hacktice.ProcessExtensions
             return true;
         }
 
+        public static bool FetchBytes(this Process process, IntPtr addr, int count, byte[] bytes)
+        {
+            SizeT read;
+            if (!WinAPI.ReadProcessMemory(process.Handle, addr, bytes, (SizeT)bytes.Length, out read)
+                || read != (SizeT)bytes.Length)
+                return false;
+
+            return true;
+        }
+
         public static bool ReadPointer(this Process process, IntPtr addr, out IntPtr val)
         {
             return ReadPointer(process, addr, process.Is64Bit(), out val);

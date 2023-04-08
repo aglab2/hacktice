@@ -53,6 +53,7 @@ namespace Hacktice
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 28)]
         public byte[] customText;
 
+        // since version 1.5
         public byte _pad1;
         public byte _pad0;
         public byte softReset;

@@ -69,11 +69,6 @@ namespace Hacktice
             _rom[0x57ec1] = 0x4d;
         }
 
-        static bool IsReasonable(Version version)
-        {
-            return version.major < 10 && version.minor < 100 && version.patch < 1000;
-        }
-
         public Version FindHackticeVersion()
         {
             foreach (var location in MemFind.All(_rom, (uint) ((int) Canary.HackticeMagic).ToBigEndian()))
@@ -85,7 +80,7 @@ namespace Hacktice
                         continue;
 
                     var version = new Version(BitConverter.ToInt32(_rom, location + 4).ToBigEndian());
-                    if (IsReasonable(version))
+                    if (version.IsReasonable())
                         return version;
                 }
                 catch (Exception) { }

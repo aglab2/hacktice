@@ -58,7 +58,6 @@ namespace Hacktice
 
         public MagicManager(Process process, long[] romPtrBaseSuggestions, long[] ramPtrBaseSuggestions, int offset)
         {
-            GC.Collect();
             this.process = process;
 
             bool isRomFound = false;

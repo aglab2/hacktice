@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms.VisualStyles;
 
 namespace Hacktice
 {
@@ -11,12 +12,33 @@ namespace Hacktice
     {
         private Process _process;
         private ulong _ramPtrBase = 0;
+
         private IntPtr _ptrRam;
-        private IntPtr _ptrCanary;
-        private IntPtr _ptrVersion;
-        private IntPtr _ptrStatus;
+
+        /*
+         Hacktice header has 20 bytes in size and consists of
+         +0 - Canary.HackticeMagic
+         +4 - Encoded version in uint
+         +8 - Hacktice state as one of Canary.HackticeStatus*
+         +12 - Pointer in N64 RAM to hacktice config
+         +16 - Pointer in N64 RAM to hacktice savestate
+         */
+        const int HackticeHeaderSize = 20;
+        private IntPtr? _ptrHackticeHeader;
+        private byte[] _hackticeHeader = new byte[HackticeHeaderSize];
+        private byte[] _ram; // just a cache
+
+        const int ConfigHeaderSize = 8;
+        const int RAMSize = 0x400000;
+
         private IntPtr _ptrOnFrameHook;
-        private IntPtr _ptrPtrConfig;
+
+        public int HackticeCanary { get { return BitConverter.ToInt32(_hackticeHeader, 0); } }
+        public Version HackticeVersion { get { return new Version(BitConverter.ToInt32(_hackticeHeader, 4)); } }
+        public int HackticeStatus { get { return BitConverter.ToInt32(_hackticeHeader, 8); } }
+
+        uint HackticeConfigVPtr { get { return BitConverter.ToUInt32(_hackticeHeader, 12); } }
+        uint HackticeSavestateVPtr { get { return BitConverter.ToUInt32(_hackticeHeader, 16); } }
 
         static readonly string[] s_ProcessNames = {
             "project64", "project64d",
@@ -151,12 +173,7 @@ namespace Hacktice
                 MagicManager mm = new MagicManager(_process, romPtrBaseSuggestions.ToArray(), ramPtrBaseSuggestions.ToArray(), offset);
                 _ramPtrBase = mm.ramPtrBase;
                 _ptrRam = new IntPtr((long)_ramPtrBase);
-                // valid only for the binary case
-                uint binaryHackticeOffset = 0x4E010;
-                _ptrCanary = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset));
-                _ptrVersion = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0x4));
-                _ptrStatus = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0x8));
-                _ptrPtrConfig = new IntPtr((long)(_ramPtrBase + binaryHackticeOffset + 0xc));
+                // only for binary
                 _ptrOnFrameHook = new IntPtr((long)(_ramPtrBase + 0x3805D4));
                 return PrepareResult.OK;
             }
@@ -225,19 +242,75 @@ namespace Hacktice
             }
         }
 
-        public int ReadHackticeCanary()
+        public bool LooksLikeN64VPtr(uint vptr)
         {
-            return _process.ReadValue<int>(_ptrCanary);
+            if (0 == (0x80000000 & vptr))
+                return false;
+
+            uint physAddr = vptr & 0x7fffffff;
+            return physAddr < 0x800000;
         }
 
-        public long ReadOnFrameHook()
+        bool LooksLikeHackticeHeader()
         {
-            return _process.ReadValue<long>(_ptrOnFrameHook);
+            if (!HackticeVersion.IsReasonable())
+                return false;
+
+            if (!LooksLikeN64VPtr(HackticeConfigVPtr))
+                return false;
+
+            if (!LooksLikeN64VPtr(HackticeSavestateVPtr))
+                return false;
+
+            // not checking for state but it is fine
+            return true;
         }
 
-        public int ReadHackticeStatus()
+        bool RefreshHackticeHeaderAndCheckIfValid()
         {
-            return _process.ReadValue<int>(_ptrStatus);
+            if (!Ok())
+                return false;
+
+            _process.FetchBytes(_ptrHackticeHeader.Value, HackticeHeaderSize, _hackticeHeader);
+            if (HackticeCanary != Canary.HackticeMagic)
+                return false;
+
+            bool ok = LooksLikeHackticeHeader();
+            if (ok)
+            {
+                _ram = null;
+            }
+
+            return ok;
+        }
+
+        public bool RefreshHacktice()
+        {
+            if (_ptrHackticeHeader.HasValue)
+            {
+                // refresh the pointers and check if it is still reasonable
+                if (RefreshHackticeHeaderAndCheckIfValid())
+                    return true;
+
+                _ptrHackticeHeader = null;
+            }
+
+            if (!(_ram is object))
+            {
+                _ram = new byte[RAMSize];
+            }
+            _process.FetchBytes(_ptrRam, RAMSize, _ram);
+
+            foreach (var location in MemFind.All(_ram, Canary.HackticeMagic))
+            {
+                // attempt all locations and find if any is reasonable
+                _ptrHackticeHeader = new IntPtr((long)(_ramPtrBase + (ulong)location));
+                if (RefreshHackticeHeaderAndCheckIfValid())
+                    return true;
+            }
+
+            // it is over
+            return false;
         }
 
         public bool Ok()
@@ -245,21 +318,28 @@ namespace Hacktice
             return !_process.HasExited;
         }
 
+        private static bool LooksLikeConfigHeader(byte[] header)
+        {
+            uint magic = BitConverter.ToUInt32(header, 0);
+            if (magic != Canary.ConfigMagic)
+                return false;
+
+            int size = BitConverter.ToInt32(header, 4);
+            if (size <= 8 || size > 0x10000)
+                return false;
+
+            return true;
+        }
+
         public void Write(Config cfg)
         {
-            _process.ReadValue(_ptrPtrConfig, out uint configVPtr);
-            if (0 == (0x80000000 & configVPtr))
-                throw new ArgumentException("Bad config field");
+            var configOff = HackticeConfigVPtr & 0x7fffffff;
+            var ptrConfigHeader = new IntPtr((long)(_ramPtrBase + configOff));
+            var configHeader = _process.ReadBytes(ptrConfigHeader, ConfigHeaderSize);
+            if (!LooksLikeConfigHeader(configHeader))
+                throw new ArgumentException($"Bad config");
 
-            uint configOff = configVPtr & 0x7fffffff;
-            var configMagicPtr = new IntPtr((long)(_ramPtrBase + configOff));
-            _process.ReadValue(configMagicPtr, out uint magic);
-            if (magic != 0x48434647)
-                throw new ArgumentException($"Bad config magic {magic:X}");
-
-            var configSizePtr = new IntPtr((long)(_ramPtrBase + configOff + 4));
-            _process.ReadValue(configSizePtr, out int hackticeConfigSize);
-
+            int hackticeConfigSize = BitConverter.ToInt32(configHeader, 4);
             var size = Marshal.SizeOf(typeof(Config));
             int writeSize = Math.Min(size, hackticeConfigSize);
             if (0 == writeSize)
@@ -277,30 +357,21 @@ namespace Hacktice
 
         public Config ReadConfig()
         {
-            _process.ReadValue(_ptrPtrConfig, out uint configVPtr);
-            if (0 == (0x80000000 & configVPtr))
-                throw new ArgumentException("Bad config field");
+            // We might read more than needed but that is OK as the size is constant
+            var readSize = 8 + Marshal.SizeOf(typeof(Config));
+            var configOff = HackticeConfigVPtr & 0x7fffffff;
+            var ptrConfig = new IntPtr((long)(_ramPtrBase + configOff));
+            var configBytes = _process.ReadBytes(ptrConfig, readSize);
+            if (!LooksLikeConfigHeader(configBytes))
+                throw new ArgumentException($"Bad config");
 
-            uint configOff = configVPtr & 0x7fffffff;
-            var configMagicPtr = new IntPtr((long)(_ramPtrBase + configOff));
-            _process.ReadValue(configMagicPtr, out uint magic);
-            if (magic != 0x48434647)
-                throw new ArgumentException($"Bad config magic {magic:X}");
-
-            var configSizePtr = new IntPtr((long)(_ramPtrBase + configOff + 4));
-            _process.ReadValue(configSizePtr, out int hackticeConfigSize);
-            if (0 == hackticeConfigSize)
-                throw new ArgumentException($"Config size cannot be 0");
-
-            // We might be reading more than required. It is OK because we will cut unnecessary fields and marshalling won't complain
             var size = Marshal.SizeOf(typeof(Config));
-            var configPtr = new IntPtr((long)(_ramPtrBase + configOff + 8));
-            var configBytes = _process.ReadBytes(configPtr, size);
             var ptr = Marshal.AllocHGlobal(size);
-            Marshal.Copy(configBytes, 0, ptr, size);
+            Marshal.Copy(configBytes, ConfigHeaderSize, ptr, size);
             var config = (Config) Marshal.PtrToStructure(ptr, typeof(Config));
             Marshal.FreeHGlobal(ptr);
 
+            int hackticeConfigSize = BitConverter.ToInt32(configBytes, 4);
             if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("_pad1"))
             {
                 config.SetCustomText("PRACTICE");
@@ -313,21 +384,19 @@ namespace Hacktice
             return config;
         }
 
-        public Version ReadVersion()
-        {
-            _process.ReadValue(_ptrVersion, out int version);
-            return new Version(version);
+        public uint ReadRAMHeader()
+        { 
+            return _process.ReadValue<uint>(_ptrRam);
         }
 
-        private uint ReadRAMHeader()
+        public long OnFrameHook()
         {
-            return _process.ReadValue<uint>(_ptrRam);
+            return _process.ReadValue<long>(_ptrOnFrameHook);
         }
 
         public bool IsDecomp()
         {
-            uint hdr = ReadRAMHeader();
-            return Canary.BinaryRamMagic != hdr;
+            return Canary.BinaryRamMagic != ReadRAMHeader();
         }
 
         public void WriteHackticeDetours(uint fn, int repeats)
