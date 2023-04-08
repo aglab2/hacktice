@@ -25,6 +25,8 @@ namespace Hacktice
             HACKTICE_RUNNING_CAN_UPGRADE,
         };
 
+        const string SapphireEEPROMName = "SM64 Sapphire";
+
         readonly System.Threading.Timer _timer;
 
         // Access from '_timer' thread only
@@ -273,6 +275,15 @@ namespace Hacktice
         {
             InjectHackticePayloadData();
             InjectHackticePayloadHeaderAndHooks();
+            var name = _emulator.EEPROMName();
+            if (name == SapphireEEPROMName)
+            {
+                var result = MessageBox.Show($"This ROM seems to be '{SapphireEEPROMName}'. Do you want to apply special fixes for it?", "hacktice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    _emulator.FixSapphireTimer();
+                }
+            }
         }
 
         private void DisableHacktice()
@@ -449,6 +460,15 @@ namespace Hacktice
                     if (binary)
                     {
                         patcher.Apply();
+                        var name = patcher.EEPROMName();
+                        if (name == SapphireEEPROMName)
+                        {
+                            var result = MessageBox.Show($"This ROM seems to be '{SapphireEEPROMName}'. Do you want to apply special fixes for it?", "hacktice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (result == DialogResult.Yes) 
+                            {
+                                patcher.FixSapphireTimer();
+                            }
+                        }
                     }
 
                     var version = patcher.FindHackticeVersion();

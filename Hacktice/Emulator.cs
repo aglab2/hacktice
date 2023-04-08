@@ -1,9 +1,11 @@
-﻿using Hacktice.ProcessExtensions;
+﻿using EndianExtension;
+using Hacktice.ProcessExtensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms.VisualStyles;
 
 namespace Hacktice
@@ -14,6 +16,7 @@ namespace Hacktice
         private ulong _ramPtrBase = 0;
 
         private IntPtr _ptrRam;
+        private IntPtr _ptrEEPROMName;
 
         /*
          Hacktice header has 20 bytes in size and consists of
@@ -173,6 +176,7 @@ namespace Hacktice
                 MagicManager mm = new MagicManager(_process, romPtrBaseSuggestions.ToArray(), ramPtrBaseSuggestions.ToArray(), offset);
                 _ramPtrBase = mm.ramPtrBase;
                 _ptrRam = new IntPtr((long)_ramPtrBase);
+                _ptrEEPROMName = new IntPtr((long)mm.romPtrBase + 0x20);
                 // only for binary
                 _ptrOnFrameHook = new IntPtr((long)(_ramPtrBase + 0x3805D4));
                 return PrepareResult.OK;
@@ -408,6 +412,31 @@ namespace Hacktice
                 Array.Copy(fnBytes, 0, bytes, sizeof(uint) * i, 4);
             }
             _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x4e000)), bytes);
+        }
+
+        public string EEPROMName()
+        {
+            try
+            {
+                var bytes = _process.ReadBytes(_ptrEEPROMName, 20);
+                var stringBytes = new byte[20];
+                Endian.CopyByteswap(bytes, 0, stringBytes, 0, bytes.Length);
+                return Encoding.ASCII.GetString(stringBytes, 0, stringBytes.Length).Trim();
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+        public void FixSapphireTimer()
+        {
+            // 812E3A66 011B
+            // 812E3A4E 00F9
+            // 812E3A36 00E5
+            _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A64)), new byte[] { 0x1b, 0x01 });
+            _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A4C)), new byte[] { 0xf9, 0x00 });
+            _process.WriteBytes(new IntPtr((long)(_ramPtrBase + 0x2E3A34)), new byte[] { 0xe5, 0x00 });
         }
     }
 }

@@ -1,25 +1,8 @@
-﻿using BigEndianExtension;
+﻿using EndianExtension;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Xml;
-using static System.Net.IPAddress;
-
-namespace BigEndianExtension
-{
-    public static class BigEndian
-    {
-        public static short ToBigEndian(this short value) => HostToNetworkOrder(value);
-        public static int ToBigEndian(this int value) => HostToNetworkOrder(value);
-        public static long ToBigEndian(this long value) => HostToNetworkOrder(value);
-        public static short FromBigEndian(this short value) => NetworkToHostOrder(value);
-        public static int FromBigEndian(this int value) => NetworkToHostOrder(value);
-        public static long FromBigEndian(this long value) => NetworkToHostOrder(value);
-    }
-}
 
 namespace Hacktice
 {
@@ -89,15 +72,15 @@ namespace Hacktice
             return null;
         }
 
-        void CopyByteswap(byte[] src, int srcOff, byte[] dst, int dstOff, int amount) 
+        public string EEPROMName()
         {
-            if (amount % 4 != 0)
-                throw new ArgumentException($"Amount {amount} is not divisible by 4");
-
-            for (int i = 0; i < amount; i++)
+            try
             {
-                int iswap = (4 * (i / 4)) + (3 - (i % 4));
-                dst[dstOff + i] = src[srcOff + iswap];
+                return Encoding.ASCII.GetString(_rom, 0x20, 20).Trim();
+            }
+            catch(Exception)
+            {
+                return "";
             }
         }
 
@@ -131,7 +114,7 @@ namespace Hacktice
             Marshal.Copy(ptr, bytes, 0, size);
             Marshal.FreeHGlobal(ptr);
 
-            CopyByteswap(bytes, 0, _rom, configLocation + 8, writeSize);
+            Endian.CopyByteswap(bytes, 0, _rom, configLocation + 8, writeSize);
         }
 
         public void Save(string path)
@@ -141,6 +124,19 @@ namespace Hacktice
 
             var hackticePath = AppendToFileName(path, ".hacktice");
             File.WriteAllBytes(hackticePath, _rom);
+        }
+
+        public void FixSapphireTimer()
+        {
+            // 812E3A66 011B
+            // 812E3A4E 00F9
+            // 812E3A36 00E5
+            _rom[0x2E3A66 - 0x245000 + 0] = 0x01;
+            _rom[0x2E3A66 - 0x245000 + 1] = 0x1b;
+            _rom[0x2E3A4E - 0x245000 + 0] = 0x00;
+            _rom[0x2E3A4E - 0x245000 + 1] = 0xf9;
+            _rom[0x2E3A36 - 0x245000 + 0] = 0x00;
+            _rom[0x2E3A36 - 0x245000 + 1] = 0xe5;
         }
     }
 }
