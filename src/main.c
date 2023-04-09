@@ -8,6 +8,7 @@
 #include "custom_text.h"
 #include "death.h"
 #include "death_floor.h"
+#include "debug_box.h"
 #include "distance.h"
 #include "input_viewer.h"
 #include "interaction.h"
@@ -80,7 +81,12 @@ uintptr_t Hacktice_start[] = {
 #else
     (uintptr_t) 0 /*ignored*/,
 #endif
-    (uintptr_t) 0 /*reserved for future use*/,
+    (uintptr_t) &DebugBox_renderHook,
+
+    (uintptr_t) &DebugBox_hitboxHook,    
+    (uintptr_t) 0 /*reserved*/,
+    (uintptr_t) 0 /*reserved*/,
+    (uintptr_t) 0 /*reserved*/,
 };
 
 #ifndef BINARY

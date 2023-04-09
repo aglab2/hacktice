@@ -51,7 +51,7 @@ typedef struct
 
     char showCustomText;
     char softReset;
-    char _pad0;
+    char showCollision;
     char _pad1;
 } Config;
 

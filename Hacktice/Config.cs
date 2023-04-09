@@ -54,8 +54,8 @@ namespace Hacktice
         public byte[] customText;
 
         // since version 1.5
-        public byte _pad1;
         public byte _pad0;
+        public byte showCollision;
         public byte softReset;
         public byte showCustomText;
 
@@ -143,7 +143,8 @@ namespace Hacktice
                 && warpWheel == o.warpWheel
                 && Enumerable.SequenceEqual(customText, o.customText)
                 && softReset == o.softReset
-                && showCustomText == o.showCustomText;
+                && showCustomText == o.showCustomText
+                && showCollision == o.showCollision;
         }
     }
 }

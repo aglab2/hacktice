@@ -80,7 +80,8 @@ static const ConfigDescriptor sVisualsDescriptors[] =
     { &Hacktice_gConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
     { &Hacktice_gConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) }, 
 
-    { &Hacktice_gConfig.showCustomText, uCUSTOM_TEXT, VALUE_NAMES(onOffValueNames) },    
+    { &Hacktice_gConfig.showCustomText, uCUSTOM_TEXT, VALUE_NAMES(onOffValueNames) },   
+    { &Hacktice_gConfig.showCollision, uSHOW_COLLISION, VALUE_NAMES(onOffValueNames) },  
 };
 #define sVisualsMaxAllowedOption (sizeof(sVisualsDescriptors) / sizeof(*sVisualsDescriptors) - 1)
 

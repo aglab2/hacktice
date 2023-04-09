@@ -555,6 +555,7 @@ namespace Hacktice
                 warpWheel = Convert.ToByte(checkBoxWarpWheel.Checked),
                 softReset = Convert.ToByte(checkBoxSoftReset.Checked),
                 showCustomText = Convert.ToByte(checkBoxShowCustomText.Checked),
+                showCollision = Convert.ToByte(checkBoxShowCollision.Checked),
 
                 checkpointWallkick = Convert.ToByte(checkBoxMTWallkick.Checked),
                 checkpointDoor = Convert.ToByte(checkBoxMTDoor.Checked),
@@ -597,6 +598,7 @@ namespace Hacktice
                 checkBoxWarpWheel.Checked = 0 != config.warpWheel;
                 checkBoxSoftReset.Checked = 0 != config.softReset;
                 checkBoxShowCustomText.Checked = 0 != config.showCustomText;
+                checkBoxShowCollision.Checked = 0 != config.showCollision;
                 if (config.customText is object)
                     textBoxCustomText.Text = config.GetCustomText();
 

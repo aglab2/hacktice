@@ -112,6 +112,10 @@
 	jr ra
 	addiu sp, sp, 0x18
 
+; +++ geo_process_master_list switch hook for collision rendering
+.orga 0x38fb0
+	jal renderhook
+
 ; +++ Main hook to load data in
 
 .headersize 0x80245000
@@ -266,6 +270,44 @@ noinval:
 	lw ra, 0x14(sp)
 	jr ra
 	addiu sp, sp, 0x18
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+
+.orga code_rom+0x400
+renderhook:
+	addiu sp, sp, -0x20
+	sw ra, 0x1c(sp)
+	sw r0, 0x14(sp)
+	lw t0, 0x8032def4
+	bnez t0, @@no_hook_pre
+	lw t2, 0x10(a0)
+	beq t2, r0, @@no_hook_pre
+
+	li t3, 1
+	sw t3, 0x14(sp)
+
+@@no_hook_pre:
+	jal 0x8027ba00
+	nop
+
+	lw t0, 0x14(sp)
+	beq t0, r0, @@no_hook_call
+	lw at, 0x8004e02c
+	jalr at
+	nop
+
+@@no_hook_call:
+	lw ra, 0x1c(sp)
+	jr ra
+	addiu sp, sp, 0x20
+	
+	nop
 	nop
 	nop
 	nop

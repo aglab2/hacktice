@@ -3,10 +3,10 @@ OBJ_DIR = obj
 TOOL_DIR = Hacktice
 
 # Alter these 4 variables according to your need
-CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor version soft_reset custom_text
+CPP_FILES = main savestate text_manager input_viewer level_reset cfg level_conv strings string_conv wallkick_frame distance levitate speed timer checkpoint action interaction music death death_floor version soft_reset custom_text colors debug_box
 
 # If _start will have more elements, adjust this variable 
-PAYLOAD_HEADER_SIZE = 48
+PAYLOAD_HEADER_SIZE = 64
 
 # ROM to inject into for convenient testing
 ROM = sr8.z64
@@ -45,10 +45,10 @@ $(ROM): $(PAYLOAD)
 	dd bs=1 seek=$(ROM_OFFSET) if=$^ of=$@ conv=notrunc
 
 $(PAYLOAD_HEADER): $(PAYLOAD)
-	dd bs=48 count=1 if=$^ of=$@ conv=notrunc
+	dd bs=$(PAYLOAD_HEADER_SIZE) count=1 if=$^ of=$@ conv=notrunc
 
 $(PAYLOAD_DATA): $(PAYLOAD)
-	dd bs=1 skip=48 if=$^ of=$@ conv=notrunc
+	dd bs=1 skip=$(PAYLOAD_HEADER_SIZE) if=$^ of=$@ conv=notrunc
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)

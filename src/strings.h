@@ -47,6 +47,7 @@ extern const u8 uSSAVESTYLE[];
 extern const u8 uSELECT_WARP_TARGET[];
 extern const u8 uSHORTCUTS[];
 extern const u8 uSTATE[];
+extern const u8 uSHOW_COLLISION[];
 extern const u8 uSTICK[];
 extern const u8 uSOFT_RESET[];
 extern const u8 uSPEED[];

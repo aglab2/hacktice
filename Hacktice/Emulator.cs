@@ -379,11 +379,11 @@ namespace Hacktice
             Marshal.FreeHGlobal(ptr);
 
             int hackticeConfigSize = BitConverter.ToInt32(configBytes, 4);
-            if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("_pad1"))
+            if (hackticeConfigSize <= (int) Marshal.OffsetOf<Config>("showCustomText"))
             {
                 config.SetCustomText("PRACTICE");
-                config._pad1 = 0;
                 config._pad0 = 0;
+                config.showCollision = 0;
                 config.softReset = 0;
                 config.showCustomText = 0;
             }
