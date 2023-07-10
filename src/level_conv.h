@@ -1,3 +1,5 @@
+#pragma once
+
 typedef enum LevelConv_PlainLevels
 {
     LevelConv_PlainLevels_OFF,

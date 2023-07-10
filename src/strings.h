@@ -66,3 +66,11 @@ extern const u8 uWALLKICKFRAME[];
 extern const u8 uWALLKICK[];
 extern const u8 uWARP_WHEEL[];
 extern const u8 uXCAM[];
+
+extern const u8 uTOURNAMENT[];
+extern const u8 uMODE[];
+extern const u8 uPATH[];
+extern const u8 uLENGTH[];
+extern const u8 u5[];
+extern const u8 u7[];
+extern const u8 u10[];

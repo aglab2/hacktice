@@ -9,6 +9,8 @@
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
 
+#include "tournament.h"
+
 char Config_gWarp;
 char Config_gMusicNumber;
 char Config_gOnDeathAction;
@@ -111,11 +113,15 @@ static const ConfigDescriptor sShortcutsDescriptors[] =
 };
 #define sShortcutsMaxAllowedOption (sizeof(sShortcutsDescriptors) / sizeof(*sShortcutsDescriptors) - 1)
 
-// Warp
+static const u8* const tournamentLengthValueNames[] = { u5, u7, u10 };
+
+// Warp (tournament)
 static const ConfigDescriptor sWarpDescriptors[] = {
-    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, 25 },
+    { &gTournamentConfig.locked, uMODE, VALUE_NAMES(onOffValueNames) },
+    { &gTournamentConfig.path, uPATH, VALUE_NAMES(onOffValueNames) },
+    { &gTournamentConfig.length, uLENGTH, VALUE_NAMES(tournamentLengthValueNames) },
 };
-#define sWarpMaxAllowedOption 0
+#define sWarpMaxAllowedOption (sizeof(sWarpDescriptors) / sizeof(*sWarpDescriptors) - 1)
 
 // Common
 typedef enum Pages
@@ -128,7 +134,7 @@ typedef enum Pages
     Pages_PagesCount,
 } Pages;
 
-static unsigned char sPage = Pages_GENERAL;
+unsigned char sPage = Pages_GENERAL;
 // poor man constexpr
 #define sMaxAllowedPage (Pages_PagesCount - 1)
 
@@ -146,7 +152,7 @@ static const PageDescriptor sPageDescriptors[] =
     { uVISUALS    , PAGE_CONFIG(sVisualsDescriptors) },
     { uGENERAL    , PAGE_CONFIG(sGeneralDescriptors) },
     { uSHORTCUTS  , PAGE_CONFIG(sShortcutsDescriptors) },
-    { uWARP       , PAGE_CONFIG(sWarpDescriptors) },
+    { uTOURNAMENT , PAGE_CONFIG(sWarpDescriptors) },
 };
 
 static unsigned char sPickedOptions[] = {

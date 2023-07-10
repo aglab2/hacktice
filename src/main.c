@@ -21,6 +21,7 @@
 #include "speed.h"
 #include "status.h"
 #include "text_manager.h"
+#include "tournament.h"
 #include "timer.h"
 #include "version.h"
 #include "wallkick_frame.h"
@@ -33,9 +34,15 @@ void Hacktice_onFrame()
     SoftReset_onFrame();
 
     HackticeSetStatus(HACKTICE_STATUS_ACTIVE);
+
+    Tournament_onFrame();
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
     {
         Death_onNormal();
+
+        // changes death stuff, make sure after 'Death_onNormal'
+        Tournament_onNormal();
+
         Distance_onNormal();
         InputViewer_onNormal();
         LevelReset_onNormal();
@@ -61,6 +68,8 @@ void Hacktice_onPause()
 {
     SaveState_onPause();
     Config_onPause();
+
+    Tournament_onFrame();
 }
 
 uintptr_t Hacktice_start[] = {
@@ -84,7 +93,7 @@ uintptr_t Hacktice_start[] = {
     (uintptr_t) &DebugBox_renderHook,
 
     (uintptr_t) &DebugBox_hitboxHook,    
-    (uintptr_t) 0 /*reserved*/,
+    (uintptr_t) &Tournament_canPauseExit,
     (uintptr_t) 0 /*reserved*/,
     (uintptr_t) 0 /*reserved*/,
 };
