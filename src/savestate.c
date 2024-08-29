@@ -1,6 +1,7 @@
 #include "savestate.h"
 
 #include "binary.h"
+#include "compress.h"
 #include "cfg.h"
 #include "text_manager.h"
 
@@ -47,7 +48,8 @@ void SaveState_onNormal()
         Hacktice_gState->area  = gCurrAreaIndex;
         Hacktice_gState->level = gCurrLevelNum;
         Hacktice_gState->size = sizeof(State);
-        memcpy(Hacktice_gState->memory, _hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart);
+        uint32_t stateSize = 0;
+        mlz4_compress(_hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart, Hacktice_gState->memory, &stateSize);
     }
     else
     {
@@ -55,7 +57,7 @@ void SaveState_onNormal()
         {
             if (Hacktice_gState->area == gCurrAreaIndex && Hacktice_gState->level == gCurrLevelNum)
             {
-                memcpy(_hackticeStateDataStart, Hacktice_gState->memory, _hackticeStateDataEnd - _hackticeStateDataStart);
+                mlz4_decompress(Hacktice_gState->memory, _hackticeStateDataStart);
                 resetCamera();
             }
         }
