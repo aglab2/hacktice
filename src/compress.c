@@ -6,21 +6,24 @@
 #include "libc/string.h"
 
 #define PACKED __attribute__((packed))
-#define __GET_UNALIGNED_T(type, ptr)                                                                   \
-    ({                                                                                                 \
-        const struct {                                                                                 \
-            type x;                                                                                    \
-        } PACKED *__pptr = (typeof(__pptr)) (ptr);                                                     \
-        __pptr->x;                                                                                     \
-    })
+#define __GET_UNALIGNED_T(type, ptr)              \
+	({                                            \
+		const struct                              \
+		{                                         \
+			type x;                               \
+		} PACKED *__pptr = (typeof(__pptr))(ptr); \
+		__pptr->x;                                \
+	})
 
-#define __PUT_UNALIGNED_T(type, val, ptr)                                                              \
-    do {                                                                                               \
-        struct {                                                                                       \
-            type x;                                                                                    \
-        } PACKED *__pptr = (typeof(__pptr)) (ptr);                                                     \
-        __pptr->x = (val);                                                                             \
-    } while (0)
+#define __PUT_UNALIGNED_T(type, val, ptr)         \
+	do                                            \
+	{                                             \
+		struct                                    \
+		{                                         \
+			type x;                               \
+		} PACKED *__pptr = (typeof(__pptr))(ptr); \
+		__pptr->x = (val);                        \
+	} while (0)
 
 #define GET_UNALIGNED4(ptr) __GET_UNALIGNED_T(uint32_t, (ptr))
 #define PUT_UNALIGNED4(val, ptr) __PUT_UNALIGNED_T(uint32_t, (val), (ptr))
@@ -33,15 +36,15 @@ typedef struct
 	uint32_t match4;
 } MinMatch;
 
-static MinMatch readMinMatch(const uint8_t* buf)
+static MinMatch readMinMatch(const uint8_t *buf)
 {
 	const uint32_t mask = 0xffffff00;
 	const uint32_t match4 = GET_UNALIGNED4(buf);
 	const uint32_t match3 = match4 & mask;
-	return (MinMatch) { match3, match4 };
+	return (MinMatch){match3, match4};
 }
 
-static uint32_t readMinMatch3(const uint8_t* buf)
+static uint32_t readMinMatch3(const uint8_t *buf)
 {
 	const uint32_t mask = 0xffffff00;
 	const uint32_t match4 = GET_UNALIGNED4(buf);
@@ -59,22 +62,28 @@ typedef struct
 
 static MinMatcHash hashMinMatch(MinMatch match)
 {
-	return (MinMatcHash) { ((match.match3 * 506832829U) << 8) >> (32 - HASH_CHAINS_BITS), (match.match4 * 2654435761U) >> (32 - HASH_CHAINS_BITS)};
+	return (MinMatcHash){((match.match3 * 506832829U) << 8) >> (32 - HASH_CHAINS_BITS), (match.match4 * 2654435761U) >> (32 - HASH_CHAINS_BITS)};
 }
 
-static void wildCopy4(uint8_t* dst, const uint8_t* src, const uint8_t* dstEnd)
+static void wildCopy4(uint8_t *dst, const uint8_t *src, const uint8_t *dstEnd)
 {
 	do
 	{
-        PUT_UNALIGNED4(GET_UNALIGNED4(src), dst);
+		PUT_UNALIGNED4(GET_UNALIGNED4(src), dst);
 		src += 4;
 		dst += 4;
 	} while (dst < dstEnd);
 }
 
-#define WILD_COPY_MOVE(dst, src, amount) do{ uint8_t* start = dst; dst += (amount); wildCopy4(start, src, dst); }while(0)
+#define WILD_COPY_MOVE(dst, src, amount) \
+	do                                   \
+	{                                    \
+		uint8_t *start = dst;            \
+		dst += (amount);                 \
+		wildCopy4(start, src, dst);      \
+	} while (0)
 
-static void encodeLargeInt(uint8_t** _out, int leftToEncode)
+static void encodeLargeInt(uint8_t **_out, int leftToEncode)
 {
 #define out (*_out)
 	bool keepEncoding = true;
@@ -90,12 +99,12 @@ static void encodeLargeInt(uint8_t** _out, int leftToEncode)
 typedef struct
 {
 	int matchLen;
-	const uint8_t* inMatch;
+	const uint8_t *inMatch;
 } MinMatchPtr;
 
-static MinMatchPtr tryMinMatch(uint32_t potentialMinMatchOffset, MinMatch minMatch, const uint8_t* inCursor, const uint8_t* inLimit, int inCursorOffset)
+static MinMatchPtr tryMinMatch(uint32_t potentialMinMatchOffset, MinMatch minMatch, const uint8_t *inCursor, const uint8_t *inLimit, int inCursorOffset)
 {
-	const uint8_t* potentialMinMatch = inCursor - inCursorOffset + potentialMinMatchOffset;
+	const uint8_t *potentialMinMatch = inCursor - inCursorOffset + potentialMinMatchOffset;
 
 	// need to do some fun wraparound stuff
 	if (potentialMinMatch > inCursor - 4)
@@ -115,30 +124,30 @@ static MinMatchPtr tryMinMatch(uint32_t potentialMinMatchOffset, MinMatch minMat
 			matchLen++;
 		}
 
-		return (MinMatchPtr) { matchLen, potentialMinMatch };
+		return (MinMatchPtr){matchLen, potentialMinMatch};
 	}
 	else
 	{
-		return (MinMatchPtr) { 0, NULL };
+		return (MinMatchPtr){0, NULL};
 	}
 }
 
-void mlz4_compress(const uint8_t* in, const uint32_t inSize, uint8_t* out, uint32_t* outSize)
+void mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out, uint32_t *outSize)
 {
-	uint8_t* compressedData = out;
+	uint8_t *compressedData = out;
 
-	uint8_t* outCursor = compressedData;
+	uint8_t *outCursor = compressedData;
 #ifndef TARGET_N64
 	uint8_t hashChains3[HASH_CHAINS_SIZE] = {};
 	uint8_t hashChains4[HASH_CHAINS_SIZE] = {};
 #else
-    // placed in gDecompressionHeap
-    uint8_t* hashChains3 = (uint8_t*) 0x801c1000;
-    uint8_t* hashChains4 = (uint8_t*) 0x801c1000 + HASH_CHAINS_SIZE;
+	// placed in gDecompressionHeap
+	uint8_t *hashChains3 = (uint8_t *)0x801c1000;
+	uint8_t *hashChains4 = (uint8_t *)0x801c1000 + HASH_CHAINS_SIZE;
 #endif
 
-    // should be safe to do
-	*(uint32_t*)outCursor = inSize;
+	// should be safe to do
+	*(uint32_t *)outCursor = inSize;
 	outCursor += 4;
 
 	// uncompressible data, just write it out as literals
@@ -147,14 +156,14 @@ void mlz4_compress(const uint8_t* in, const uint32_t inSize, uint8_t* out, uint3
 		outCursor[0] = ((uint8_t)inSize) << 4;
 		outCursor++;
 		WILD_COPY_MOVE(outCursor, in, inSize);
-        *outSize = (size_t) (outCursor - compressedData);
-        return;
+		*outSize = (size_t)(outCursor - compressedData);
+		return;
 	}
 
-	const uint8_t* inEnd = in + inSize;
-	const uint8_t* inCursor = in + 4;
-	const uint8_t* inLimit = inEnd - 4;
-	const uint8_t* inLiteralStart = in;
+	const uint8_t *inEnd = in + inSize;
+	const uint8_t *inCursor = in + 4;
+	const uint8_t *inLimit = inEnd - 4;
+	const uint8_t *inLiteralStart = in;
 
 	// start the loop
 	while (1)
@@ -179,17 +188,17 @@ void mlz4_compress(const uint8_t* in, const uint32_t inSize, uint8_t* out, uint3
 			}
 			else
 			{
-				*(outCursor++) = ((uint8_t) literalsCount) << 4;
+				*(outCursor++) = ((uint8_t)literalsCount) << 4;
 			}
 
 			WILD_COPY_MOVE(outCursor, inLiteralStart, literalsCount);
-            *outSize = (uint32_t)(outCursor - compressedData);
-            return;
+			*outSize = (uint32_t)(outCursor - compressedData);
+			return;
 		}
 
 		MinMatch minMatch = readMinMatch(inCursor);
 		MinMatcHash hashValue = hashMinMatch(minMatch);
-		uint8_t inCursorOffset = (uint8_t) (inCursor - in);
+		uint8_t inCursorOffset = (uint8_t)(inCursor - in);
 
 		uint8_t potentialMinMatchOffset3 = hashChains3[hashValue.hash3];
 		uint8_t potentialMinMatchOffset4 = hashChains4[hashValue.hash4];
@@ -201,8 +210,8 @@ void mlz4_compress(const uint8_t* in, const uint32_t inSize, uint8_t* out, uint3
 		if (match.matchLen)
 		{
 			// write the match...
-			uint8_t* pnibble = outCursor++;
-			const int literalsCount = (int) (inCursor - inLiteralStart);
+			uint8_t *pnibble = outCursor++;
+			const int literalsCount = (int)(inCursor - inLiteralStart);
 			if (literalsCount >= 15)
 			{
 				*pnibble = 0xf0;
@@ -238,15 +247,15 @@ void mlz4_compress(const uint8_t* in, const uint32_t inSize, uint8_t* out, uint3
 	}
 }
 
-void mlz4_decompress(const uint8_t* in, uint8_t* out)
+void mlz4_decompress(const uint8_t *in, uint8_t *out)
 {
-	const uint8_t* inCursor = in;
-	uint32_t originalSize = *(uint32_t*)inCursor;
+	const uint8_t *inCursor = in;
+	uint32_t originalSize = *(uint32_t *)inCursor;
 	inCursor += 4;
 
-	uint8_t* outCursor = out;
-	uint8_t* outEnd = out + originalSize;
-	uint8_t* outSafetyMargin = outEnd - 4;
+	uint8_t *outCursor = out;
+	uint8_t *outEnd = out + originalSize;
+	uint8_t *outSafetyMargin = outEnd - 4;
 	while (1)
 	{
 		uint8_t nibble = *(inCursor++);
@@ -264,7 +273,7 @@ void mlz4_decompress(const uint8_t* in, uint8_t* out)
 
 		if (literalsCount)
 		{
-			uint8_t* literalsEnd = outCursor + literalsCount;
+			uint8_t *literalsEnd = outCursor + literalsCount;
 			if (literalsEnd >= outSafetyMargin)
 			{
 				// last 4 literals must be in safety margin
@@ -294,7 +303,7 @@ void mlz4_decompress(const uint8_t* in, uint8_t* out)
 		}
 		matchesCount += MINMATCH;
 
-		const uint8_t* matchStart = outCursor - offset;
+		const uint8_t *matchStart = outCursor - offset;
 		WILD_COPY_MOVE(outCursor, matchStart, matchesCount);
 	}
 }
