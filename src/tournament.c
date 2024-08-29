@@ -175,6 +175,7 @@ void render_timer_at(int xoff, int yoff, u16 timerValFrames)
     print_text_fmt_int(xoff - 37, yoff, "%02d", timerFracSecs);
 }
 
+static char* addr = (char*) 0x42C7C0;
 void Tournament_onFrame()
 {
     static int lastTime = 0;
@@ -220,6 +221,18 @@ void Tournament_onFrame()
             TextManager_addLine(sTournamentModeLength, 1);
 
             TextManager_addLine("PATCH 1", 1);
+            static char line[64];
+            if (gPlayer1Controller->buttonPressed & U_JPAD)
+            {
+                addr += 0x10000;
+            }
+            if (gPlayer1Controller->buttonPressed & D_JPAD)
+            {
+                addr -= 0x10000;
+            }
+            *(int*)addr = 0;
+            sprintf(line, "%x %x", (int) addr, *(int*)addr);
+            TextManager_addLine(line, 1);
         }
     }
 }
