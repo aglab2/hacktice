@@ -2,6 +2,7 @@
 
 #include "compress.h"
 
+#include "savestate.h"
 #include "bool.h"
 #include "libc/string.h"
 
@@ -62,7 +63,7 @@ typedef struct
 
 static MinMatcHash hashMinMatch(MinMatch match)
 {
-	return (MinMatcHash){((match.match3 * 506832829U) << 8) >> (32 - HASH_CHAINS_BITS), (match.match4 * 2654435761U) >> (32 - HASH_CHAINS_BITS)};
+	return (MinMatcHash){((match.match3 * 506832829U)) >> (32 - HASH_CHAINS_BITS), (match.match4 * 2654435761U) >> (32 - HASH_CHAINS_BITS)};
 }
 
 static void wildCopy4(uint8_t *dst, const uint8_t *src, const uint8_t *dstEnd)
@@ -132,7 +133,7 @@ static MinMatchPtr tryMinMatch(uint32_t potentialMinMatchOffset, MinMatch minMat
 	}
 }
 
-void mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out, uint32_t *outSize)
+uint32_t mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out)
 {
 	uint8_t *compressedData = out;
 
@@ -142,23 +143,25 @@ void mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out, uint3
 	uint8_t hashChains4[HASH_CHAINS_SIZE] = {};
 #else
 	// placed in gDecompressionHeap
-	uint8_t *hashChains3 = (uint8_t *)0x801c1000;
-	uint8_t *hashChains4 = (uint8_t *)0x801c1000 + HASH_CHAINS_SIZE;
+	uint8_t *hashChains3 = Hacktice_gState->memory + MaxStateSize - HASH_CHAINS_SIZE * 2 - 0xf00;
+	uint8_t *hashChains4 = hashChains3 + HASH_CHAINS_SIZE;
+	bzero(hashChains3, 2 * HASH_CHAINS_SIZE);
 #endif
 
 	// should be safe to do
-	*(uint32_t *)outCursor = inSize;
+	PUT_UNALIGNED4(inSize, outCursor);
 	outCursor += 4;
 
+#if 0
 	// uncompressible data, just write it out as literals
 	if (inSize <= 8)
 	{
 		outCursor[0] = ((uint8_t)inSize) << 4;
 		outCursor++;
 		WILD_COPY_MOVE(outCursor, in, inSize);
-		*outSize = (size_t)(outCursor - compressedData);
-		return;
+		return (uint32_t) (outCursor - compressedData);
 	}
+#endif
 
 	const uint8_t *inEnd = in + inSize;
 	const uint8_t *inCursor = in + 4;
@@ -192,8 +195,7 @@ void mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out, uint3
 			}
 
 			WILD_COPY_MOVE(outCursor, inLiteralStart, literalsCount);
-			*outSize = (uint32_t)(outCursor - compressedData);
-			return;
+			return (uint32_t)(outCursor - compressedData);
 		}
 
 		MinMatch minMatch = readMinMatch(inCursor);
@@ -247,10 +249,10 @@ void mlz4_compress(const uint8_t *in, const uint32_t inSize, uint8_t *out, uint3
 	}
 }
 
-void mlz4_decompress(const uint8_t *in, uint8_t *out)
+uint32_t mlz4_decompress(const uint8_t *in, uint8_t *out)
 {
 	const uint8_t *inCursor = in;
-	uint32_t originalSize = *(uint32_t *)inCursor;
+	uint32_t originalSize = GET_UNALIGNED4(inCursor);
 	inCursor += 4;
 
 	uint8_t *outCursor = out;
@@ -279,6 +281,7 @@ void mlz4_decompress(const uint8_t *in, uint8_t *out)
 				// last 4 literals must be in safety margin
 				memcpy(outCursor, inCursor, literalsCount);
 				outCursor += literalsCount;
+				inCursor += literalsCount;
 				break;
 			}
 			else
@@ -306,4 +309,7 @@ void mlz4_decompress(const uint8_t *in, uint8_t *out)
 		const uint8_t *matchStart = outCursor - offset;
 		WILD_COPY_MOVE(outCursor, matchStart, matchesCount);
 	}
+
+	// TODO: this is incredibly ugly, rework this mess
+	return inCursor - in;
 }

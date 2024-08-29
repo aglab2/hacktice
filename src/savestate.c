@@ -7,9 +7,11 @@
 
 #include "game/area.h"
 #include "game/camera.h"
+#include "game/display.h"
 #include "game/print.h"
 #include "game/level_update.h"
 #include "libc/string.h"
+#include "libc/stdio.h"
 
 void set_play_mode(s16 playMode);
 
@@ -21,6 +23,9 @@ State Hacktice_gState[1];
 extern u8 _hackticeStateDataStart[];
 extern u8 _hackticeStateDataEnd[];
 #endif
+
+#define IS_DECADES_LATER (0x8C63E074U == (*(uint32_t*) 0x802C99C4))
+extern struct GfxPool gGfxPools[2];
 
 static bool sMustSaveState = 0;
 
@@ -48,8 +53,15 @@ void SaveState_onNormal()
         Hacktice_gState->area  = gCurrAreaIndex;
         Hacktice_gState->level = gCurrLevelNum;
         Hacktice_gState->size = sizeof(State);
-        uint32_t stateSize = 0;
-        mlz4_compress(_hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart, Hacktice_gState->memory, &stateSize);
+        uint32_t stateSize = mlz4_compress(_hackticeStateDataStart, _hackticeStateDataEnd - _hackticeStateDataStart, Hacktice_gState->memory);
+        // Decades Later extra logic
+        if (IS_DECADES_LATER)
+        {
+            uint32_t exStateSize = mlz4_compress((uint8_t*) gGfxPools, sizeof(gGfxPools), Hacktice_gState->memory + stateSize);
+            static char buf[16];
+            sprintf(buf, "%d %d", stateSize, exStateSize);
+            TextManager_addLine(buf, 30);
+        }
     }
     else
     {
@@ -57,7 +69,11 @@ void SaveState_onNormal()
         {
             if (Hacktice_gState->area == gCurrAreaIndex && Hacktice_gState->level == gCurrLevelNum)
             {
-                mlz4_decompress(Hacktice_gState->memory, _hackticeStateDataStart);
+                uint32_t compressedSize = mlz4_decompress(Hacktice_gState->memory, _hackticeStateDataStart);
+                if (IS_DECADES_LATER)
+                {
+                    mlz4_decompress(Hacktice_gState->memory + compressedSize, (uint8_t*) gGfxPools);
+                }
                 resetCamera();
             }
         }
