@@ -2,7 +2,7 @@
 
 LevelConv_SM64Levels LevelConv_toSM64Level(LevelConv_PlainLevels pl)
 {
-    static char levels[] = 
+    static const char levels[] =
     {
         LevelConv_SM64Levels_OFF,
         LevelConv_SM64Levels_C1,
@@ -34,6 +34,10 @@ LevelConv_SM64Levels LevelConv_toSM64Level(LevelConv_PlainLevels pl)
         LevelConv_SM64Levels_S1,
         LevelConv_SM64Levels_S2,
         LevelConv_SM64Levels_S3,
+
+        LevelConv_SM64Levels_F1,
+        LevelConv_SM64Levels_F2,
+        LevelConv_SM64Levels_F3,
     };
 
     return (LevelConv_SM64Levels) levels[(int) pl];

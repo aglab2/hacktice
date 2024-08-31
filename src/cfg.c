@@ -111,9 +111,11 @@ static const ConfigDescriptor sShortcutsDescriptors[] =
 };
 #define sShortcutsMaxAllowedOption (sizeof(sShortcutsDescriptors) / sizeof(*sShortcutsDescriptors) - 1)
 
+#define kWarpsCounts 29
+
 // Warp
 static const ConfigDescriptor sWarpDescriptors[] = {
-    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, 25 },
+    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, kWarpsCounts },
 };
 #define sWarpMaxAllowedOption 0
 
@@ -175,7 +177,16 @@ static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
         {
             u8** courseNameTbl = (u8**) segmented_to_virtual(sCourseNames);
             int id = value - 1;
-            courseName = (u8*) segmented_to_virtual(courseNameTbl[id]);
+            if (LevelConv_PlainLevels_F1 - 1 <= id)
+            {
+                static u8 sFirst[] = { 0X0F, 0x12, 0x10, 0x11, 0x1D, 0x9e, 0x00, 0xFF };
+                sFirst[6] = id - LevelConv_PlainLevels_F1 + 2;
+                courseName = sFirst;
+            }
+            else
+            {
+                courseName = (u8*) segmented_to_virtual(courseNameTbl[id]);
+            }
         }
         print_generic_string_centered(x, y - 20, courseName);
     }
