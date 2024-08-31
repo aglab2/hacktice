@@ -329,7 +329,7 @@ LevelConv_PlainLevels Config_warpIdAndReset()
     int w = Config_warpId();
     if (0 != w)
     {
-        sPage = Pages_GENERAL;
+        sPage = Pages_WARP - 1;
     }
 
     return w;
