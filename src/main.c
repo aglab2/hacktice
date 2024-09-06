@@ -1,5 +1,7 @@
 #include "types.h"
 
+#include "game/game.h"
+#include "game/ingame_menu.h"
 #include "game/level_update.h"
 
 #include "action.h"
@@ -28,6 +30,25 @@
 #define PLAY_MODE_NORMAL 0
 #define PLAY_MODE_PAUSED 2
 
+void Hacktice_onPause()
+{
+    SaveState_onPause();
+    Config_onPause();
+}
+
+#ifdef BINARY
+static bool sInitialized = 0;
+static void Hacktice_onPauseStarDisplay()
+{
+    gSPDisplayList(gDisplayListHead++, 0x02011cc8);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
+
+    Hacktice_onPause();
+
+    gSPDisplayList(gDisplayListHead++, 0x02011d50);
+}
+#endif
+
 void Hacktice_onFrame()
 {
     SoftReset_onFrame();
@@ -55,12 +76,29 @@ void Hacktice_onFrame()
 
     Timer_onFrame();
     TextManager_onFrame();
-}
 
-void Hacktice_onPause()
-{
-    SaveState_onPause();
-    Config_onPause();
+#ifdef BINARY
+    if (!sInitialized)
+    {
+        sInitialized = true;
+        u32 cmd = ((u32) &Hacktice_onPauseStarDisplay);
+        cmd &= 0xffffff;
+        cmd /= 4;
+        cmd |= 0x0C000000;
+
+        // Star Revenge 8-like star display hook, redirect to my code
+        if (0x0C102000U == *(u32*) 0x802DCC48)
+        {
+            *(u32*) 0x802DCC48 = cmd;
+        }
+
+        // Decades Later-like star display hook, redirect to my code
+        if (0x0060F809U == *(u32*) 0x802DCC4C)
+        {
+            *(u32*) 0x802DCC4C = cmd;
+        }
+    }
+#endif
 }
 
 uintptr_t Hacktice_start[] = {
