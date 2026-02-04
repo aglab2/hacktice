@@ -21,7 +21,7 @@ static void addTimeLine()
     static char sLine[] = "X XX XX";
 
     int time = gHudDisplay.timer;
-    int ms = (int) (3.33333f * (time % 30));
+    int ms = (int) ((time % 30) * 10 / 3);
     int s = (time / 30) % 60;
     int m = time / 30 / 60;
 
