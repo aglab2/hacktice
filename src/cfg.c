@@ -9,6 +9,8 @@
 #include "game/ingame_menu.h"
 #include "engine/math_util.h"
 
+#include "stdio.h"
+
 char Config_gWarp;
 char Config_gMusicNumber;
 char Config_gOnDeathAction;
@@ -19,28 +21,30 @@ Config Hacktice_gConfig = {
     .timerShow = true,
     .warpWheel = true,
     .customText = "PRACTICE",
+
+    .lAction = 5,
 };
 
 typedef struct ConfigDescriptor
 {
     char* value;
-    const u8* name;
-    const u8* const* valueNames;
+    const HC* name;
+    const HC* const* valueNames;
     char maxValueCount;
 } ConfigDescriptor;
 
 // Config_StickStyle
-static const u8* const inputValueNames[] = { uOFF, uTEXT, uGRAPHICS };
-static const u8* const onOffValueNames[] = { uOFF, uON };
-static const u8* const timerValueNames[] = { uGRAB, uXCAM };
-static const u8* const stateSaveNames[]  = { uBUTTON, uPAUSE };
-static const u8* const deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
+static const HC* const inputValueNames[] = { uOFF, uTEXT, uGRAPHICS };
+static const HC* const onOffValueNames[] = { uOFF, uON };
+static const HC* const timerValueNames[] = { uGRAB, uXCAM };
+static const HC* const stateSaveNames[]  = { uBUTTON, uPAUSE };
+static const HC* const deathActionNames[] = { uOFF, uACT_SELECT, uLEVEL_RESET, uLOAD_STATE };
 
 // Config_ButtonAction
-static const u8* const actionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
+static const HC* const actionNames[]    = { uOFF, uACT_SELECT, uLEVEL_RESET, uLEVEL_RESET_WARP, uLEVITATE, uLOAD_STATE };
 
-static u8 lMusicNumber[] = { 0x00, 0x00, 0xff };
-static const u8* const lMusicNumbers[] = { lMusicNumber, NULL };
+static HC lMusicNumber[] = { "00" };
+static const HC* const lMusicNumbers[] = { lMusicNumber, NULL };
 
 #define VALUE_NAMES(x) x, ARRAY_SIZE(x)
 #define INT_NAMES(x, cnt) x, cnt
@@ -80,8 +84,10 @@ static const ConfigDescriptor sVisualsDescriptors[] =
     { &Hacktice_gConfig.distanceFromClosestRed,    uDISTANCE_TO_RED, VALUE_NAMES(onOffValueNames) },
     { &Hacktice_gConfig.distanceFromClosestSecret, uDISTANCE_TO_SECRET, VALUE_NAMES(onOffValueNames) }, 
 
-    { &Hacktice_gConfig.showCustomText, uCUSTOM_TEXT, VALUE_NAMES(onOffValueNames) },   
-    { &Hacktice_gConfig.showCollision, uSHOW_COLLISION, VALUE_NAMES(onOffValueNames) },  
+    { &Hacktice_gConfig.showCustomText, uCUSTOM_TEXT, VALUE_NAMES(onOffValueNames) },
+#ifdef BINARY
+    { &Hacktice_gConfig.showCollision, uSHOW_COLLISION, VALUE_NAMES(onOffValueNames) },
+#endif
 };
 #define sVisualsMaxAllowedOption (sizeof(sVisualsDescriptors) / sizeof(*sVisualsDescriptors) - 1)
 
@@ -111,11 +117,11 @@ static const ConfigDescriptor sShortcutsDescriptors[] =
 };
 #define sShortcutsMaxAllowedOption (sizeof(sShortcutsDescriptors) / sizeof(*sShortcutsDescriptors) - 1)
 
-#define kWarpsCounts 29
+static const u8 kWarpTargets[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, /*25,*/ 26, 27, 28 };
 
 // Warp
 static const ConfigDescriptor sWarpDescriptors[] = {
-    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, kWarpsCounts },
+    { &Config_gWarp, uSELECT_WARP_TARGET, NULL, sizeof(kWarpTargets) },
 };
 #define sWarpMaxAllowedOption 0
 
@@ -136,7 +142,7 @@ static unsigned char sPage = Pages_GENERAL;
 
 typedef struct PageDescriptor
 {
-    const u8* name;
+    const HC* name;
     const ConfigDescriptor* configs;
     char maxAllowedOption;
 } PageDescriptor;
@@ -159,11 +165,98 @@ static unsigned char sPickedOptions[] = {
     sWarpMaxAllowedOption        / 2,
 };
 
-static void print_generic_string_centered(s16 x, s16 y, const u8 *str)
+static void print_generic_string_centered(s16 x, s16 y, const HC *str)
 {
-    s16 newX = GET_STR_X_POS_FROM_CENTER(x, str, 10.f);
+#ifdef BINARY
+    s16 newX = get_str_x_pos_from_center(x, (HC*) str, 0);
     print_generic_string(newX, y, str);
+#else
+    print_generic_string_aligned(x, y, str, TEXT_ALIGN_CENTER);
+#endif
 }
+
+static HC* launder(char* line)
+{
+    char* p;
+    for (p = line; *p != '\0'; ++p)
+    {
+        char sym = *p;
+        switch (sym)
+        {
+            case '0': sym = 0x00; break;
+            case '1': sym = 0x01; break;
+            case '2': sym = 0x02; break;
+            case '3': sym = 0x03; break;
+            case '4': sym = 0x04; break;
+            case '5': sym = 0x05; break;
+            case '6': sym = 0x06; break;
+            case '7': sym = 0x07; break;
+            case '8': sym = 0x08; break;
+            case '9': sym = 0x09; break;
+            case 'A': sym = 0x0A; break;
+            case 'B': sym = 0x0B; break;
+            case 'C': sym = 0x0C; break;
+            case 'D': sym = 0x0D; break;
+            case 'E': sym = 0x0E; break;
+            case 'F': sym = 0x0F; break;
+            case 'G': sym = 0x10; break;
+            case 'H': sym = 0x11; break;
+            case 'I': sym = 0x12; break;
+            case 'J': sym = 0x13; break;
+            case 'K': sym = 0x14; break;
+            case 'L': sym = 0x15; break;
+            case 'M': sym = 0x16; break;
+            case 'N': sym = 0x17; break;
+            case 'O': sym = 0x18; break;
+            case 'P': sym = 0x19; break;
+            case 'Q': sym = 0x1A; break;
+            case 'R': sym = 0x1B; break;
+            case 'S': sym = 0x1C; break;
+            case 'T': sym = 0x1D; break;
+            case 'U': sym = 0x1E; break;
+            case 'V': sym = 0x1F; break;
+            case 'W': sym = 0x20; break;
+            case 'X': sym = 0x21; break;
+            case 'Y': sym = 0x22; break;
+            case 'Z': sym = 0x23; break;
+            case 'a': sym = 0x24; break;
+            case 'b': sym = 0x25; break;
+            case 'c': sym = 0x26; break;
+            case 'd': sym = 0x27; break;
+            case 'e': sym = 0x28; break;
+            case 'f': sym = 0x29; break;
+            case 'g': sym = 0x2A; break;
+            case 'h': sym = 0x2B; break;
+            case 'i': sym = 0x2C; break;
+            case 'j': sym = 0x2D; break;
+            case 'k': sym = 0x2E; break;
+            case 'l': sym = 0x2F; break;
+            case 'm': sym = 0x30; break;
+            case 'n': sym = 0x31; break;
+            case 'o': sym = 0x32; break;
+            case 'p': sym = 0x33; break;
+            case 'q': sym = 0x34; break;
+            case 'r': sym = 0x35; break;
+            case 's': sym = 0x36; break;
+            case 't': sym = 0x37; break;
+            case 'u': sym = 0x38; break;
+            case 'v': sym = 0x39; break;
+            case 'w': sym = 0x3A; break;
+            case 'x': sym = 0x3B; break;
+            case 'y': sym = 0x3C; break;
+            case 'z': sym = 0x3D; break;
+            case '\'': sym = 0x3E; break;
+            case '.': sym = 0x3F; break;
+            case ' ': sym = 0x9E; break;
+        }
+
+        *p = sym;
+    }
+    *p = 0xff;
+
+    return (HC*) line;
+}
+
 
 static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
 {
@@ -172,20 +265,25 @@ static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
     print_generic_string_centered(x, y,      desc->name);
     if (desc->name == uSELECT_WARP_TARGET)
     {
-        const u8* courseName = uOFF;
+        char line[32];
+        const HC* courseName = uOFF;
         if (0 != value)
         {
-            u8** courseNameTbl = (u8**) segmented_to_virtual(sCourseNames);
-            int id = value - 1;
-            if (LevelConv_PlainLevels_F1 - 1 <= id)
+            HC** courseNameTbl = (HC**) segmented_to_virtual(sCourseNames);
+            int id = kWarpTargets[value] - 1;
+            if (LevelConv_PlainLevels_S3 - 1 == id)
             {
-                static u8 sFirst[] = { 0X0F, 0x12, 0x10, 0x11, 0x1D, 0x9e, 0x00, 0xFF };
-                sFirst[6] = id - LevelConv_PlainLevels_F1 + 2;
-                courseName = sFirst;
+                sprintf(line, "ENDING");
+                courseName = launder(line);
+            }
+            else if (LevelConv_PlainLevels_F1 - 1 <= id)
+            {
+                sprintf(line, "BOWSER FIGHT %d", id - (LevelConv_PlainLevels_F1 - 1) + 1);
+                courseName = launder(line);
             }
             else
             {
-                courseName = (u8*) segmented_to_virtual(courseNameTbl[id]);
+                courseName = (HC*) segmented_to_virtual(courseNameTbl[id]);
             }
         }
         print_generic_string_centered(x, y - 20, courseName);
@@ -199,7 +297,7 @@ static void renderOptionAt(const ConfigDescriptor* const desc, int x, int y)
         else
         {
             // TODO: const HACK
-            String_convert(value, (u8*) desc->valueNames[0]);
+            String_convert(value, (HC*) desc->valueNames[0]);
             print_generic_string_centered(x, y - 20, desc->valueNames[0]);
         }
     }
@@ -343,7 +441,7 @@ LevelConv_PlainLevels Config_warpIdAndReset()
         sPage = Pages_WARP - 1;
     }
 
-    return w;
+    return kWarpTargets[w];
 }   
 
 #define BUTTONS_PRESSED(mask) (((gControllers->buttonDown) & (mask)) == (mask))

@@ -1,7 +1,8 @@
 #include "string_conv.h"
 
-void String_convert(int num, u8* dst)
+void String_convert(int num, HC* dst)
 {
+#if BINARY
     int digitCount = 0;
     if (num < 0)
     {
@@ -37,4 +38,7 @@ void String_convert(int num, u8* dst)
             digitCount--;
         }
     }
+#else
+    sprintf(dst, "%d", num);
+#endif
 }

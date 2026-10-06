@@ -1,7 +1,6 @@
 #include "soft_reset.h"
 
-#include "types.h"
-#include "game/game.h"
+#include "binary.h"
 #include "game/level_update.h"
 #include "cfg.h"
 

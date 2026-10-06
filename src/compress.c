@@ -1,3 +1,4 @@
+#if 0
 // This is a very baby version of LZ4 compression algorithm
 
 #include "compress.h"
@@ -313,3 +314,4 @@ uint32_t mlz4_decompress(const uint8_t *in, uint8_t *out)
 	// TODO: this is incredibly ugly, rework this mess
 	return inCursor - in;
 }
+#endif

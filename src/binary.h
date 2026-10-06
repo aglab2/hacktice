@@ -11,22 +11,16 @@
 #include <ultra64.h>
 #include "sm64.h"
 #include "game/game_init.h"
-#endif
-
-// get_str_x_pos_from_center is different in binary
-#ifdef BINARY
-#define GET_STR_X_POS_FROM_CENTER(c, s, f) get_str_x_pos_from_center(c, s)
-s16 get_str_x_pos_from_center(s16 centerPos, const u8 *str);
-#else
-#define GET_STR_X_POS_FROM_CENTER(c, s, f) get_str_x_pos_from_center(c, (u8*) s, f)
+#include "game/ingame_menu.h"
+#include "game/print.h"
 #endif
 
 #ifdef BINARY
 #define PLAY_SEQUENCE play_sequence
 void play_sequence(u8 player, u8 seqId, u16 fadeTimer);
 #else
-// #define PLAY_SEQUENCE seq_player_play_sequence
-#define PLAY_SEQUENCE play_sequence
+#define PLAY_SEQUENCE seq_player_play_sequence
+// #define PLAY_SEQUENCE play_sequence
 void seq_player_play_sequence(u8 player, u8 seqId, u16 arg2);
 #endif
 
@@ -57,6 +51,31 @@ extern u8 seg2_course_name_table[];
 UNUSED static const void* sCourseNames = (void*) seg2_course_name_table;
 #endif
 
-#ifndef MARIO_FALL_SOUND_PLAYED
+#ifdef BINARY
 #define MARIO_FALL_SOUND_PLAYED MARIO_UNKNOWN_18
+#endif
+
+#ifdef BINARY
+#define HC u8
+#else
+#define HC char
+#endif
+
+#ifndef BINARY
+static inline void print_text_centered(int x, int y, const char* str)
+{ print_text_aligned(x, y, str, TEXT_ALIGN_CENTER); }
+#endif
+
+#ifdef BINARY
+#define Hacktice_gState ((State*) 0x80026000)
+#else
+#define Hacktice_gState ((State*) 0x80600000)
+#endif
+
+#ifdef BINARY
+#define gMarioAnimsMemAlloc D_80339CF0
+#define gMarioAnimsBuf D_80339D10
+#define MARIO_ANIMS_POOL_SIZE 0x4000
+#else
+extern struct DmaHandlerList gMarioAnimsBuf;
 #endif

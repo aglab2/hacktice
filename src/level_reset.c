@@ -15,8 +15,12 @@
 static bool sTimerRunningDeferred = false;
 static u32 sReloadObjectsAreasMask = 0;
 static u32 sReloadObjectsFrame = 0;
+#ifdef BINARY
 extern u8 sTransitionColorFadeCount[4];
 extern u16 sTransitionTextureFadeCount[2];
+#else
+extern u8 sTransitionFadeTimer;
+#endif
 
 #define container_of(ptr, type, member) ({ \
                 const typeof( ((type *)0)->member ) *__mptr = (ptr); \
@@ -39,12 +43,25 @@ static void resetCamera()
 
 static void resetTransition()
 {
+#ifdef BINARY
     for (int i = 0; i < 4; i++)
         sTransitionColorFadeCount[i] = 0;
+#else
+    sTransitionFadeTimer = 0;
+#endif
 }
+
+#ifndef BINARY
+extern u8 g100CoinStarSpawned;
+extern s8  gRedCoinsCollected;
+#endif
 
 static void miniResetCommon()
 {
+#ifndef BINARY
+    g100CoinStarSpawned = FALSE;
+    gRedCoinsCollected = 0;
+#endif
     gMarioStates->health = 0x880;
     gHudDisplay.coins = 0;
     gMarioStates->numCoins = 0;
@@ -142,11 +159,16 @@ s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
 #ifndef BINARY
         spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
 #endif
+
         spawnInfo->behaviorArg &= ~(RESPAWN_INFO_DONT_RESPAWN << 8);
         return true;
     }
 
+#ifndef BINARY
+    return (spawnInfo->respawnInfo & RESPAWN_INFO_DONT_RESPAWN) != RESPAWN_INFO_DONT_RESPAWN;
+#else
     return (spawnInfo->behaviorArg & (RESPAWN_INFO_DONT_RESPAWN << 8)) != (RESPAWN_INFO_DONT_RESPAWN << 8);
+#endif
 }
 
 #ifdef BINARY

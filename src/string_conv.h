@@ -1,3 +1,4 @@
 #include "types.h"
+#include "binary.h"
 
-void String_convert(int, u8*);
+void String_convert(int, HC*);

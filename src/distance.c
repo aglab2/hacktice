@@ -1,6 +1,7 @@
 #include "distance.h"
 #include "types.h"
 
+#include "behavior_data.h"
 #include "game/memory.h"
 #include "game/object_helpers.h"
 #include "game/object_list_processor.h"
@@ -47,13 +48,13 @@ void Distance_onNormal()
     f32 dist;
     if (Config_showDistanceFromClosestRed())
     {
-        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003eac, &dist);
+        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, bhvRedCoin, &dist);
         if (obj)
             print_text_fmt_int(20, 20, "R %d", dist / 50);
     }
     if (Config_showDistanceFromClosestSecret())
     {
-        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, (const BehaviorScript*) 0x13003f1c, &dist);
+        Object* obj = _obj_find_nearest_object_with_behavior(gMarioObject, bhvHiddenStarTrigger, &dist);
         if (obj)
             print_text_fmt_int(20, 40, "S %d", dist / 50);
     }

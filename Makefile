@@ -25,10 +25,19 @@ PAYLOAD = $(OBJ_DIR)/payload
 PAYLOAD_HEADER = $(TOOL_DIR)/payload_header
 PAYLOAD_DATA = $(TOOL_DIR)/payload_data
 
-CC = clang
-AR = llvm-ar
-LD = ld.lld
-CFLAGS = -DBINARY -flto -Wall -Wdouble-promotion -Os -mfix4300 -march=mips2 --target=mips-img-elf -fomit-frame-pointer -G0 -I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc -mno-check-zero-division -fno-exceptions -fno-builtin -fno-rtti -fno-common -mno-abicalls -DTARGET_N64 -mfpxx
+CC = mips-n64-gcc
+AR = mips-n64-ar
+LD = mips-n64-ld
+CFLAGS = -Wall -Wextra -Wno-trigraphs -Wno-missing-braces -Wno-overflow \
+	-Os -ffast-math -ftrapping-math -fno-associative-math -G0 \
+	-I $(INCLUDE_PATH) -I $(INCLUDE_PATH)/libc \
+	-mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks \
+	-fno-stack-protector -fno-common -mno-abicalls -fno-strict-aliasing -ffreestanding -fwrapv \
+	-DTARGET_N64 -D_LANGUAGE_C -DVERSION_US=1 -D_FINALROM=1 -DNDEBUG=1 \
+	-ffunction-sections -fdata-sections \
+	-nostdinc \
+	-MMD -MP \
+	-DBINARY
 
 all: $(OBJ_DIR) $(ROM) $(PAYLOAD_HEADER) $(PAYLOAD_DATA)
 

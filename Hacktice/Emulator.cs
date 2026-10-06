@@ -97,46 +97,6 @@ namespace Hacktice
                 var name = _process.ProcessName.ToLower();
                 int offset = 0;
 
-                if (name.Contains("project64") || name.Contains("wine-preloader"))
-                {
-                    DeepPointer[] ramPtrBaseSuggestionsDPtrs = { new DeepPointer("Project64.exe", 0xD6A1C),     //1.6
-                        new DeepPointer("RSP 1.7.dll", 0x4C054), new DeepPointer("RSP 1.7.dll", 0x44B5C),        //2.3.2; 2.4 
-                    };
-
-                    DeepPointer[] romPtrBaseSuggestionsDPtrs = { new DeepPointer("Project64.exe", 0xD6A2C),     //1.6
-                        new DeepPointer("RSP 1.7.dll", 0x4C050), new DeepPointer("RSP 1.7.dll", 0x44B58)        //2.3.2; 2.4
-                    };
-
-                    // Time to generate some addesses for magic check
-                    foreach (DeepPointer romSuggestionPtr in romPtrBaseSuggestionsDPtrs)
-                    {
-                        int ptr = -1;
-                        try
-                        {
-                            ptr = romSuggestionPtr.Deref<int>(_process);
-                            romPtrBaseSuggestions.Add(ptr);
-                        }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
-                    }
-
-                    foreach (DeepPointer ramSuggestionPtr in ramPtrBaseSuggestionsDPtrs)
-                    {
-                        int ptr = -1;
-                        try
-                        {
-                            ptr = ramSuggestionPtr.Deref<int>(_process);
-                            ramPtrBaseSuggestions.Add(ptr);
-                        }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
-                    }
-                }
-
                 if (name.Contains("mupen64"))
                 {
                     if (name == "mupen64")

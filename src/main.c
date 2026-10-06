@@ -5,6 +5,7 @@
 #include "game/level_update.h"
 
 #include "action.h"
+#include "binary.h"
 #include "checkpoint.h"
 #include "cfg.h"
 #include "custom_text.h"
@@ -51,7 +52,9 @@ static void Hacktice_onPauseStarDisplay()
 
 void Hacktice_onFrame()
 {
+#ifdef BINARY
     SoftReset_onFrame();
+#endif
 
     HackticeSetStatus(HACKTICE_STATUS_ACTIVE);
     if (PLAY_MODE_NORMAL == sCurrPlayMode)
